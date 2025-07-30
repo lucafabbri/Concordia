@@ -545,3 +545,97 @@ namespace Concordia.Examples.Web.Controllers
         }
     }
 }
+
+```
+## Contribution
+
+Feel free to contribute to the project! Report bugs, suggest new features, or submit pull requests.
+
+## License
+
+This project is released under the [Insert your license here, e.g., MIT License].
+
+---
+
+## Guida alla Migrazione da MediatR
+
+Se stai migrando un progetto esistente da MediatR a Concordia, il processo è estremamente semplice grazie alle interfacce e ai pattern identici.
+
+### 1. Aggiorna i Pacchetti NuGet
+
+Rimuovi il pacchetto MediatR e installa i pacchetti Concordia:
+
+```bash
+dotnet remove package MediatR
+dotnet remove package MediatR.Extensions.Microsoft.DependencyInjection # Se presente
+dotnet add package Concordia.Core --version 1.0.0
+dotnet add package Concordia.MediatR --version 1.0.0
+```
+
+### 2. Aggiorna i Namespace
+
+Cambia i namespace da `MediatR` a `Concordia` e `Concordia.Contracts` dove necessario.
+
+* **Interfacce**:
+    * `MediatR.IRequest<TResponse>` diventa `Concordia.Contracts.IRequest<TResponse>`
+    * `MediatR.IRequest` diventa `Concordia.Contracts.IRequest`
+    * `MediatR.IRequestHandler<TRequest, TResponse>` diventa `Concordia.Contracts.IRequestHandler<TRequest, TResponse>`
+    * `MediatR.IRequestHandler<TRequest>` diventa `Concordia.Contracts.IRequestHandler<TRequest>`
+    * `MediatR.INotification` diventa `Concordia.Contracts.INotification`
+    * `MediatR.INotificationHandler<TNotification>` diventa `Concordia.Contracts.INotificationHandler<TNotification>`
+    * `MediatR.IPipelineBehavior<TRequest, TResponse>` diventa `Concordia.Contracts.IPipelineBehavior<TRequest, TResponse>`
+    * `MediatR.IRequestPreProcessor<TRequest>` diventa `Concordia.Contracts.IRequestPreProcessor<TRequest>`
+    * `MediatR.IRequestPostProcessor<TRequest, TResponse>` diventa `Concordia.Contracts.IRequestPostProcessor<TRequest, TResponse>`
+    * `MediatR.INotificationPublisher` diventa `Concordia.Contracts.INotificationPublisher`
+
+* **Implementazione del Mediator**:
+    * `MediatR.IMediator` diventa `Concordia.IMediator`
+    * `MediatR.ISender` diventa `Concordia.ISender`
+    * `MediatR.Mediator` diventa `Concordia.Mediator`
+
+### 3. Aggiorna la Registrazione dei Servizi in `Program.cs` (o `Startup.cs`)
+
+Sostituisci il metodo di estensione `AddMediatR` con `AddMediator` di Concordia.
+
+**Prima (MediatR):**
+
+```csharp
+using MediatR;
+using MediatR.Extensions.Microsoft.DependencyInjection; // Se presente
+using System.Reflection;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    // Altre configurazioni MediatR
+});
+```
+
+**Dopo (Concordia.MediatR):**
+
+```csharp
+using Concordia; // Per IMediator, ISender
+using Concordia.MediatR; // Per il metodo di estensione AddMediator
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection; // Per ServiceLifetime
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddMediator(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    // Le opzioni di configurazione sono simili a MediatR, ma usano la classe ConcordiaMediatRServiceConfiguration
+    cfg.Lifetime = ServiceLifetime.Scoped; // Esempio
+    // cfg.NotificationPublisherType = typeof(MyCustomNotificationPublisher); // Esempio
+    // cfg.AddOpenBehavior(typeof(MyCustomPipelineBehavior<,>)); // Esempio
+    // cfg.AddRequestPreProcessor<MyCustomPreProcessor>(); // Esempio
+    // cfg.AddRequestPostProcessor<MyCustomPostProcessor>(); // Esempio
+});
+```
+
+### 4. Verifica e Testa
+
+Ricompila il tuo progetto ed esegui i test. Data la parità delle interfacce, la maggior parte del tuo codice esistente dovrebbe funzionare senza modifiche significative.
+

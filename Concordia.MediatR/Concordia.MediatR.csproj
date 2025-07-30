@@ -4,17 +4,30 @@
     <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <!-- NuGet Metadata -->
     <PackageId>Concordia.MediatR</PackageId>
     <Version>1.0.0</Version>
     <Authors>Luca Fabbri</Authors>
-    <Description>Concordia compatibility layer for MediatR users, providing reflection-based handler registration.</Description>
+    <Description>A compatibility layer for Concordia, mirroring MediatR's reflection-based handler registration.</Description>
     <RepositoryUrl>https://github.com/lucafabbri/Concordia</RepositoryUrl>
+    <PackageTags>mediator;cqrs;reflection;mediatr-compatibility;concordia;lucafabbri</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Concordia.Core\Concordia.Core.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Concordia.Core\Concordia.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Include README.md in the package -->
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

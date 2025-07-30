@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concordia: A Lightweight .NET Mediator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind: bg-slate-50 */
+            color: #1e293b; /* Tailwind: text-slate-800 */
+        }
+        .code-block {
+            background-color: #1e293b; /* Tailwind: bg-slate-800 */
+            color: #e2e8f0; /* Tailwind: text-slate-200 */
+            padding: 1rem;
+            border-radius: 0.5rem; /* Tailwind: rounded-lg */
+            overflow-x: auto;
+            font-family: 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+            font-size: 0.875rem; /* Tailwind: text-sm */
+        }
+        .code-block pre {
+            margin: 0;
+        }
+        .section-title {
+            border-bottom: 2px solid #cbd5e1; /* Tailwind: border-slate-300 */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .nav-link {
+            transition: color 0.2s ease-in-out;
+        }
+        .nav-link:hover {
+            color: #6366f1; /* Tailwind: text-indigo-500 */
+        }
+        .anchor-offset {
+            padding-top: 80px; /* Adjust this value based on your fixed header height */
+            margin-top: -80px; /* Counteract the padding-top to keep the scroll position correct */
+            -webkit-background-clip: content-box;
+            background-clip: content-box;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 w-full bg-white shadow-md z-50 p-4">
+        <div class="container mx-auto flex flex-wrap justify-between items-center">
+            <a href="#top" class="text-2xl font-bold text-indigo-600 rounded-md p-2 hover:bg-indigo-50 transition-colors">Concordia</a>
+            <div class="flex flex-wrap space-x-4 mt-2 md:mt-0">
+                <a href="#introduction" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Introduction</a>
+                <a href="#getting-started" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Getting Started</a>
+                <a href="#installation" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Installation</a>
+                <a href="#usage" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Usage</a>
+                <a href="#api-explanation" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">API Explanation</a>
+                <a href="#migration-guide" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Migration Guide</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 pt-24"> <!-- Added pt-24 to offset fixed navbar -->
+
+        <!-- Introduction Section -->
+        <section id="introduction" class="mb-12 anchor-offset">
+            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Introduction</h2>
+            <p class="text-lg leading-relaxed mb-4">
+                **Concordia** is a .NET library implementing the **Mediator pattern**, designed to be lightweight, performant, and easily integrated with the .NET Dependency Injection system. It leverages **C# Source Generators** for automatic handler registration at compile-time, eliminating the need for runtime reflection and improving application startup performance.
+            </p>
+            <h3 class="text-2xl font-semibold mb-4 text-slate-700">Why Concordia?</h3>
+            <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed">
+                <li>**An Open-Source Alternative**: Concordia was created as an open-source alternative in response to other popular mediator libraries (like MediatR) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.</li>
+                <li>**Lightweight and Minimal**: Provides only the essential Mediator pattern functionalities, without unnecessary overhead.</li>
+                <li>**Optimized Performance**: Thanks to Source Generators, handler discovery and registration happen entirely at compile-time, ensuring faster application startup and zero runtime reflection.</li>
+                <li>**Easy DI Integration**: Integrates seamlessly with `Microsoft.Extensions.DependencyInjection`.</li>
+                <li>**Same MediatR Interfaces**: Uses interfaces with identical signatures to MediatR, making migration or parallel adoption extremely straightforward.</li>
+                <li>**CQRS and Pub/Sub Patterns**: Facilitates the implementation of Command Query Responsibility Segregation (CQRS) and Publisher/Subscriber principles, enhancing separation of concerns and code maintainability.</li>
+            </ul>
+        </section>
+
+        ---
+
+        <!-- Getting Started Section -->
+        <section id="getting-started" class="mb-12 anchor-offset">
+            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Getting Started</h2>
+            <p class="text-lg leading-relaxed mb-4">
+                Getting started with Concordia involves a few straightforward steps to integrate the Mediator pattern into your .NET application.
+            </p>
+            <ol class="list-decimal list-inside space-y-2 text-lg leading-relaxed">
+                <li>**Define your Contracts**: Create your requests, commands, and notifications by implementing Concordia's interfaces (`IRequest<TResponse>`, `IRequest`, `INotification`).</li>
+                <li>**Implement Handlers**: Write the logic for your requests and notifications by implementing `IRequestHandler<TRequest, TResponse>`, `IRequestHandler<TRequest>`, or `INotificationHandler<TNotification>`.</li>
+                <li>**Register with Dependency Injection**: Integrate Concordia into your application's DI container. You can choose between compile-time registration (using the Source Generator) or runtime reflection-based registration (using the MediatR Compatibility layer).</li>
+                <li>**Use the Mediator**: Inject `IMediator` or `ISender` into your services or controllers to dispatch requests and publish notifications.</li>
+            </ol>
+        </section>
+
+        ---
+
+        <!-- Installation Section -->
+        <section id="installation" class="mb-12 anchor-offset">
+            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Installation</h2>
+            <p class="text-lg leading-relaxed mb-4">
+                Concordia is distributed via three NuGet packages, all currently at **version 1.0.0**:
+            </p>
+            <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed mb-4">
+                <li>**`Concordia.Core`**: Contains the interfaces (`IMediator`, `ISender`, `IRequest`, etc.), the `Mediator` implementation, and core DI extension methods.</li>
+                <li>**`Concordia.Generator`**: Contains the C# Source Generator for compile-time handler registration.</li>
+                <li>**`Concordia.MediatR`**: Provides a compatibility layer with MediatR's `AddMediator` extension method for runtime reflection-based handler registration, now using its own `ConcordiaMediatRServiceConfiguration`.</li>
+            </ul>
+            <p class="text-lg leading-relaxed mb-4">
+                To get started with Concordia, install the necessary packages in your application project (e.g., an ASP.NET Core project) using the .NET CLI. You will typically choose **either `Concordia.Generator` OR `Concordia.MediatR`** based on your preference for handler registration.
+            </p>
+
+            <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 1: Using the Source Generator (Recommended for New Projects)</h3>
+            <div class="code-block mb-6">
+                <pre><code>dotnet add package Concordia.Core --version 1.0.0
+dotnet add package Concordia.Generator --version 1.0.0</code></pre>
+            </div>
+
+            <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 2: Using the MediatR Compatibility Layer (For Migration or Reflection Preference)</h3>
+            <div class="code-block mb-6">
+                <pre><code>dotnet add package Concordia.Core --version 1.0.0
+dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
+            </div>
+            <p class="text-lg leading-relaxed">
+                Alternatively, you can install them via the NuGet Package Manager in Visual Studio.
+            </p>
+        </section>
+
+        ---
+
+        <!-- Usage Section -->
+        <section id="usage" class="mb-12 anchor-offset">
+            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Usage</h2>
+
+            <h3 class="text-2xl font-semibold mb-4 text-slate-700">1. Define Requests, Commands, and Notifications</h3>
+            <p class="text-lg leading-relaxed mb-4">
+                Your requests, commands, and notifications must implement the `Concordia.Contracts` interfaces.
+            </p>
+            <div class="code-block mb-6">
+                <pre><code>// Request with response
+using Concordia.Contracts;
+
+namespace MyProject.Requests
+{{
+    public class GetProductByIdQuery : IRequest&lt;ProductDto&gt;
+    {{
+        public int ProductId {{ get; set; }}
+    }}
+
+    public class ProductDto
+    {{
+        public int Id {{ get; set; }}
+        public string Name {{ get; set; }}
+        public decimal Price {{ get; set; }}
+    }}
+}}
+
+// Fire-and-forget command
+using Concordia.Contracts;
+
+namespace MyProject.Commands
+{{
+    public class CreateProductCommand : IRequest
+    {{
+        public int ProductId {{ get; set; }}
+        public string ProductName {{ get; set; }}
+    }}
+}}
+
+// Notification
+using Concordia.Contracts;
+
+namespace MyProject.Notifications
+{{
+    public class ProductCreatedNotification : INotification
+    {{
+        public int ProductId {{ get; set; }}
+        public string ProductName {{ get; set; }}
+    }}
+}}</code></pre>
+            </div>
+
+            <h3 class="text-2xl font-semibold mb-4 text-slate-700">2. Define Handlers, Processors, and Behaviors</h3>
+            <p class="text-lg leading-relaxed mb-4">
+                Your handlers must implement `IRequestHandler` or `INotificationHandler`. Pre-processors implement `IRequestPreProcessor`, post-processors implement `IRequestPostProcessor`, and pipeline behaviors implement `IPipelineBehavior`.
+            </p>
+            <div class="code-block mb-6">
+                <pre><code>// Handler for a request with response
+using Concordia.Contracts;
+using MyProject.Requests;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace MyProject.Handlers
+{{
+    public class GetProductByIdQueryHandler : IRequestHandler&lt;GetProductByIdQuery, ProductDto&gt;
+    {{
+        public Task&lt;ProductDto&gt; Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Handling GetProductByIdQuery for ProductId: {{request.ProductId}}&quot;);
+            var product = new ProductDto {{ Id = request.ProductId, Name = $&quot;Product {{request.ProductId}}&quot;, Price = 10.50m }};
+            return Task.FromResult(product);
+        }}
+    }}
+}}
+
+// Handler for a fire-and-forget command
+using Concordia.Contracts;
+using MyProject.Commands;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace MyProject.Handlers
+{{
+    public class CreateProductCommandHandler : IRequestHandler&lt;CreateProductCommand&gt;
+    {{
+        public Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Creating product: {{request.ProductName}} with ID: {{request.ProductId}}&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+}}
+
+// Notification Handler
+using Concordia.Contracts;
+using MyProject.Notifications;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace MyProject.Handlers
+{{
+    public class SendEmailOnProductCreated : INotificationHandler&lt;ProductCreatedNotification&gt;
+    {{
+        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Sending email for new product: {{notification.ProductName}} (Id: {{notification.ProductId}})&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+
+    public class LogProductCreation : INotificationHandler&lt;ProductCreatedNotification&gt;
+    {{
+        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Logging product creation: {{notification.ProductName}} (Id: {{notification.ProductId}}) created at {{DateTime.Now}}&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+}}
+
+// Example Request Pre-Processor
+using Concordia.Contracts;
+using MyProject.Requests; // Assuming your requests are here
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace MyProject.Processors
+{{
+    public class MyRequestLoggerPreProcessor : IRequestPreProcessor&lt;GetProductByIdQuery&gt;
+    {{
+        public Task Process(GetProductByIdQuery request, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Pre-processing GetProductByIdQuery for ProductId: {{request.ProductId}}&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+}}
+
+// Example Request Post-Processor
+using Concordia.Contracts;
+using MyProject.Requests; // Assuming your requests are here
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace MyProject.Processors
+{{
+    public class MyResponseLoggerPostProcessor : IRequestPostProcessor&lt;GetProductByIdQuery, ProductDto&gt;
+    {{
+        public Task Process(GetProductByIdQuery request, ProductDto response, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Post-processing GetProductByIdQuery. Response: {{response.Name}}&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+}}
+
+// Example Pipeline Behavior
+using Concordia.Contracts;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace MyProject.Behaviors
+{{
+    public class TestLoggingBehavior&lt;TRequest, TResponse&gt; : IPipelineBehavior&lt;TRequest, TResponse&gt;
+        where TRequest : IRequest&lt;TResponse&gt;
+    {{
+        private readonly List&lt;string&gt; _logs;
+        public TestLoggingBehavior(List&lt;string&gt; logs) {{ _logs = logs; }}
+        public async Task&lt;TResponse&gt; Handle(TRequest request, RequestHandlerDelegate&lt;TResponse&gt; next, CancellationToken cancellationToken)
+        {{
+            _logs.Add($&quot;Before {{typeof(TRequest).Name}}&quot;);
+            var response = await next();
+            _logs.Add($&quot;After {{typeof(TRequest).Name}}&quot;);
+            return response;
+        }}
+    }}
+}}</code></pre>
+            </div>
+
+            <h3 class="text-2xl font-semibold mb-4 text-slate-700">3. Choose Your Registration Method in `Program.cs`</h3>
+            <p class="text-lg leading-relaxed mb-4">
+                You will use either the **Source Generator method** (recommended for new projects) or the **MediatR Compatibility method** (for easier migration).
+            </p>
+
+            <h4 class="text-xl font-semibold mb-3 text-slate-700">Option A: Using the Source Generator (Recommended)</h4>
+            <p class="text-lg leading-relaxed mb-4">
+                This method provides optimal startup performance by registering handlers at compile-time.
+            </p>
+            <div class="code-block mb-6">
+                <pre><code>using Concordia; // Required for IMediator, ISender
+using Concordia.DependencyInjection; // For AddConcordiaCoreServices
+using Microsoft.AspNetCore.Mvc;
+using Concordia.Examples.Web; // Example: Namespace where ConcordiaGeneratedRegistrations is generated
+
+var builder = WebApplication.CreateBuilder(args);
+
+// 1. Register Concordia's core services (IMediator, ISender).
+// You can use the parameterless method for the default publisher, or:
+builder.Services.AddConcordiaCoreServices&lt;Concordia.ForeachAwaitPublisher&gt;(); // Example: Explicitly register the default publisher
+// Or, if you have a custom publisher:
+// builder.Services.AddConcordiaCoreServices&lt;MyCustomNotificationPublisher&gt;(); // Example: Register your custom publisher
+
+// 2. Register your specific handlers and pipeline behaviors discovered by the generator.
+// The method name will depend on your .csproj configuration (e.g., AddMyConcordiaHandlers).
+builder.Services.AddMyConcordiaHandlers(); // Example with a custom name
+
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+app.MapControllers();
+
+app.Run();
+
+// Example Controller for usage (remains unchanged)
+namespace Concordia.Examples.Web.Controllers
+{{
+    [ApiController]
+    [Route(&quot;[controller]&quot;)]
+    public class ProductsController : ControllerBase
+    {{
+        private readonly IMediator _mediator;
+        private readonly ISender _sender;
+
+        public ProductsController(IMediator mediator, ISender sender)
+        {{
+            _mediator = mediator;
+            _sender = sender;
+        }}
+
+        [HttpGet(&quot;{{id}}&quot;)]
+        public async Task&lt;IActionResult&gt; Get(int id)
+        {{
+            var query = new GetProductByIdQuery {{ ProductId = id }};
+            var product = await _sender.Send(query);
+            if (product == null)
+            {{
+                return NotFound();
+            }}
+            return Ok(product);
+        }}
+
+        [HttpPost]
+        public async Task&lt;IActionResult&gt; CreateProduct([FromBody] CreateProductCommand command)
+        {{
+            await _sender.Send(command);
+
+            var notification = new ProductCreatedNotification
+            {{
+                ProductId = command.ProductId,
+                ProductName = command.ProductName
+            }};
+            await _mediator.Publish(notification);
+
+            return CreatedAtAction(nameof(Get), new {{ id = command.ProductId }}, null);
+        }}
+    }}
+
+    // Examples of requests, commands, notifications and handlers for the web project
+    public class ProductDto
+    {{
+        public int Id {{ get; set; }}
+        public string Name {{ get; set; }}
+        public decimal Price {{ get; set; }}
+    }}
+
+    public class GetProductByIdQuery : IRequest&lt;ProductDto&gt;
+    {{
+        public int ProductId {{ get; set; }}
+    }}
+
+    public class GetProductByIdQueryHandler : IRequestHandler&lt;GetProductByIdQuery, ProductDto&gt;
+    {{
+        public Task&lt;ProductDto&gt; Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Handling GetProductByIdQuery for ProductId: {{request.ProductId}}&quot;);
+            var product = new ProductDto {{ Id = request.ProductId, Name = $&quot;Product {{request.ProductId}}&quot;, Price = 10.50m }};
+            return Task.FromResult(product);
+        }}
+    }}
+
+    public class CreateProductCommand : IRequest
+    {{
+        public int ProductId {{ get; set; }}
+        public string ProductName {{ get; set; }}
+    }}
+
+    public class CreateProductCommandHandler : IRequestHandler&lt;CreateProductCommand&gt;
+    {{
+        public Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Creating product: {{request.ProductName}} with ID: {{request.ProductId}}&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+
+    public class ProductCreatedNotification : INotification
+    {{
+        public int ProductId {{ get; set; }}
+        public string ProductName {{ get; set; }}
+    }}
+
+    public class SendEmailOnProductCreated : INotificationHandler&lt;ProductCreatedNotification&gt;
+    {{
+        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Sending email for new product: {{notification.ProductName}} (Id: {{notification.ProductId}})&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+
+    public class LogProductCreation : INotificationHandler&lt;ProductCreatedNotification&gt;
+    {{
+        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Logging product creation: {{notification.ProductName}} (Id: {{notification.ProductId}}) created at {{DateTime.Now}}&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+}}</code></pre>
+            </div>
+
+            <h4 class="text-xl font-semibold mb-3 text-slate-700">Option B: Using the MediatR Compatibility Layer</h4>
+            <p class="text-lg leading-relaxed mb-4">
+                This method uses runtime reflection to register handlers, offering a familiar setup for those migrating from MediatR.
+            </p>
+            <div class="code-block mb-6">
+                <pre><code>using Concordia; // Required for IMediator, ISender
+using Concordia.MediatR; // NEW: Namespace for the AddMediator extension method
+using Microsoft.AspNetCore.Mvc;
+using System.Reflection; // Required for Assembly.GetExecutingAssembly()
+using Microsoft.Extensions.DependencyInjection; // Required for ServiceLifetime
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Register Concordia and all handlers using the reflection-based AddMediator method.
+// This will scan the specified assemblies (e.g., the current executing assembly)
+// to find and register all handlers and pipeline behaviors.
+builder.Services.AddMediator(cfg =>
+{{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    
+    // Example: Register all services as Scoped
+    cfg.Lifetime = ServiceLifetime.Scoped;
+
+    // Example: Register a custom notification publisher
+    // cfg.NotificationPublisherType = typeof(MyCustomNotificationPublisher);
+
+    // Example: Explicitly add a pre-processor
+    // cfg.AddRequestPreProcessor&lt;MyCustomPreProcessor&gt;();
+
+    // Example: Explicitly add a post-processor
+    // cfg.AddRequestPostProcessor&lt;MyCustomPostProcessor&gt;();
+
+    // Example: Explicitly add a stream behavior
+    // cfg.AddStreamBehavior&lt;MyCustomStreamBehavior&gt;();
+}});
+
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+app.MapControllers();
+
+app.Run();
+
+// Example Controller for usage (remains unchanged)
+namespace Concordia.Examples.Web.Controllers
+{{
+    [ApiController]
+    [Route(&quot;[controller]&quot;)]
+    public class ProductsController : ControllerBase
+    {{
+        private readonly IMediator _mediator;
+        private readonly ISender _sender;
+
+        public ProductsController(IMediator mediator, ISender sender)
+        {{
+            _mediator = mediator;
+            _sender = sender;
+        }}
+
+        [HttpGet(&quot;{{id}}&quot;)]
+        public async Task&lt;IActionResult&gt; Get(int id)
+        {{
+            var query = new GetProductByIdQuery {{ ProductId = id }};
+            var product = await _sender.Send(query);
+            if (product == null)
+            {{
+                return NotFound();
+            }}
+            return Ok(product);
+        }}
+
+        [HttpPost]
+        public async Task&lt;IActionResult&gt; CreateProduct([FromBody] CreateProductCommand command)
+        {{
+            await _sender.Send(command);
+
+            var notification = new ProductCreatedNotification
+            {{
+                ProductId = command.ProductId,
+                ProductName = command.ProductName
+            }};
+            await _mediator.Publish(notification);
+
+            return CreatedAtAction(nameof(Get), new {{ id = command.ProductId }}, null);
+        }}
+    }}
+
+    // Examples of requests, commands, notifications and handlers for the web project
+    public class ProductDto
+    {{
+        public int Id {{ get; set; }}
+        public string Name {{ get; set; }}
+        public decimal Price {{ get; set; }}
+    }}
+
+    public class GetProductByIdQuery : IRequest&lt;ProductDto&gt;
+    {{
+        public int ProductId {{ get; set; }}
+    }}
+
+    public class GetProductByIdQueryHandler : IRequestHandler&lt;GetProductByIdQuery, ProductDto&gt;
+    {{
+        public Task&lt;ProductDto&gt; Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Handling GetProductByIdQuery for ProductId: {{request.ProductId}}&quot;);
+            var product = new ProductDto {{ Id = request.ProductId, Name = $&quot;Product {{request.ProductId}}&quot;, Price = 10.50m }};
+            return Task.FromResult(product);
+        }}
+    }}
+
+    public class CreateProductCommand : IRequest
+    {{
+        public int ProductId {{ get; set; }}
+        public string ProductName {{ get; set; }}
+    }}
+
+    public class CreateProductCommandHandler : IRequestHandler&lt;CreateProductCommand&gt;
+    {{
+        public Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Creating product: {{request.ProductName}} with ID: {{request.ProductId}}&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+
+    public class ProductCreatedNotification : INotification
+    {{
+        public int ProductId {{ get; set; }}
+        public string ProductName {{ get; set; }}
+    }}
+
+    public class SendEmailOnProductCreated : INotificationHandler&lt;ProductCreatedNotification&gt;
+    {{
+        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Sending email for new product: {{notification.ProductName}} (Id: {{notification.ProductId}})&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+
+    public class LogProductCreation : INotificationHandler&lt;ProductCreatedNotification&gt;
+    {{
+        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
+        {{
+            Console.WriteLine($&quot;Logging product creation: {{notification.ProductName}} (Id: {{notification.ProductId}}) created at {{DateTime.Now}}&quot;);
+            return Task.CompletedTask;
+        }}
+    }}
+}}</code></pre>
+            </div>
+
+            <!-- Migration Guide Section -->
+            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Migration Guide from MediatR</h2>
+            <p class="text-lg leading-relaxed mb-4">
+                If you are migrating an existing project from MediatR to Concordia, the process is extremely simple thanks to the identical interfaces and patterns.
+            </p>
+
+            <h3 class="text-2xl font-semibold mb-4 text-slate-700">1. Update NuGet Packages</h3>
+            <p class="text-lg leading-relaxed mb-4">
+                Remove the MediatR package and install the Concordia packages:
+            </p>
+            <div class="code-block mb-6">
+                <pre><code>dotnet remove package MediatR
+dotnet remove package MediatR.Extensions.Microsoft.DependencyInjection # If present
+dotnet add package Concordia.Core --version 1.0.0
+dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
+            </div>
+
+            <h3 class="text-2xl font-semibold mb-4 text-slate-700">2. Update Namespaces</h3>
+            <p class="text-lg leading-relaxed mb-4">
+                Change namespaces from `MediatR` to `Concordia` and `Concordia.Contracts` where necessary.
+            </p>
+            <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed mb-4">
+                <li>**Interfaces**:
+                    <ul class="list-circle list-inside ml-4">
+                        <li>`MediatR.IRequest&lt;TResponse&gt;` becomes `Concordia.Contracts.IRequest&lt;TResponse&gt;`</li>
+                        <li>`MediatR.IRequest` becomes `Concordia.Contracts.IRequest`</li>
+                        <li>`MediatR.IRequestHandler&lt;TRequest, TResponse&gt;` becomes `Concordia.Contracts.IRequestHandler&lt;TRequest, TResponse&gt;`</li>
+                        <li>`MediatR.IRequestHandler&lt;TRequest&gt;` becomes `Concordia.Contracts.IRequestHandler&lt;TRequest&gt;`</li>
+                        <li>`MediatR.INotification` becomes `Concordia.Contracts.INotification`</li>
+                        <li>`MediatR.INotificationHandler&lt;TNotification&gt;` becomes `Concordia.Contracts.INotificationHandler&lt;TNotification&gt;`</li>
+                        <li>`MediatR.IPipelineBehavior&lt;TRequest, TResponse&gt;` becomes `Concordia.Contracts.IPipelineBehavior&lt;TRequest, TResponse&gt;`</li>
+                        <li>`MediatR.IRequestPreProcessor&lt;TRequest&gt;` becomes `Concordia.Contracts.IRequestPreProcessor&lt;TRequest&gt;`</li>
+                        <li>`MediatR.IRequestPostProcessor&lt;TRequest, TResponse&gt;` becomes `Concordia.Contracts.IRequestPostProcessor&lt;TRequest, TResponse&gt;`</li>
+                        <li>`MediatR.INotificationPublisher` becomes `Concordia.Contracts.INotificationPublisher`</li>
+                    </ul>
+                </li>
+                <li>**Mediator Implementation**:
+                    <ul class="list-circle list-inside ml-4">
+                        <li>`MediatR.IMediator` becomes `Concordia.IMediator`</li>
+                        <li>`MediatR.ISender` becomes `Concordia.ISender`</li>
+                        <li>`MediatR.Mediator` becomes `Concordia.Mediator`</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3 class="text-2xl font-semibold mb-4 text-slate-700">3. Update Service Registration in `Program.cs` (or `Startup.cs`)</h3>
+            <p class="text-lg leading-relaxed mb-4">
+                Replace the `AddMediatR` extension method with Concordia's `AddMediator`.
+            </p>
+            <h4 class="text-xl font-semibold mb-3 text-slate-700">Before (MediatR):</h4>
+            <div class="code-block mb-6">
+                <pre><code>using MediatR;
+using MediatR.Extensions.Microsoft.DependencyInjection; // If present
+using System.Reflection;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddMediatR(cfg =>
+{{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    // Other MediatR configurations
+}});</code></pre>
+            </div>
+            <h4 class="text-xl font-semibold mb-3 text-slate-700">After (Concordia.MediatR):</h4>
+            <div class="code-block mb-6">
+                <pre><code>using Concordia; // For IMediator, ISender
+using Concordia.MediatR; // For the AddMediator extension method
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection; // For ServiceLifetime
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddMediator(cfg =>
+{{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    // Configuration options are similar to MediatR, but use the ConcordiaMediatRServiceConfiguration class
+    cfg.Lifetime = ServiceLifetime.Scoped; // Example
+    // cfg.NotificationPublisherType = typeof(MyCustomNotificationPublisher); // Example
+    // cfg.AddOpenBehavior(typeof(MyCustomPipelineBehavior&lt;,&gt;)); // Example
+    // cfg.AddRequestPreProcessor&lt;MyCustomPreProcessor&gt;(); // Example
+    // cfg.AddRequestPostProcessor&lt;MyCustomPostProcessor&gt;(); // Example
+}});</code></pre>
+            </div>
+
+            <h3 class="text-2xl font-semibold mb-4 text-slate-700">4. Verify and Test</h3>
+            <p class="text-lg leading-relaxed mb-4">
+                Rebuild your project and run your tests. Given the interface parity, most of your existing code should function without significant changes.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-200 p-6 text-center rounded-t-lg">
+        <p>&copy; 2024 Concordia Library. All rights reserved.</p>
+        <p class="text-sm mt-2">Built with ❤️ and .NET</p>
+    </footer>
+
+</body>
+</html>

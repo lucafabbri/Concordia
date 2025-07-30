@@ -4,11 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsRoslynComponent>true</IsRoslynComponent>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+
+    <!-- NuGet Metadata -->
     <PackageId>Concordia.Generator</PackageId>
     <Version>1.0.0</Version>
     <Authors>Luca Fabbri</Authors>
     <Description>A C# Source Generator for automatic handler registration in Concordia.</Description>
     <RepositoryUrl>https://github.com/lucafabbri/Concordia</RepositoryUrl>
+    <PackageTags>mediator;cqrs;source-generator;code-generation;concordia;lucafabbri</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -22,6 +27,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Concordia.Core\Concordia.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Include README.md in the package -->
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
