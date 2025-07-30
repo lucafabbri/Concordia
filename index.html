@@ -6,6 +6,8 @@
     <title>Concordia: A Lightweight .NET Mediator</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Highlight.js CSS for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -117,13 +119,13 @@
 
             <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 1: Using the Source Generator (Recommended for New Projects)</h3>
             <div class="code-block mb-6">
-                <pre><code>dotnet add package Concordia.Core --version 1.0.0
+                <pre><code class="language-bash">dotnet add package Concordia.Core --version 1.0.0
 dotnet add package Concordia.Generator --version 1.0.0</code></pre>
             </div>
 
             <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 2: Using the MediatR Compatibility Layer (For Migration or Reflection Preference)</h3>
             <div class="code-block mb-6">
-                <pre><code>dotnet add package Concordia.Core --version 1.0.0
+                <pre><code class="language-bash">dotnet add package Concordia.Core --version 1.0.0
 dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
             </div>
             <p class="text-lg leading-relaxed">
@@ -142,47 +144,47 @@ dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
                 Your requests, commands, and notifications must implement the `Concordia.Contracts` interfaces.
             </p>
             <div class="code-block mb-6">
-                <pre><code>// Request with response
+                <pre><code class="language-csharp">// Request with response
 using Concordia.Contracts;
 
 namespace MyProject.Requests
-{{
+{
     public class GetProductByIdQuery : IRequest&lt;ProductDto&gt;
-    {{
-        public int ProductId {{ get; set; }}
-    }}
+    {
+        public int ProductId { get; set; }
+    }
 
     public class ProductDto
-    {{
-        public int Id {{ get; set; }}
-        public string Name {{ get; set; }}
-        public decimal Price {{ get; set; }}
-    }}
-}}
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+    }
+}
 
 // Fire-and-forget command
 using Concordia.Contracts;
 
 namespace MyProject.Commands
-{{
+{
     public class CreateProductCommand : IRequest
-    {{
-        public int ProductId {{ get; set; }}
-        public string ProductName {{ get; set; }}
-    }}
-}}
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+    }
+}
 
 // Notification
 using Concordia.Contracts;
 
 namespace MyProject.Notifications
-{{
+{
     public class ProductCreatedNotification : INotification
-    {{
-        public int ProductId {{ get; set; }}
-        public string ProductName {{ get; set; }}
-    }}
-}}</code></pre>
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+    }
+}</code></pre>
             </div>
 
             <h3 class="text-2xl font-semibold mb-4 text-slate-700">2. Define Handlers, Processors, and Behaviors</h3>
@@ -190,24 +192,24 @@ namespace MyProject.Notifications
                 Your handlers must implement `IRequestHandler` or `INotificationHandler`. Pre-processors implement `IRequestPreProcessor`, post-processors implement `IRequestPostProcessor`, and pipeline behaviors implement `IPipelineBehavior`.
             </p>
             <div class="code-block mb-6">
-                <pre><code>// Handler for a request with response
+                <pre><code class="language-csharp">// Handler for a request with response
 using Concordia.Contracts;
 using MyProject.Requests;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyProject.Handlers
-{{
+{
     public class GetProductByIdQueryHandler : IRequestHandler&lt;GetProductByIdQuery, ProductDto&gt;
-    {{
+    {
         public Task&lt;ProductDto&gt; Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Handling GetProductByIdQuery for ProductId: {{request.ProductId}}&quot;);
-            var product = new ProductDto {{ Id = request.ProductId, Name = $&quot;Product {{request.ProductId}}&quot;, Price = 10.50m }};
+        {
+            Console.WriteLine($"Handling GetProductByIdQuery for ProductId: {request.ProductId}");
+            var product = new ProductDto { Id = request.ProductId, Name = $"Product {request.ProductId}", Price = 10.50m };
             return Task.FromResult(product);
-        }}
-    }}
-}}
+        }
+    }
+}
 
 // Handler for a fire-and-forget command
 using Concordia.Contracts;
@@ -216,16 +218,16 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyProject.Handlers
-{{
+{
     public class CreateProductCommandHandler : IRequestHandler&lt;CreateProductCommand&gt;
-    {{
+    {
         public Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Creating product: {{request.ProductName}} with ID: {{request.ProductId}}&quot;);
+        {
+            Console.WriteLine($"Creating product: {request.ProductName} with ID: {request.ProductId}");
             return Task.CompletedTask;
-        }}
-    }}
-}}
+        }
+    }
+}
 
 // Notification Handler
 using Concordia.Contracts;
@@ -234,25 +236,25 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyProject.Handlers
-{{
+{
     public class SendEmailOnProductCreated : INotificationHandler&lt;ProductCreatedNotification&gt;
-    {{
+    {
         public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Sending email for new product: {{notification.ProductName}} (Id: {{notification.ProductId}})&quot;);
+        {
+            Console.WriteLine($"Sending email for new product: {notification.ProductName} (Id: {notification.ProductId})");
             return Task.CompletedTask;
-        }}
-    }}
+        }
+    }
 
     public class LogProductCreation : INotificationHandler&lt;ProductCreatedNotification&gt;
-    {{
+    {
         public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Logging product creation: {{notification.ProductName}} (Id: {{notification.ProductId}}) created at {{DateTime.Now}}&quot;);
+        {
+            Console.WriteLine($"Logging product creation: {notification.ProductName} (Id: {notification.ProductId}) created at {DateTime.Now}");
             return Task.CompletedTask;
-        }}
-    }}
-}}
+        }
+    }
+}
 
 // Example Request Pre-Processor
 using Concordia.Contracts;
@@ -261,16 +263,16 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyProject.Processors
-{{
+{
     public class MyRequestLoggerPreProcessor : IRequestPreProcessor&lt;GetProductByIdQuery&gt;
-    {{
+    {
         public Task Process(GetProductByIdQuery request, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Pre-processing GetProductByIdQuery for ProductId: {{request.ProductId}}&quot;);
+        {
+            Console.WriteLine($"Pre-processing GetProductByIdQuery for ProductId: {request.ProductId}");
             return Task.CompletedTask;
-        }}
-    }}
-}}
+        }
+    }
+}
 
 // Example Request Post-Processor
 using Concordia.Contracts;
@@ -279,16 +281,16 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyProject.Processors
-{{
+{
     public class MyResponseLoggerPostProcessor : IRequestPostProcessor&lt;GetProductByIdQuery, ProductDto&gt;
-    {{
+    {
         public Task Process(GetProductByIdQuery request, ProductDto response, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Post-processing GetProductByIdQuery. Response: {{response.Name}}&quot;);
+        {
+            Console.WriteLine($"Post-processing GetProductByIdQuery. Response: {response.Name}");
             return Task.CompletedTask;
-        }}
-    }}
-}}
+        }
+    }
+}
 
 // Example Pipeline Behavior
 using Concordia.Contracts;
@@ -297,21 +299,21 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyProject.Behaviors
-{{
+{
     public class TestLoggingBehavior&lt;TRequest, TResponse&gt; : IPipelineBehavior&lt;TRequest, TResponse&gt;
         where TRequest : IRequest&lt;TResponse&gt;
-    {{
+    {
         private readonly List&lt;string&gt; _logs;
-        public TestLoggingBehavior(List&lt;string&gt; logs) {{ _logs = logs; }}
+        public TestLoggingBehavior(List&lt;string&gt; logs) { _logs = logs; }
         public async Task&lt;TResponse&gt; Handle(TRequest request, RequestHandlerDelegate&lt;TResponse&gt; next, CancellationToken cancellationToken)
-        {{
-            _logs.Add($&quot;Before {{typeof(TRequest).Name}}&quot;);
+        {
+            _logs.Add($"Before {typeof(TRequest).Name}");
             var response = await next();
-            _logs.Add($&quot;After {{typeof(TRequest).Name}}&quot;);
+            _logs.Add($"After {typeof(TRequest).Name}");
             return response;
-        }}
-    }}
-}}</code></pre>
+        }
+    }
+}</code></pre>
             </div>
 
             <h3 class="text-2xl font-semibold mb-4 text-slate-700">3. Choose Your Registration Method in `Program.cs`</h3>
@@ -324,7 +326,7 @@ namespace MyProject.Behaviors
                 This method provides optimal startup performance by registering handlers at compile-time.
             </p>
             <div class="code-block mb-6">
-                <pre><code>using Concordia; // Required for IMediator, ISender
+                <pre><code class="language-csharp">using Concordia; // Required for IMediator, ISender
 using Concordia.DependencyInjection; // For AddConcordiaCoreServices
 using Microsoft.AspNetCore.Mvc;
 using Concordia.Examples.Web; // Example: Namespace where ConcordiaGeneratedRegistrations is generated
@@ -351,110 +353,110 @@ app.Run();
 
 // Example Controller for usage (remains unchanged)
 namespace Concordia.Examples.Web.Controllers
-{{
+{
     [ApiController]
     [Route(&quot;[controller]&quot;)]
     public class ProductsController : ControllerBase
-    {{
+    {
         private readonly IMediator _mediator;
         private readonly ISender _sender;
 
         public ProductsController(IMediator mediator, ISender sender)
-        {{
+        {
             _mediator = mediator;
             _sender = sender;
-        }}
+        }
 
-        [HttpGet(&quot;{{id}}&quot;)]
+        [HttpGet(&quot;{id}&quot;)]
         public async Task&lt;IActionResult&gt; Get(int id)
-        {{
-            var query = new GetProductByIdQuery {{ ProductId = id }};
+        {
+            var query = new GetProductByIdQuery { ProductId = id };
             var product = await _sender.Send(query);
             if (product == null)
-            {{
+            {
                 return NotFound();
-            }}
+            }
             return Ok(product);
-        }}
+        }
 
         [HttpPost]
         public async Task&lt;IActionResult&gt; CreateProduct([FromBody] CreateProductCommand command)
-        {{
+        {
             await _sender.Send(command);
 
             var notification = new ProductCreatedNotification
-            {{
+            {
                 ProductId = command.ProductId,
                 ProductName = command.ProductName
-            }};
+            };
             await _mediator.Publish(notification);
 
-            return CreatedAtAction(nameof(Get), new {{ id = command.ProductId }}, null);
-        }}
-    }}
+            return CreatedAtAction(nameof(Get), new { id = command.ProductId }, null);
+        }
+    }
 
     // Examples of requests, commands, notifications and handlers for the web project
     public class ProductDto
-    {{
-        public int Id {{ get; set; }}
-        public string Name {{ get; set; }}
-        public decimal Price {{ get; set; }}
-    }}
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+    }
 
     public class GetProductByIdQuery : IRequest&lt;ProductDto&gt;
-    {{
-        public int ProductId {{ get; set; }}
-    }}
+    {
+        public int ProductId { get; set; }
+    }
 
     public class GetProductByIdQueryHandler : IRequestHandler&lt;GetProductByIdQuery, ProductDto&gt;
-    {{
+    {
         public Task&lt;ProductDto&gt; Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Handling GetProductByIdQuery for ProductId: {{request.ProductId}}&quot;);
-            var product = new ProductDto {{ Id = request.ProductId, Name = $&quot;Product {{request.ProductId}}&quot;, Price = 10.50m }};
+        {
+            Console.WriteLine($"Handling GetProductByIdQuery for ProductId: {request.ProductId}");
+            var product = new ProductDto { Id = request.ProductId, Name = $"Product {request.ProductId}", Price = 10.50m };
             return Task.FromResult(product);
-        }}
-    }}
+        }
+    }
 
     public class CreateProductCommand : IRequest
-    {{
-        public int ProductId {{ get; set; }}
-        public string ProductName {{ get; set; }}
-    }}
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+    }
 
     public class CreateProductCommandHandler : IRequestHandler&lt;CreateProductCommand&gt;
-    {{
+    {
         public Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Creating product: {{request.ProductName}} with ID: {{request.ProductId}}&quot;);
+        {
+            Console.WriteLine($"Creating product: {request.ProductName} with ID: {request.ProductId}");
             return Task.CompletedTask;
-        }}
-    }}
+        }
+    }
 
     public class ProductCreatedNotification : INotification
-    {{
-        public int ProductId {{ get; set; }}
-        public string ProductName {{ get; set; }}
-    }}
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+    }
 
     public class SendEmailOnProductCreated : INotificationHandler&lt;ProductCreatedNotification&gt;
-    {{
+    {
         public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Sending email for new product: {{notification.ProductName}} (Id: {{notification.ProductId}})&quot;);
+        {
+            Console.WriteLine($"Sending email for new product: {notification.ProductName} (Id: {notification.ProductId})");
             return Task.CompletedTask;
-        }}
-    }}
+        }
+    }
 
     public class LogProductCreation : INotificationHandler&lt;ProductCreatedNotification&gt;
-    {{
+    {
         public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Logging product creation: {{notification.ProductName}} (Id: {{notification.ProductId}}) created at {{DateTime.Now}}&quot;);
+        {
+            Console.WriteLine($"Logging product creation: {notification.ProductName} (Id: {notification.ProductId}) created at {DateTime.Now}");
             return Task.CompletedTask;
-        }}
-    }}
-}}</code></pre>
+        }
+    }
+}</code></pre>
             </div>
 
             <h4 class="text-xl font-semibold mb-3 text-slate-700">Option B: Using the MediatR Compatibility Layer</h4>
@@ -462,7 +464,7 @@ namespace Concordia.Examples.Web.Controllers
                 This method uses runtime reflection to register handlers, offering a familiar setup for those migrating from MediatR.
             </p>
             <div class="code-block mb-6">
-                <pre><code>using Concordia; // Required for IMediator, ISender
+                <pre><code class="language-csharp">using Concordia; // Required for IMediator, ISender
 using Concordia.MediatR; // NEW: Namespace for the AddMediator extension method
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection; // Required for Assembly.GetExecutingAssembly()
@@ -474,7 +476,7 @@ var builder = WebApplication.CreateBuilder(args);
 // This will scan the specified assemblies (e.g., the current executing assembly)
 // to find and register all handlers and pipeline behaviors.
 builder.Services.AddMediator(cfg =>
-{{
+{
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     
     // Example: Register all services as Scoped
@@ -491,7 +493,7 @@ builder.Services.AddMediator(cfg =>
 
     // Example: Explicitly add a stream behavior
     // cfg.AddStreamBehavior&lt;MyCustomStreamBehavior&gt;();
-}});
+});
 
 builder.Services.AddControllers();
 
@@ -503,110 +505,110 @@ app.Run();
 
 // Example Controller for usage (remains unchanged)
 namespace Concordia.Examples.Web.Controllers
-{{
+{
     [ApiController]
     [Route(&quot;[controller]&quot;)]
     public class ProductsController : ControllerBase
-    {{
+    {
         private readonly IMediator _mediator;
         private readonly ISender _sender;
 
         public ProductsController(IMediator mediator, ISender sender)
-        {{
+        {
             _mediator = mediator;
             _sender = sender;
-        }}
+        }
 
-        [HttpGet(&quot;{{id}}&quot;)]
+        [HttpGet(&quot;{id}&quot;)]
         public async Task&lt;IActionResult&gt; Get(int id)
-        {{
-            var query = new GetProductByIdQuery {{ ProductId = id }};
+        {
+            var query = new GetProductByIdQuery { ProductId = id };
             var product = await _sender.Send(query);
             if (product == null)
-            {{
+            {
                 return NotFound();
-            }}
+            }
             return Ok(product);
-        }}
+        }
 
         [HttpPost]
         public async Task&lt;IActionResult&gt; CreateProduct([FromBody] CreateProductCommand command)
-        {{
+        {
             await _sender.Send(command);
 
             var notification = new ProductCreatedNotification
-            {{
+            {
                 ProductId = command.ProductId,
                 ProductName = command.ProductName
-            }};
+            };
             await _mediator.Publish(notification);
 
-            return CreatedAtAction(nameof(Get), new {{ id = command.ProductId }}, null);
-        }}
-    }}
+            return CreatedAtAction(nameof(Get), new { id = command.ProductId }, null);
+        }
+    }
 
     // Examples of requests, commands, notifications and handlers for the web project
     public class ProductDto
-    {{
-        public int Id {{ get; set; }}
-        public string Name {{ get; set; }}
-        public decimal Price {{ get; set; }}
-    }}
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+    }
 
     public class GetProductByIdQuery : IRequest&lt;ProductDto&gt;
-    {{
-        public int ProductId {{ get; set; }}
-    }}
+    {
+        public int ProductId { get; set; }
+    }
 
     public class GetProductByIdQueryHandler : IRequestHandler&lt;GetProductByIdQuery, ProductDto&gt;
-    {{
+    {
         public Task&lt;ProductDto&gt; Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Handling GetProductByIdQuery for ProductId: {{request.ProductId}}&quot;);
-            var product = new ProductDto {{ Id = request.ProductId, Name = $&quot;Product {{request.ProductId}}&quot;, Price = 10.50m }};
+        {
+            Console.WriteLine($"Handling GetProductByIdQuery for ProductId: {request.ProductId}");
+            var product = new ProductDto { Id = request.ProductId, Name = $"Product {request.ProductId}", Price = 10.50m };
             return Task.FromResult(product);
-        }}
-    }}
+        }
+    }
 
     public class CreateProductCommand : IRequest
-    {{
-        public int ProductId {{ get; set; }}
-        public string ProductName {{ get; set; }}
-    }}
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+    }
 
     public class CreateProductCommandHandler : IRequestHandler&lt;CreateProductCommand&gt;
-    {{
+    {
         public Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Creating product: {{request.ProductName}} with ID: {{request.ProductId}}&quot;);
+        {
+            Console.WriteLine($"Creating product: {request.ProductName} with ID: {request.ProductId}");
             return Task.CompletedTask;
-        }}
-    }}
+        }
+    }
 
     public class ProductCreatedNotification : INotification
-    {{
-        public int ProductId {{ get; set; }}
-        public string ProductName {{ get; set; }}
-    }}
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+    }
 
     public class SendEmailOnProductCreated : INotificationHandler&lt;ProductCreatedNotification&gt;
-    {{
+    {
         public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Sending email for new product: {{notification.ProductName}} (Id: {{notification.ProductId}})&quot;);
+        {
+            Console.WriteLine($"Sending email for new product: {notification.ProductName} (Id: {notification.ProductId})");
             return Task.CompletedTask;
-        }}
-    }}
+        }
+    }
 
     public class LogProductCreation : INotificationHandler&lt;ProductCreatedNotification&gt;
-    {{
+    {
         public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
-        {{
-            Console.WriteLine($&quot;Logging product creation: {{notification.ProductName}} (Id: {{notification.ProductId}}) created at {{DateTime.Now}}&quot;);
+        {
+            Console.WriteLine($"Logging product creation: {notification.ProductName} (Id: {notification.ProductId}) created at {DateTime.Now}");
             return Task.CompletedTask;
-        }}
-    }}
-}}</code></pre>
+        }
+    }
+}</code></pre>
             </div>
 
             <!-- Migration Guide Section -->
@@ -620,7 +622,7 @@ namespace Concordia.Examples.Web.Controllers
                 Remove the MediatR package and install the Concordia packages:
             </p>
             <div class="code-block mb-6">
-                <pre><code>dotnet remove package MediatR
+                <pre><code class="language-bash">dotnet remove package MediatR
 dotnet remove package MediatR.Extensions.Microsoft.DependencyInjection # If present
 dotnet add package Concordia.Core --version 1.0.0
 dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
@@ -660,21 +662,21 @@ dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
             </p>
             <h4 class="text-xl font-semibold mb-3 text-slate-700">Before (MediatR):</h4>
             <div class="code-block mb-6">
-                <pre><code>using MediatR;
+                <pre><code class="language-csharp">using MediatR;
 using MediatR.Extensions.Microsoft.DependencyInjection; // If present
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMediatR(cfg =>
-{{
+{
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     // Other MediatR configurations
-}});</code></pre>
+});</code></pre>
             </div>
             <h4 class="text-xl font-semibold mb-3 text-slate-700">After (Concordia.MediatR):</h4>
             <div class="code-block mb-6">
-                <pre><code>using Concordia; // For IMediator, ISender
+                <pre><code class="language-csharp">using Concordia; // For IMediator, ISender
 using Concordia.MediatR; // For the AddMediator extension method
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection; // For ServiceLifetime
@@ -682,7 +684,7 @@ using Microsoft.Extensions.DependencyInjection; // For ServiceLifetime
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMediator(cfg =>
-{{
+{
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     // Configuration options are similar to MediatR, but use the ConcordiaMediatRServiceConfiguration class
     cfg.Lifetime = ServiceLifetime.Scoped; // Example
@@ -690,7 +692,7 @@ builder.Services.AddMediator(cfg =>
     // cfg.AddOpenBehavior(typeof(MyCustomPipelineBehavior&lt;,&gt;)); // Example
     // cfg.AddRequestPreProcessor&lt;MyCustomPreProcessor&gt;(); // Example
     // cfg.AddRequestPostProcessor&lt;MyCustomPostProcessor&gt;(); // Example
-}});</code></pre>
+});</code></pre>
             </div>
 
             <h3 class="text-2xl font-semibold mb-4 text-slate-700">4. Verify and Test</h3>
@@ -721,6 +723,18 @@ builder.Services.AddMediator(cfg =>
         <p>&copy; 2024 Concordia Library. All rights reserved.</p>
         <p class="text-sm mt-2">Built with ❤️ and .NET</p>
     </footer>
+
+    <!-- Highlight.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Optional: Include specific languages if you don't need all -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script>
+        // Initialize Highlight.js after the DOM is loaded
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
 
 </body>
 </html>
