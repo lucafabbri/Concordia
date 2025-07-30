@@ -204,6 +204,85 @@ public class Mediator : IMediator, ISender
     }
 
     /// <summary>
+    /// Sends a request to the appropriate handler and returns the response, if any.
+    /// </summary>
+    /// <param name="request">The request object to be processed. Cannot be <see langword="null"/>.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>The response from the handler if the request expects a response; otherwise, <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="request"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if no handler is found for the request type or if the handler does not have a valid Handle method.</exception>
+    public async Task<object?> Send(object request, CancellationToken cancellationToken = default)
+    {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+
+        Type handlerInterfaceType;
+        Type requestType = request.GetType();
+
+        // Cerca un handler con risposta (IRequestHandler<TRequest, TResponse>)
+        Type requestWithResponseType = requestType.GetInterfaces()
+                                                .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequest<>));
+
+        if (requestWithResponseType != null)
+        {
+            // Estrai il tipo di risposta dalla richiesta (es. IRequest<ProductDto> -> ProductDto)
+            Type responseType = requestWithResponseType.GetGenericArguments()[0];
+            handlerInterfaceType = typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
+        }
+        else
+        {
+            // Cerca un handler senza risposta (IRequestHandler<TRequest>)
+            // Correzione: IRequest non è generico, quindi non usare GetGenericTypeDefinition()
+            if (!requestType.GetInterfaces().Any(i => i == typeof(IRequest)))
+            {
+                throw new InvalidOperationException($"Request object of type {requestType.Name} does not implement IRequest or IRequest<TResponse>.");
+            }
+            handlerInterfaceType = typeof(IRequestHandler<>).MakeGenericType(requestType);
+        }
+
+        var handler = _serviceProvider.GetService(handlerInterfaceType);
+
+        if (handler == null)
+        {
+            throw new InvalidOperationException($"No handler found for object request of type {requestType.Name}.");
+        }
+
+        // Invoca il metodo Handle tramite reflection
+        var handleMethod = handler.GetType().GetMethod("Handle", new[] { requestType, typeof(CancellationToken) });
+
+        if (handleMethod == null)
+        {
+            throw new InvalidOperationException($"Handle method not found on handler for type {requestType.Name}.");
+        }
+
+        // Determine if the handler's Handle method returns a non-generic Task (i.e., for IRequest)
+        // This is crucial to avoid boxing VoidTaskResult.
+        bool handlerReturnsVoidTask = handleMethod.ReturnType == typeof(Task);
+
+        var taskResult = handleMethod.Invoke(handler, new object[] { request, cancellationToken });
+
+        if (taskResult is Task task)
+        {
+            await task.ConfigureAwait(false);
+
+            if (handlerReturnsVoidTask)
+            {
+                // If the handler returned a non-generic Task, it means no actual value is returned.
+                // Explicitly return null to match the Task<object?> signature for commands.
+                return null;
+            }
+            else
+            {
+                // If the handler returned Task<T>, get its Result.
+                // This will correctly return null if T is a reference type and the handler returned null.
+                return task.GetType().GetProperty("Result")?.GetValue(task);
+            }
+        }
+
+        // This case should ideally not be hit for async handlers
+        return null;
+    }
+
+    /// <summary>
     /// Publishes a notification to all registered handlers.
     /// </summary>
     /// <param name="notification">The notification to publish.</param>
