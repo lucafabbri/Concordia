@@ -1,0 +1,6 @@
+@Concordia.Examples.Web_HostAddress = http://localhost:5267
+
+GET {{Concordia.Examples.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
