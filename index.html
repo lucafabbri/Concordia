@@ -57,6 +57,7 @@
                 <a href="#usage" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Usage</a>
                 <a href="#api-explanation" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">API Explanation</a>
                 <a href="#migration-guide" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Migration Guide</a>
+                <a href="#source-code" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Source Code</a>
             </div>
         </div>
     </nav>
@@ -68,16 +69,16 @@
         <section id="introduction" class="mb-12 anchor-offset">
             <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Introduction</h2>
             <p class="text-lg leading-relaxed mb-4">
-                **Concordia** is a .NET library implementing the **Mediator pattern**, designed to be lightweight, performant, and easily integrated with the .NET Dependency Injection system. It leverages **C# Source Generators** for automatic handler registration at compile-time, eliminating the need for runtime reflection and improving application startup performance.
+                <strong>Concordia</strong> is a .NET library implementing the <strong>Mediator pattern</strong>, designed to be lightweight, performant, and easily integrated with the .NET Dependency Injection system. It leverages <strong>C# Source Generators</strong> for automatic handler registration at compile-time, eliminating the need for runtime reflection and improving application startup performance.
             </p>
             <h3 class="text-2xl font-semibold mb-4 text-slate-700">Why Concordia?</h3>
             <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed">
-                <li>**An Open-Source Alternative**: Concordia was created as an open-source alternative in response to other popular mediator libraries (like MediatR) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.</li>
-                <li>**Lightweight and Minimal**: Provides only the essential Mediator pattern functionalities, without unnecessary overhead.</li>
-                <li>**Optimized Performance**: Thanks to Source Generators, handler discovery and registration happen entirely at compile-time, ensuring faster application startup and zero runtime reflection.</li>
-                <li>**Easy DI Integration**: Integrates seamlessly with `Microsoft.Extensions.DependencyInjection`.</li>
-                <li>**Same MediatR Interfaces**: Uses interfaces with identical signatures to MediatR, making migration or parallel adoption extremely straightforward.</li>
-                <li>**CQRS and Pub/Sub Patterns**: Facilitates the implementation of Command Query Responsibility Segregation (CQRS) and Publisher/Subscriber principles, enhancing separation of concerns and code maintainability.</li>
+                <li><strong>An Open-Source Alternative</strong>: Concordia was created as an open-source alternative in response to other popular mediator libraries (like MediatR) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.</li>
+                <li><strong>Lightweight and Minimal</strong>: Provides only the essential Mediator pattern functionalities, without unnecessary overhead.</li>
+                <li><strong>Optimized Performance</strong>: Thanks to Source Generators, handler discovery and registration happen entirely at compile-time, ensuring faster application startup and zero runtime reflection.</li>
+                <li><strong>Easy DI Integration</strong>: Integrates seamlessly with `Microsoft.Extensions.DependencyInjection`.</li>
+                <li><strong>Same MediatR Interfaces</strong>: Uses interfaces with identical signatures to MediatR, making migration or parallel adoption extremely straightforward.</li>
+                <li><strong>CQRS and Pub/Sub Patterns</strong>: Facilitates the implementation of Command Query Responsibility Segregation (CQRS) and Publisher/Subscriber principles, enhancing separation of concerns and code maintainability.</li>
             </ul>
         </section>
 
@@ -90,10 +91,10 @@
                 Getting started with Concordia involves a few straightforward steps to integrate the Mediator pattern into your .NET application.
             </p>
             <ol class="list-decimal list-inside space-y-2 text-lg leading-relaxed">
-                <li>**Define your Contracts**: Create your requests, commands, and notifications by implementing Concordia's interfaces (`IRequest<TResponse>`, `IRequest`, `INotification`).</li>
-                <li>**Implement Handlers**: Write the logic for your requests and notifications by implementing `IRequestHandler<TRequest, TResponse>`, `IRequestHandler<TRequest>`, or `INotificationHandler<TNotification>`.</li>
-                <li>**Register with Dependency Injection**: Integrate Concordia into your application's DI container. You can choose between compile-time registration (using the Source Generator) or runtime reflection-based registration (using the MediatR Compatibility layer).</li>
-                <li>**Use the Mediator**: Inject `IMediator` or `ISender` into your services or controllers to dispatch requests and publish notifications.</li>
+                <li><strong>Define your Contracts</strong>: Create your requests, commands, and notifications by implementing Concordia's interfaces (`IRequest<TResponse>`, `IRequest`, `INotification`).</li>
+                <li><strong>Implement Handlers</strong>: Write the logic for your requests and notifications by implementing `IRequestHandler<TRequest, TResponse>`, `IRequestHandler<TRequest>`, or `INotificationHandler<TNotification>`.</li>
+                <li><strong>Register with Dependency Injection</strong>: Integrate Concordia into your application's DI container. You can choose between compile-time registration (using the Source Generator) or runtime reflection-based registration (using the MediatR Compatibility layer).</li>
+                <li><strong>Use the Mediator</strong>: Inject `IMediator` or `ISender` into your services or controllers to dispatch requests and publish notifications.</li>
             </ol>
         </section>
 
@@ -103,15 +104,15 @@
         <section id="installation" class="mb-12 anchor-offset">
             <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Installation</h2>
             <p class="text-lg leading-relaxed mb-4">
-                Concordia is distributed via three NuGet packages, all currently at **version 1.0.0**:
+                Concordia is distributed via three NuGet packages, all currently at <strong>version 1.0.0</strong>:
             </p>
             <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed mb-4">
-                <li>**`Concordia.Core`**: Contains the interfaces (`IMediator`, `ISender`, `IRequest`, etc.), the `Mediator` implementation, and core DI extension methods.</li>
-                <li>**`Concordia.Generator`**: Contains the C# Source Generator for compile-time handler registration.</li>
-                <li>**`Concordia.MediatR`**: Provides a compatibility layer with MediatR's `AddMediator` extension method for runtime reflection-based handler registration, now using its own `ConcordiaMediatRServiceConfiguration`.</li>
+                <li><strong>`Concordia.Core`</strong>: Contains the interfaces (`IMediator`, `ISender`, `IRequest`, etc.), the `Mediator` implementation, and core DI extension methods.</li>
+                <li><strong>`Concordia.Generator`</strong>: Contains the C# Source Generator for compile-time handler registration.</li>
+                <li><strong>`Concordia.MediatR`</strong>: Provides a compatibility layer with MediatR's `AddMediator` extension method for runtime reflection-based handler registration, now using its own `ConcordiaMediatRServiceConfiguration`.</li>
             </ul>
             <p class="text-lg leading-relaxed mb-4">
-                To get started with Concordia, install the necessary packages in your application project (e.g., an ASP.NET Core project) using the .NET CLI. You will typically choose **either `Concordia.Generator` OR `Concordia.MediatR`** based on your preference for handler registration.
+                To get started with Concordia, install the necessary packages in your application project (e.g., an ASP.NET Core project) using the .NET CLI. You will typically choose <strong>either `Concordia.Generator` OR `Concordia.MediatR`</strong> based on your preference for handler registration.
             </p>
 
             <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 1: Using the Source Generator (Recommended for New Projects)</h3>
@@ -315,7 +316,7 @@ namespace MyProject.Behaviors
 
             <h3 class="text-2xl font-semibold mb-4 text-slate-700">3. Choose Your Registration Method in `Program.cs`</h3>
             <p class="text-lg leading-relaxed mb-4">
-                You will use either the **Source Generator method** (recommended for new projects) or the **MediatR Compatibility method** (for easier migration).
+                You will use either the <strong>Source Generator method</strong> (recommended for new projects) or the <strong>MediatR Compatibility method</strong> (for easier migration).
             </p>
 
             <h4 class="text-xl font-semibold mb-3 text-slate-700">Option A: Using the Source Generator (Recommended)</h4>
@@ -630,7 +631,7 @@ dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
                 Change namespaces from `MediatR` to `Concordia` and `Concordia.Contracts` where necessary.
             </p>
             <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed mb-4">
-                <li>**Interfaces**:
+                <li><strong>Interfaces</strong>:
                     <ul class="list-circle list-inside ml-4">
                         <li>`MediatR.IRequest&lt;TResponse&gt;` becomes `Concordia.Contracts.IRequest&lt;TResponse&gt;`</li>
                         <li>`MediatR.IRequest` becomes `Concordia.Contracts.IRequest`</li>
@@ -644,7 +645,7 @@ dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
                         <li>`MediatR.INotificationPublisher` becomes `Concordia.Contracts.INotificationPublisher`</li>
                     </ul>
                 </li>
-                <li>**Mediator Implementation**:
+                <li><strong>Mediator Implementation</strong>:
                     <ul class="list-circle list-inside ml-4">
                         <li>`MediatR.IMediator` becomes `Concordia.IMediator`</li>
                         <li>`MediatR.ISender` becomes `Concordia.ISender`</li>
@@ -696,6 +697,21 @@ builder.Services.AddMediator(cfg =>
             <p class="text-lg leading-relaxed mb-4">
                 Rebuild your project and run your tests. Given the interface parity, most of your existing code should function without significant changes.
             </p>
+        </section>
+
+        ---
+
+        <!-- Source Code Section -->
+        <section id="source-code" class="mb-12 anchor-offset">
+            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Source Code</h2>
+            <p class="text-lg leading-relaxed mb-4">
+                The complete source code for the Concordia library is available on GitHub. Feel free to explore, contribute, or fork the repository.
+            </p>
+            <div class="flex justify-center">
+                <a href="https://github.com/lucafabbri/Concordia" target="_blank" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-300">
+                    View on GitHub
+                </a>
+            </div>
         </section>
 
     </main>
