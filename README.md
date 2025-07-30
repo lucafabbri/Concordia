@@ -2,6 +2,8 @@
 
 Concordia is a .NET library implementing the **Mediator pattern**, designed to be lightweight, performant, and easily integrated with the .NET Dependency Injection system. It leverages **C# Source Generators** for automatic handler registration at compile-time, eliminating the need for runtime reflection and improving application startup performance.
 
+-----
+
 ## Why Concordia?
 
 * **An Open-Source Alternative**: Concordia was created as an open-source alternative in response to other popular mediator libraries (like MediatR) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.
@@ -15,6 +17,8 @@ Concordia is a .NET library implementing the **Mediator pattern**, designed to b
 * **Same MediatR Interfaces**: Uses interfaces with identical signatures to MediatR, making migration or parallel adoption extremely straightforward.
 
 * **CQRS and Pub/Sub Patterns**: Facilitates the implementation of Command Query Responsibility Segregation (CQRS) and Publisher/Subscriber principles, enhancing separation of concerns and code maintainability.
+
+-----
 
 ## Key Features
 
@@ -46,6 +50,8 @@ Concordia is a .NET library implementing the **Mediator pattern**, designed to b
 
 * **Configurable Namespace and Method Names**: Control the generated class's namespace and the DI extension method's name via MSBuild properties (for Source Generator).
 
+-----
+
 ## Installation
 
 Concordia is distributed via three NuGet packages, all currently at **version 1.0.0**:
@@ -73,6 +79,8 @@ dotnet add package Concordia.MediatR --version 1.0.0
 ```
 
 Alternatively, you can install them via the NuGet Package Manager in Visual Studio.
+
+-----
 
 ## Usage
 
@@ -229,7 +237,7 @@ namespace MyProject.Processors
     }
 }
 
-// Example Pipeline Behavior (already in previous examples)
+// Example Pipeline Behavior
 // using Concordia.Contracts;
 // using System.Collections.Generic;
 // using System.Threading;
@@ -261,19 +269,57 @@ You will use either the **Source Generator method** (recommended for new project
 
 This method provides optimal startup performance by registering handlers at compile-time.
 
+##### i. Configure your `.csproj`
+
+Add the `Concordia.Generator` as a `ProjectReference` to your application project's `.csproj` file. Ensure the `OutputItemType="Analyzer"` and `ReferenceOutputAssembly="false"` attributes are set. You can also customize the generated extension method's name using the `ConcordiaGeneratedMethodName` property.
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Optional: Customize the generated extension method name -->
+    <ConcordiaGeneratedMethodName>AddMyConcordiaHandlers</ConcordiaGeneratedMethodName>
+    <!-- Optional: Customize the namespace for the generated class (defaults to project's RootNamespace) -->
+    <!-- <ConcordiaGeneratedNamespace>MyProject.Generated</ConcordiaGeneratedNamespace> -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="PathToYour\Concordia.Core\Concordia.Core.csproj" />
+    <ProjectReference Include="PathToYour\Concordia.Generator\Concordia.Generator.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <!-- Ensure your Request, Handler, Processor, and Behavior files are included in the project -->
+  <ItemGroup>
+    <Compile Include="Requests\MySimpleQuery.cs" />
+    <Compile Include="Handlers\MySimpleQueryHandler.cs" />
+    <Compile Include="Processors\MyRequestLoggerPreProcessor.cs" />
+    <Compile Include="Processors\MyResponseLoggerPostProcessor.cs" />
+    <Compile Include="Behaviors\TestLoggingBehavior.cs" />
+    <!-- ... other handlers, processors, behaviors ... -->
+  </ItemGroup>
+</Project>
+```
+
+##### ii. Register services in `Program.cs`
+
+After configuring your `.csproj`, the Source Generator will automatically generate an extension method (e.g., `AddMyConcordiaHandlers`) that registers all your handlers, processors, and behaviors. Call this method in your `Program.cs` after registering Concordia's core services.
+
 ```csharp
 using Concordia; // Required for IMediator, ISender
 using Concordia.DependencyInjection; // For AddConcordiaCoreServices
 using Microsoft.AspNetCore.Mvc;
-using Concordia.Examples.Web; // Example: Namespace where ConcordiaGeneratedRegistrations is generated
+using MyProject.Web; // Example: Namespace where ConcordiaGeneratedRegistrations is generated
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Register Concordia's core services (IMediator, ISender).
-// Puoi usare il metodo senza parametri per il publisher di default, oppure:
-builder.Services.AddConcordiaCoreServices<Concordia.ForeachAwaitPublisher>(); // Esempio: Registra il publisher di default esplicitamente
-// Oppure, se hai un publisher personalizzato:
-// builder.Services.AddConcordiaCoreServices<MyCustomNotificationPublisher>(); // Esempio: Registra il tuo publisher personalizzato
+// You can use the parameterless method for the default publisher, or:
+builder.Services.AddConcordiaCoreServices<Concordia.ForeachAwaitPublisher>(); // Example: Explicitly register the default publisher
+// Or, if you have a custom publisher:
+// builder.Services.AddConcordiaCoreServices<MyCustomNotificationPublisher>(); // Example: Register your custom publisher
 
 // 2. Register your specific handlers and pipeline behaviors discovered by the generator.
 // The method name will depend on your .csproj configuration (e.g., AddMyConcordiaHandlers).
@@ -331,7 +377,7 @@ namespace Concordia.Examples.Web.Controllers
         }
     }
 
-    // Esempi di richieste, comandi, notifiche e handler per il progetto web
+    // Examples of requests, commands, notifications and handlers for the web project
     public class ProductDto
     {
         public int Id { get; set; }
@@ -415,19 +461,19 @@ builder.Services.AddMediator(cfg =>
 {
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     
-    // Esempio: Registrare tutti i servizi come Scoped
+    // Example: Register all services as Scoped
     cfg.Lifetime = ServiceLifetime.Scoped;
 
-    // Esempio: Registrare un publisher di notifiche personalizzato
+    // Example: Register a custom notification publisher
     // cfg.NotificationPublisherType = typeof(MyCustomNotificationPublisher);
 
-    // Esempio: Aggiungere un pre-processore in modo esplicito
+    // Example: Explicitly add a pre-processor
     // cfg.AddRequestPreProcessor<MyCustomPreProcessor>();
 
-    // Esempio: Aggiungere un post-processore in modo esplicito
+    // Example: Explicitly add a post-processor
     // cfg.AddRequestPostProcessor<MyCustomPostProcessor>();
 
-    // Esempio: Aggiungere un comportamento di stream in modo esplicito
+    // Example: Explicitly add a stream behavior
     // cfg.AddStreamBehavior<MyCustomStreamBehavior>();
 });
 
@@ -483,7 +529,7 @@ namespace Concordia.Examples.Web.Controllers
         }
     }
 
-    // Esempi di richieste, comandi, notifiche e handler per il progetto web
+    // Examples of requests, commands, notifications and handlers for the web project
     public class ProductDto
     {
         public int Id { get; set; }
@@ -545,63 +591,55 @@ namespace Concordia.Examples.Web.Controllers
         }
     }
 }
-
 ```
-## Contribution
 
-Feel free to contribute to the project! Report bugs, suggest new features, or submit pull requests.
+-----
 
-## License
+## Migration Guide from MediatR
 
-This project is released under the [Insert your license here, e.g., MIT License].
+If you are migrating an existing project from MediatR to Concordia, the process is extremely simple thanks to the identical interfaces and patterns.
 
----
+### 1. Update NuGet Packages
 
-## Guida alla Migrazione da MediatR
-
-Se stai migrando un progetto esistente da MediatR a Concordia, il processo è estremamente semplice grazie alle interfacce e ai pattern identici.
-
-### 1. Aggiorna i Pacchetti NuGet
-
-Rimuovi il pacchetto MediatR e installa i pacchetti Concordia:
+Remove the MediatR package and install the Concordia packages:
 
 ```bash
 dotnet remove package MediatR
-dotnet remove package MediatR.Extensions.Microsoft.DependencyInjection # Se presente
+dotnet remove package MediatR.Extensions.Microsoft.DependencyInjection # If present
 dotnet add package Concordia.Core --version 1.0.0
 dotnet add package Concordia.MediatR --version 1.0.0
 ```
 
-### 2. Aggiorna i Namespace
+### 2. Update Namespaces
 
-Cambia i namespace da `MediatR` a `Concordia` e `Concordia.Contracts` dove necessario.
+Change namespaces from `MediatR` to `Concordia` and `Concordia.Contracts` where necessary.
 
-* **Interfacce**:
-    * `MediatR.IRequest<TResponse>` diventa `Concordia.Contracts.IRequest<TResponse>`
-    * `MediatR.IRequest` diventa `Concordia.Contracts.IRequest`
-    * `MediatR.IRequestHandler<TRequest, TResponse>` diventa `Concordia.Contracts.IRequestHandler<TRequest, TResponse>`
-    * `MediatR.IRequestHandler<TRequest>` diventa `Concordia.Contracts.IRequestHandler<TRequest>`
-    * `MediatR.INotification` diventa `Concordia.Contracts.INotification`
-    * `MediatR.INotificationHandler<TNotification>` diventa `Concordia.Contracts.INotificationHandler<TNotification>`
-    * `MediatR.IPipelineBehavior<TRequest, TResponse>` diventa `Concordia.Contracts.IPipelineBehavior<TRequest, TResponse>`
-    * `MediatR.IRequestPreProcessor<TRequest>` diventa `Concordia.Contracts.IRequestPreProcessor<TRequest>`
-    * `MediatR.IRequestPostProcessor<TRequest, TResponse>` diventa `Concordia.Contracts.IRequestPostProcessor<TRequest, TResponse>`
-    * `MediatR.INotificationPublisher` diventa `Concordia.Contracts.INotificationPublisher`
+* **Interfaces**:
+    * `MediatR.IRequest<TResponse>` becomes `Concordia.Contracts.IRequest<TResponse>`
+    * `MediatR.IRequest` becomes `Concordia.Contracts.IRequest`
+    * `MediatR.IRequestHandler<TRequest, TResponse>` becomes `Concordia.Contracts.IRequestHandler<TRequest, TResponse>`
+    * `MediatR.IRequestHandler<TRequest>` becomes `Concordia.Contracts.IRequestHandler<TRequest>`
+    * `MediatR.INotification` becomes `Concordia.Contracts.INotification`
+    * `MediatR.INotificationHandler<TNotification>` becomes `Concordia.Contracts.INotificationHandler<TNotification>`
+    * `MediatR.IPipelineBehavior<TRequest, TResponse>` becomes `Concordia.Contracts.IPipelineBehavior<TRequest, TResponse>`
+    * `MediatR.IRequestPreProcessor<TRequest>` becomes `Concordia.Contracts.IRequestPreProcessor<TRequest>`
+    * `MediatR.IRequestPostProcessor<TRequest, TResponse>` becomes `Concordia.Contracts.IRequestPostProcessor<TRequest, TResponse>`
+    * `MediatR.INotificationPublisher` becomes `Concordia.Contracts.INotificationPublisher`
 
-* **Implementazione del Mediator**:
-    * `MediatR.IMediator` diventa `Concordia.IMediator`
-    * `MediatR.ISender` diventa `Concordia.ISender`
-    * `MediatR.Mediator` diventa `Concordia.Mediator`
+* **Mediator Implementation**:
+    * `MediatR.IMediator` becomes `Concordia.IMediator`
+    * `MediatR.ISender` becomes `Concordia.ISender`
+    * `MediatR.Mediator` becomes `Concordia.Mediator`
 
-### 3. Aggiorna la Registrazione dei Servizi in `Program.cs` (o `Startup.cs`)
+### 3. Update Service Registration in `Program.cs` (or `Startup.cs`)
 
-Sostituisci il metodo di estensione `AddMediatR` con `AddMediator` di Concordia.
+Replace the `AddMediatR` extension method with Concordia's `AddMediator`.
 
-**Prima (MediatR):**
+**Before (MediatR):**
 
 ```csharp
 using MediatR;
-using MediatR.Extensions.Microsoft.DependencyInjection; // Se presente
+using MediatR.Extensions.Microsoft.DependencyInjection; // If present
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -609,33 +647,32 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    // Altre configurazioni MediatR
+    // Other MediatR configurations
 });
 ```
 
-**Dopo (Concordia.MediatR):**
+**After (Concordia.MediatR):**
 
 ```csharp
-using Concordia; // Per IMediator, ISender
-using Concordia.MediatR; // Per il metodo di estensione AddMediator
+using Concordia; // For IMediator, ISender
+using Concordia.MediatR; // For the AddMediator extension method
 using System.Reflection;
-using Microsoft.Extensions.DependencyInjection; // Per ServiceLifetime
+using Microsoft.Extensions.DependencyInjection; // For ServiceLifetime
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMediator(cfg =>
 {
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    // Le opzioni di configurazione sono simili a MediatR, ma usano la classe ConcordiaMediatRServiceConfiguration
-    cfg.Lifetime = ServiceLifetime.Scoped; // Esempio
-    // cfg.NotificationPublisherType = typeof(MyCustomNotificationPublisher); // Esempio
-    // cfg.AddOpenBehavior(typeof(MyCustomPipelineBehavior<,>)); // Esempio
-    // cfg.AddRequestPreProcessor<MyCustomPreProcessor>(); // Esempio
-    // cfg.AddRequestPostProcessor<MyCustomPostProcessor>(); // Esempio
+    // Configuration options are similar to MediatR, but use the ConcordiaMediatRServiceConfiguration class
+    cfg.Lifetime = ServiceLifetime.Scoped; // Example
+    // cfg.NotificationPublisherType = typeof(MyCustomNotificationPublisher); // Example
+    // cfg.AddOpenBehavior(typeof(MyCustomPipelineBehavior<,>)); // Example
+    // cfg.AddRequestPreProcessor<MyCustomPreProcessor>(); // Example
+    // cfg.AddRequestPostProcessor<MyCustomPostProcessor>(); // Example
 });
 ```
 
-### 4. Verifica e Testa
+### 4. Verify and Test
 
-Ricompila il tuo progetto ed esegui i test. Data la parità delle interfacce, la maggior parte del tuo codice esistente dovrebbe funzionare senza modifiche significative.
-
+Rebuild your project and run your tests. Given the interface parity, most of your existing code should function without significant changes.

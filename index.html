@@ -84,7 +84,7 @@
             </ul>
         </section>
 
-        ---
+        <hr class="my-12 border-slate-200">
 
         <!-- Getting Started Section -->
         <section id="getting-started" class="mb-12 anchor-offset">
@@ -100,7 +100,7 @@
             </ol>
         </section>
 
-        ---
+        <hr class="my-12 border-slate-200">
 
         <!-- Installation Section -->
         <section id="installation" class="mb-12 anchor-offset">
@@ -133,7 +133,7 @@ dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
             </p>
         </section>
 
-        ---
+        <hr class="my-12 border-slate-200">
 
         <!-- Usage Section -->
         <section id="usage" class="mb-12 anchor-offset">
@@ -325,11 +325,48 @@ namespace MyProject.Behaviors
             <p class="text-lg leading-relaxed mb-4">
                 This method provides optimal startup performance by registering handlers at compile-time.
             </p>
+            <h5 class="text-lg font-semibold mb-2 text-slate-700">i. Configure your `.csproj`</h5>
+            <p class="text-lg leading-relaxed mb-4">
+                Add the `Concordia.Generator` as a `ProjectReference` to your application project's `.csproj` file. Ensure the `OutputItemType="Analyzer"` and `ReferenceOutputAssembly="false"` attributes are set. You can also customize the generated extension method's name using the `ConcordiaGeneratedMethodName` property.
+            </p>
+            <div class="code-block mb-6">
+                <pre><code class="language-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk.Web&quot;&gt;
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net8.0&lt;/TargetFramework&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+    &lt;!-- Optional: Customize the generated extension method name --&gt;
+    &lt;ConcordiaGeneratedMethodName&gt;AddMyConcordiaHandlers&lt;/ConcordiaGeneratedMethodName&gt;
+    &lt;!-- Optional: Customize the namespace for the generated class (defaults to project's RootNamespace) --&gt;
+    &lt;!-- &lt;ConcordiaGeneratedNamespace&gt;MyProject.Generated&lt;/ConcordiaGeneratedNamespace&gt; --&gt;
+  &lt;/PropertyGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;ProjectReference Include=&quot;PathToYour\Concordia.Core\Concordia.Core.csproj&quot; /&gt;
+    &lt;ProjectReference Include=&quot;PathToYour\Concordia.Generator\Concordia.Generator.csproj&quot;
+                      OutputItemType=&quot;Analyzer&quot; ReferenceOutputAssembly=&quot;false&quot; /&gt;
+  &lt;/ItemGroup&gt;
+
+  &lt;!-- Ensure your Request, Handler, Processor, and Behavior files are included in the project --&gt;
+  &lt;ItemGroup&gt;
+    &lt;Compile Include=&quot;Requests\MySimpleQuery.cs&quot; /&gt;
+    &lt;Compile Include=&quot;Handlers\MySimpleQueryHandler.cs&quot; /&gt;
+    &lt;Compile Include=&quot;Processors\MyRequestLoggerPreProcessor.cs&quot; /&gt;
+    &lt;Compile Include=&quot;Processors\MyResponseLoggerPostProcessor.cs&quot; /&gt;
+    &lt;Compile Include=&quot;Behaviors\TestLoggingBehavior.cs&quot; /&gt;
+    &lt;!-- ... other handlers, processors, behaviors ... --&gt;
+  &lt;/ItemGroup&gt;
+&lt;/Project&gt;</code></pre>
+            </div>
+            <h5 class="text-lg font-semibold mb-2 text-slate-700">ii. Register services in `Program.cs`</h5>
+            <p class="text-lg leading-relaxed mb-4">
+                After configuring your `.csproj`, the Source Generator will automatically generate an extension method (e.g., `AddMyConcordiaHandlers`) that registers all your handlers, processors, and behaviors. Call this method in your `Program.cs` after registering Concordia's core services.
+            </p>
             <div class="code-block mb-6">
                 <pre><code class="language-csharp">using Concordia; // Required for IMediator, ISender
 using Concordia.DependencyInjection; // For AddConcordiaCoreServices
 using Microsoft.AspNetCore.Mvc;
-using Concordia.Examples.Web; // Example: Namespace where ConcordiaGeneratedRegistrations is generated
+using MyProject.Web; // Example: Namespace where ConcordiaGeneratedRegistrations is generated
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -340,7 +377,7 @@ builder.Services.AddConcordiaCoreServices&lt;Concordia.ForeachAwaitPublisher&gt;
 // builder.Services.AddConcordiaCoreServices&lt;MyCustomNotificationPublisher&gt;(); // Example: Register your custom publisher
 
 // 2. Register your specific handlers and pipeline behaviors discovered by the generator.
-// The method name will depend on your .csproj configuration (e.g., AddMyConcordiaHandlers).
+// The method name will depend on your your .csproj configuration (e.g., AddMyConcordiaHandlers).
 builder.Services.AddMyConcordiaHandlers(); // Example with a custom name
 
 builder.Services.AddControllers();
@@ -701,7 +738,7 @@ builder.Services.AddMediator(cfg =>
             </p>
         </section>
 
-        ---
+        <hr class="my-12 border-slate-200">
 
         <!-- Source Code Section -->
         <section id="source-code" class="mb-12 anchor-offset">
@@ -720,7 +757,7 @@ builder.Services.AddMediator(cfg =>
 
     <!-- Footer -->
     <footer class="bg-slate-800 text-slate-200 p-6 text-center rounded-t-lg">
-        <p>&copy; 2024 Concordia Library. All rights reserved.</p>
+        <p>&copy; 2025 Concordia Library. All rights reserved.</p>
         <p class="text-sm mt-2">Built with ❤️ and .NET</p>
     </footer>
 
