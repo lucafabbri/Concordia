@@ -38,113 +38,142 @@
         .nav-link:hover {
             color: #6366f1; /* Tailwind: text-indigo-500 */
         }
-        .anchor-offset {
-            padding-top: 80px; /* Adjust this value based on your fixed header height */
-            margin-top: -80px; /* Counteract the padding-top to keep the scroll position correct */
-            -webkit-background-clip: content-box;
-            background-clip: content-box;
+        /* Style for the fixed left sidebar and main content area */
+        .page-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background-color: #f1f5f9; /* Tailwind: bg-slate-100 */
+            border-right: 1px solid #e2e8f0; /* Tailwind: border-slate-200 */
+            padding: 1.5rem;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+        .main-content {
+            /* Offset the main content to the right of the sidebar */
+            margin-left: 250px;
+            flex-grow: 1;
+            padding: 2rem;
+        }
+        /* Ensure the footer also has the correct offset */
+        .page-footer {
+            margin-left: 250px;
+        }
+        /* Mobile-first approach: hide sidebar and remove offset on small screens */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content, .page-footer {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 left-0 w-full bg-white shadow-md z-50 p-4">
-        <div class="container mx-auto flex flex-wrap justify-between items-center">
-            <a href="#top" class="text-2xl font-bold text-indigo-600 rounded-md p-2 hover:bg-indigo-50 transition-colors">Concordia</a>
-            <div class="flex flex-wrap space-x-4 mt-2 md:mt-0">
-                <a href="#introduction" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Introduction</a>
-                <a href="#getting-started" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Getting Started</a>
-                <a href="#installation" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Installation</a>
-                <a href="#usage" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Usage</a>
-                <a href="#api-explanation" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">API Explanation</a>
-                <a href="#migration-guide" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Migration Guide</a>
-                <a href="#source-code" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2">Source Code</a>
+    <div class="page-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="flex items-center mb-6">
+                <a href="#top" class="text-2xl font-bold text-indigo-600 rounded-md p-2">Concordia</a>
             </div>
-        </div>
-    </nav>
+            <nav class="flex flex-col space-y-2">
+                <a href="#introduction" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2 transition-colors duration-200">Introduction</a>
+                <a href="#getting-started" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2 transition-colors duration-200">Getting Started</a>
+                <a href="#installation" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2 transition-colors duration-200">Installation</a>
+                <a href="#usage" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2 transition-colors duration-200">Usage</a>
+                <a href="#migration-guide" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2 transition-colors duration-200">Migration Guide</a>
+                <a href="#source-code" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2 transition-colors duration-200">Source Code</a>
+                <a href="#contributing" class="nav-link text-slate-700 hover:text-indigo-600 font-medium rounded-md p-2 transition-colors duration-200">Contributing</a>
+            </nav>
+        </aside>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8 pt-24"> <!-- Added pt-24 to offset fixed navbar -->
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Introduction Section -->
+            <section id="introduction" class="mb-12">
+                <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Introduction</h2>
+                <p class="text-lg leading-relaxed mb-4">
+                    <strong>Concordia</strong> is a .NET library implementing the <strong>Mediator pattern</strong>, designed to be lightweight, performant, and easily integrated with the .NET Dependency Injection system. It leverages <strong>C# Source Generators</strong> for automatic handler registration at compile-time, eliminating the need for runtime reflection and improving application startup performance.
+                </p>
+                <h3 class="text-2xl font-semibold mb-4 text-slate-700">Why Concordia?</h3>
+                <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed">
+                    <li><strong>An Open-Source Alternative</strong>: <strong>Concordia</strong> was created as an open-source alternative in response to other popular mediator libraries (like <code>MediatR</code>) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.</li>
+                    <li><strong>Lightweight and Minimal</strong>: Provides only the essential Mediator pattern functionalities, without unnecessary overhead.</li>
+                    <li><strong>Optimized Performance</strong>: Thanks to <strong>Source Generators</strong>, handler discovery and registration happen entirely at compile-time, ensuring faster application startup and zero runtime reflection.</li>
+                    <li><strong>Easy DI Integration</strong>: Integrates seamlessly with <code>Microsoft.Extensions.DependencyInjection</code>.</li>
+                    <li><strong>Same MediatR Interfaces</strong>: Uses interfaces with identical signatures to <code>MediatR</code>, making migration or parallel adoption extremely straightforward.</li>
+                    <li><strong>CQRS and Pub/Sub Patterns</strong>: Facilitates the implementation of Command Query Responsibility Segregation (CQRS) and Publisher/Subscriber principles, enhancing separation of concerns and code maintainability.</li>
+                </ul>
+            </section>
 
-        <!-- Introduction Section -->
-        <section id="introduction" class="mb-12 anchor-offset">
-            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Introduction</h2>
-            <p class="text-lg leading-relaxed mb-4">
-                <strong>Concordia</strong> is a .NET library implementing the <strong>Mediator pattern</strong>, designed to be lightweight, performant, and easily integrated with the .NET Dependency Injection system. It leverages <strong>C# Source Generators</strong> for automatic handler registration at compile-time, eliminating the need for runtime reflection and improving application startup performance.
-            </p>
-            <h3 class="text-2xl font-semibold mb-4 text-slate-700">Why Concordia?</h3>
-            <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed">
-                <li><strong>An Open-Source Alternative</strong>: Concordia was created as an open-source alternative in response to other popular mediator libraries (like MediatR) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.</li>
-                <li><strong>Lightweight and Minimal</strong>: Provides only the essential Mediator pattern functionalities, without unnecessary overhead.</li>
-                <li><strong>Optimized Performance</strong>: Thanks to Source Generators, handler discovery and registration happen entirely at compile-time, ensuring faster application startup and zero runtime reflection.</li>
-                <li><strong>Easy DI Integration</strong>: Integrates seamlessly with `Microsoft.Extensions.DependencyInjection`.</li>
-                <li><strong>Same MediatR Interfaces</strong>: Uses interfaces with identical signatures to MediatR, making migration or parallel adoption extremely straightforward.</li>
-                <li><strong>CQRS and Pub/Sub Patterns</strong>: Facilitates the implementation of Command Query Responsibility Segregation (CQRS) and Publisher/Subscriber principles, enhancing separation of concerns and code maintainability.</li>
-            </ul>
-        </section>
+            <hr class="my-12 border-slate-200">
 
-        <hr class="my-12 border-slate-200">
+            <!-- Getting Started Section -->
+            <section id="getting-started" class="mb-12">
+                <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Getting Started</h2>
+                <p class="text-lg leading-relaxed mb-4">
+                    Getting started with <strong>Concordia</strong> involves a few straightforward steps to integrate the Mediator pattern into your .NET application.
+                </p>
+                <ol class="list-decimal list-inside space-y-2 text-lg leading-relaxed">
+                    <li><strong>Define your Contracts</strong>: Create your requests, commands, and notifications by implementing <strong>Concordia</strong>'s interfaces (<code>IRequest&lt;TResponse&gt;</code>, <code>IRequest</code>, <code>INotification</code>).</li>
+                    <li><strong>Implement Handlers</strong>: Write the logic for your requests and notifications by implementing <code>IRequestHandler&lt;TRequest, TResponse&gt;</code>, <code>IRequestHandler&lt;TRequest&gt;</code>, or <code>INotificationHandler&lt;TNotification&gt;</code>.</li>
+                    <li><strong>Register with Dependency Injection</strong>: Integrate <strong>Concordia</strong> into your application's DI container. You can choose between compile-time registration (using the Source Generator) or runtime reflection-based registration (using the MediatR Compatibility layer).</li>
+                    <li><strong>Use the Mediator</strong>: Inject <code>IMediator</code> or <code>ISender</code> into your services or controllers to dispatch requests and publish notifications.</li>
+                </ol>
+            </section>
 
-        <!-- Getting Started Section -->
-        <section id="getting-started" class="mb-12 anchor-offset">
-            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Getting Started</h2>
-            <p class="text-lg leading-relaxed mb-4">
-                Getting started with Concordia involves a few straightforward steps to integrate the Mediator pattern into your .NET application.
-            </p>
-            <ol class="list-decimal list-inside space-y-2 text-lg leading-relaxed">
-                <li><strong>Define your Contracts</strong>: Create your requests, commands, and notifications by implementing Concordia's interfaces (`IRequest<TResponse>`, `IRequest`, `INotification`).</li>
-                <li><strong>Implement Handlers</strong>: Write the logic for your requests and notifications by implementing `IRequestHandler<TRequest, TResponse>`, `IRequestHandler<TRequest>`, or `INotificationHandler<TNotification>`.</li>
-                <li><strong>Register with Dependency Injection</strong>: Integrate Concordia into your application's DI container. You can choose between compile-time registration (using the Source Generator) or runtime reflection-based registration (using the MediatR Compatibility layer).</li>
-                <li><strong>Use the Mediator</strong>: Inject `IMediator` or `ISender` into your services or controllers to dispatch requests and publish notifications.</li>
-            </ol>
-        </section>
+            <hr class="my-12 border-slate-200">
 
-        <hr class="my-12 border-slate-200">
+            <!-- Installation Section -->
+            <section id="installation" class="mb-12">
+                <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Installation</h2>
+                <p class="text-lg leading-relaxed mb-4">
+                    <strong>Concordia</strong> is distributed via three NuGet packages, all currently at <strong>version <code>1.0.1</code></strong>:
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed mb-4">
+                    <li><strong><code>Concordia.Core</code></strong>: Contains the interfaces (<code>IMediator</code>, <code>ISender</code>, <code>IRequest</code>, etc.), the <code>Mediator</code> implementation, and core DI extension methods.</li>
+                    <li><strong><code>Concordia.Generator</code></strong>: Contains the C# Source Generator for compile-time handler registration.</li>
+                    <li><strong><code>Concordia.MediatR</code></strong>: Provides a compatibility layer with MediatR's <code>AddMediator</code> extension method for runtime reflection-based handler registration, now using its own <code>ConcordiaMediatRServiceConfiguration</code>.</li>
+                </ul>
+                <p class="text-lg leading-relaxed mb-4">
+                    To get started with <strong>Concordia</strong>, install the necessary packages in your application project (e.g., an ASP.NET Core project) using the .NET CLI. You will typically choose <strong>either <code>Concordia.Generator</code> OR <code>Concordia.MediatR</code></strong> based on your preference for handler registration.
+                </p>
 
-        <!-- Installation Section -->
-        <section id="installation" class="mb-12 anchor-offset">
-            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Installation</h2>
-            <p class="text-lg leading-relaxed mb-4">
-                Concordia is distributed via three NuGet packages, all currently at <strong>version 1.0.0</strong>:
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed mb-4">
-                <li><strong>`Concordia.Core`</strong>: Contains the interfaces (`IMediator`, `ISender`, `IRequest`, etc.), the `Mediator` implementation, and core DI extension methods.</li>
-                <li><strong>`Concordia.Generator`</strong>: Contains the C# Source Generator for compile-time handler registration.</li>
-                <li><strong>`Concordia.MediatR`</strong>: Provides a compatibility layer with MediatR's `AddMediator` extension method for runtime reflection-based handler registration, now using its own `ConcordiaMediatRServiceConfiguration`.</li>
-            </ul>
-            <p class="text-lg leading-relaxed mb-4">
-                To get started with Concordia, install the necessary packages in your application project (e.g., an ASP.NET Core project) using the .NET CLI. You will typically choose <strong>either `Concordia.Generator` OR `Concordia.MediatR`</strong> based on your preference for handler registration.
-            </p>
+                <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 1: Using the Source Generator (Recommended for New Projects)</h3>
+                <div class="code-block mb-6">
+                    <pre><code class="language-bash">dotnet add package Concordia.Core --version 1.0.1
+dotnet add package Concordia.Generator --version 1.0.1</code></pre>
+                </div>
 
-            <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 1: Using the Source Generator (Recommended for New Projects)</h3>
-            <div class="code-block mb-6">
-                <pre><code class="language-bash">dotnet add package Concordia.Core --version 1.0.0
-dotnet add package Concordia.Generator --version 1.0.0</code></pre>
-            </div>
+                <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 2: Using the MediatR Compatibility Layer (For Migration or Reflection Preference)</h3>
+                <div class="code-block mb-6">
+                    <pre><code class="language-bash">dotnet add package Concordia.Core --version 1.0.1
+dotnet add package Concordia.MediatR --version 1.0.1</code></pre>
+                </div>
+                <p class="text-lg leading-relaxed">
+                    Alternatively, you can install them via the NuGet Package Manager in Visual Studio.
+                </p>
+            </section>
 
-            <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 2: Using the MediatR Compatibility Layer (For Migration or Reflection Preference)</h3>
-            <div class="code-block mb-6">
-                <pre><code class="language-bash">dotnet add package Concordia.Core --version 1.0.0
-dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
-            </div>
-            <p class="text-lg leading-relaxed">
-                Alternatively, you can install them via the NuGet Package Manager in Visual Studio.
-            </p>
-        </section>
+            <hr class="my-12 border-slate-200">
 
-        <hr class="my-12 border-slate-200">
+            <!-- Usage Section -->
+            <section id="usage" class="mb-12">
+                <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Usage</h2>
 
-        <!-- Usage Section -->
-        <section id="usage" class="mb-12 anchor-offset">
-            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Usage</h2>
-
-            <h3 class="text-2xl font-semibold mb-4 text-slate-700">1. Define Requests, Commands, and Notifications</h3>
-            <p class="text-lg leading-relaxed mb-4">
-                Your requests, commands, and notifications must implement the `Concordia.Contracts` interfaces.
-            </p>
-            <div class="code-block mb-6">
-                <pre><code class="language-csharp">// Request with response
+                <h3 class="text-2xl font-semibold mb-4 text-slate-700">1. Define Requests, Commands, and Notifications</h3>
+                <p class="text-lg leading-relaxed mb-4">
+                    Your requests, commands, and notifications must implement the <code>Concordia.Contracts</code> interfaces.
+                </p>
+                <div class="code-block mb-6">
+                    <pre><code class="language-csharp">// Request with response
 using Concordia.Contracts;
 
 namespace MyProject.Requests
@@ -185,14 +214,14 @@ namespace MyProject.Notifications
         public string ProductName { get; set; }
     }
 }</code></pre>
-            </div>
+                </div>
 
-            <h3 class="text-2xl font-semibold mb-4 text-slate-700">2. Define Handlers, Processors, and Behaviors</h3>
-            <p class="text-lg leading-relaxed mb-4">
-                Your handlers must implement `IRequestHandler` or `INotificationHandler`. Pre-processors implement `IRequestPreProcessor`, post-processors implement `IRequestPostProcessor`, and pipeline behaviors implement `IPipelineBehavior`.
-            </p>
-            <div class="code-block mb-6">
-                <pre><code class="language-csharp">// Handler for a request with response
+                <h3 class="text-2xl font-semibold mb-4 text-slate-700">2. Define Handlers, Processors, and Behaviors</h3>
+                <p class="text-lg leading-relaxed mb-4">
+                    Your handlers must implement <code>IRequestHandler</code> or <code>INotificationHandler</code>. Pre-processors implement <code>IRequestPreProcessor</code>, post-processors implement <code>IRequestPostProcessor</code>, and pipeline behaviors implement <code>IPipelineBehavior</code>.
+                </p>
+                <div class="code-block mb-6">
+                    <pre><code class="language-csharp">// Handler for a request with response
 using Concordia.Contracts;
 using MyProject.Requests;
 using System.Threading;
@@ -314,23 +343,23 @@ namespace MyProject.Behaviors
         }
     }
 }</code></pre>
-            </div>
+                </div>
 
-            <h3 class="text-2xl font-semibold mb-4 text-slate-700">3. Choose Your Registration Method in `Program.cs`</h3>
-            <p class="text-lg leading-relaxed mb-4">
-                You will use either the <strong>Source Generator method</strong> (recommended for new projects) or the <strong>MediatR Compatibility method</strong> (for easier migration).
-            </p>
+                <h3 class="text-2xl font-semibold mb-4 text-slate-700">3. Choose Your Registration Method in <code>Program.cs</code></h3>
+                <p class="text-lg leading-relaxed mb-4">
+                    You will use either the <strong>Source Generator method</strong> (recommended for new projects) or the MediatR Compatibility method (for easier migration).
+                </p>
 
-            <h4 class="text-xl font-semibold mb-3 text-slate-700">Option A: Using the Source Generator (Recommended)</h4>
-            <p class="text-lg leading-relaxed mb-4">
-                This method provides optimal startup performance by registering handlers at compile-time.
-            </p>
-            <h5 class="text-lg font-semibold mb-2 text-slate-700">i. Configure your `.csproj`</h5>
-            <p class="text-lg leading-relaxed mb-4">
-                Add the `Concordia.Generator` as a `ProjectReference` to your application project's `.csproj` file. Ensure the `OutputItemType="Analyzer"` and `ReferenceOutputAssembly="false"` attributes are set. You can also customize the generated extension method's name using the `ConcordiaGeneratedMethodName` property.
-            </p>
-            <div class="code-block mb-6">
-                <pre><code class="language-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk.Web&quot;&gt;
+                <h4 class="text-xl font-semibold mb-3 text-slate-700">Option A: Using the Source Generator (Recommended)</h4>
+                <p class="text-lg leading-relaxed mb-4">
+                    This method provides optimal startup performance by registering handlers at compile-time.
+                </p>
+                <h5 class="text-lg font-semibold mb-2 text-slate-700">i. Configure your <code>.csproj</code></h5>
+                <p class="text-lg leading-relaxed mb-4">
+                    Add the <code>Concordia.Generator</code> as a <code>ProjectReference</code> to your application project's <code>.csproj</code> file. Ensure the <code>OutputItemType="Analyzer"</code> and <code>ReferenceOutputAssembly="false"</code> attributes are set. You can also customize the generated extension method's name using the <code>ConcordiaGeneratedMethodName</code> property.
+                </p>
+                <div class="code-block mb-6">
+                    <pre><code class="language-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk.Web&quot;&gt;
   &lt;PropertyGroup&gt;
     &lt;TargetFramework&gt;net8.0&lt;/TargetFramework&gt;
     &lt;Nullable&gt;enable&lt;/Nullable&gt;
@@ -357,13 +386,13 @@ namespace MyProject.Behaviors
     &lt;!-- ... other handlers, processors, behaviors ... --&gt;
   &lt;/ItemGroup&gt;
 &lt;/Project&gt;</code></pre>
-            </div>
-            <h5 class="text-lg font-semibold mb-2 text-slate-700">ii. Register services in `Program.cs`</h5>
-            <p class="text-lg leading-relaxed mb-4">
-                After configuring your `.csproj`, the Source Generator will automatically generate an extension method (e.g., `AddMyConcordiaHandlers`) that registers all your handlers, processors, and behaviors. Call this method in your `Program.cs` after registering Concordia's core services.
-            </p>
-            <div class="code-block mb-6">
-                <pre><code class="language-csharp">using Concordia; // Required for IMediator, ISender
+                </div>
+                <h5 class="text-lg font-semibold mb-2 text-slate-700">ii. Register services in <code>Program.cs</code></h5>
+                <p class="text-lg leading-relaxed mb-4">
+                    After configuring your <code>.csproj</code>, the Source Generator will automatically generate an extension method (e.g., <code>AddMyConcordiaHandlers</code>) that registers all your handlers, processors, and behaviors. Call this method in your <code>Program.cs</code> after registering Concordia's core services.
+                </p>
+                <div class="code-block mb-6">
+                    <pre><code class="language-csharp">using Concordia; // Required for IMediator, ISender
 using Concordia.DependencyInjection; // For AddConcordiaCoreServices
 using Microsoft.AspNetCore.Mvc;
 using MyProject.Web; // Example: Namespace where ConcordiaGeneratedRegistrations is generated
@@ -442,11 +471,6 @@ namespace Concordia.Examples.Web.Controllers
 
     public class GetProductByIdQuery : IRequest&lt;ProductDto&gt;
     {
-        public int ProductId { get; set; }
-    }
-
-    public class GetProductByIdQueryHandler : IRequestHandler&lt;GetProductByIdQuery, ProductDto&gt;
-    {
         public Task&lt;ProductDto&gt; Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Handling GetProductByIdQuery for ProductId: {request.ProductId}");
@@ -494,16 +518,15 @@ namespace Concordia.Examples.Web.Controllers
         }
     }
 }</code></pre>
-            </div>
+                </div>
 
-            <h4 class="text-xl font-semibold mb-3 text-slate-700">Option B: Using the MediatR Compatibility Layer</h4>
-            <p class="text-lg leading-relaxed mb-4">
-                This method uses runtime reflection to register handlers, offering a familiar setup for those migrating from MediatR.
-            </p>
-            <div class="code-block mb-6">
-                <pre><code class="language-csharp">using Concordia; // Required for IMediator, ISender
+                <h4 class="text-xl font-semibold mb-3 text-slate-700">Option B: Using the MediatR Compatibility Layer</h4>
+                <p class="text-lg leading-relaxed mb-4">
+                    This method uses runtime reflection to register handlers, offering a familiar setup for those migrating from <code>MediatR</code>.
+                </p>
+                <div class="code-block mb-6">
+                    <pre><code class="language-csharp">using Concordia; // Required for IMediator, ISender
 using Concordia.MediatR; // NEW: Namespace for the AddMediator extension method
-using Microsoft.AspNetCore.Mvc;
 using System.Reflection; // Required for Assembly.GetExecutingAssembly()
 using Microsoft.Extensions.DependencyInjection; // Required for ServiceLifetime
 
@@ -556,7 +579,7 @@ namespace Concordia.Examples.Web.Controllers
             _sender = sender;
         }
 
-        [HttpGet(&quot;{id}&quot;)]
+        [HttpGet(&quot{id}&quot;)]
         public async Task&lt;IActionResult&gt; Get(int id)
         {
             var query = new GetProductByIdQuery { ProductId = id };
@@ -593,11 +616,6 @@ namespace Concordia.Examples.Web.Controllers
     }
 
     public class GetProductByIdQuery : IRequest&lt;ProductDto&gt;
-    {
-        public int ProductId { get; set; }
-    }
-
-    public class GetProductByIdQueryHandler : IRequestHandler&lt;GetProductByIdQuery, ProductDto&gt;
     {
         public Task&lt;ProductDto&gt; Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
@@ -646,60 +664,59 @@ namespace Concordia.Examples.Web.Controllers
         }
     }
 }</code></pre>
-            </div>
+                </div>
 
-            <!-- Migration Guide Section -->
-            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Migration Guide from MediatR</h2>
-            <p class="text-lg leading-relaxed mb-4">
-                If you are migrating an existing project from MediatR to Concordia, the process is extremely simple thanks to the identical interfaces and patterns.
-            </p>
+                <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Migration Guide from <code>MediatR</code></h2>
+                <p class="text-lg leading-relaxed mb-4">
+                    If you are migrating an existing project from <code>MediatR</code> to <code>Concordia</code>, the process is extremely simple thanks to the identical interfaces and patterns.
+                </p>
 
-            <h3 class="text-2xl font-semibold mb-4 text-slate-700">1. Update NuGet Packages</h3>
-            <p class="text-lg leading-relaxed mb-4">
-                Remove the MediatR package and install the Concordia packages:
-            </p>
-            <div class="code-block mb-6">
-                <pre><code class="language-bash">dotnet remove package MediatR
+                <h3 class="text-2xl font-semibold mb-4 text-slate-700">1. Update NuGet Packages</h3>
+                <p class="text-lg leading-relaxed mb-4">
+                    Remove the <code>MediatR</code> package and install the <code>Concordia</code> packages:
+                </p>
+                <div class="code-block mb-6">
+                    <pre><code class="language-bash">dotnet remove package MediatR
 dotnet remove package MediatR.Extensions.Microsoft.DependencyInjection # If present
-dotnet add package Concordia.Core --version 1.0.0
-dotnet add package Concordia.MediatR --version 1.0.0</code></pre>
-            </div>
+dotnet add package Concordia.Core --version 1.0.1
+dotnet add package Concordia.MediatR --version 1.0.1</code></pre>
+                </div>
 
-            <h3 class="text-2xl font-semibold mb-4 text-slate-700">2. Update Namespaces</h3>
-            <p class="text-lg leading-relaxed mb-4">
-                Change namespaces from `MediatR` to `Concordia` and `Concordia.Contracts` where necessary.
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed mb-4">
-                <li><strong>Interfaces</strong>:
-                    <ul class="list-circle list-inside ml-4">
-                        <li>`MediatR.IRequest&lt;TResponse&gt;` becomes `Concordia.Contracts.IRequest&lt;TResponse&gt;`</li>
-                        <li>`MediatR.IRequest` becomes `Concordia.Contracts.IRequest`</li>
-                        <li>`MediatR.IRequestHandler&lt;TRequest, TResponse&gt;` becomes `Concordia.Contracts.IRequestHandler&lt;TRequest, TResponse&gt;`</li>
-                        <li>`MediatR.IRequestHandler&lt;TRequest&gt;` becomes `Concordia.Contracts.IRequestHandler&lt;TRequest&gt;`</li>
-                        <li>`MediatR.INotification` becomes `Concordia.Contracts.INotification`</li>
-                        <li>`MediatR.INotificationHandler&lt;TNotification&gt;` becomes `Concordia.Contracts.INotificationHandler&lt;TNotification&gt;`</li>
-                        <li>`MediatR.IPipelineBehavior&lt;TRequest, TResponse&gt;` becomes `Concordia.Contracts.IPipelineBehavior&lt;TRequest, TResponse&gt;`</li>
-                        <li>`MediatR.IRequestPreProcessor&lt;TRequest&gt;` becomes `Concordia.Contracts.IRequestPreProcessor&lt;TRequest&gt;`</li>
-                        <li>`MediatR.IRequestPostProcessor&lt;TRequest, TResponse&gt;` becomes `Concordia.Contracts.IRequestPostProcessor&lt;TRequest, TResponse&gt;`</li>
-                        <li>`MediatR.INotificationPublisher` becomes `Concordia.Contracts.INotificationPublisher`</li>
-                    </ul>
-                </li>
-                <li><strong>Mediator Implementation</strong>:
-                    <ul class="list-circle list-inside ml-4">
-                        <li>`MediatR.IMediator` becomes `Concordia.IMediator`</li>
-                        <li>`MediatR.ISender` becomes `Concordia.ISender`</li>
-                        <li>`MediatR.Mediator` becomes `Concordia.Mediator`</li>
-                    </ul>
-                </li>
-            </ul>
+                <h3 class="text-2xl font-semibold mb-4 text-slate-700">2. Update Namespaces</h3>
+                <p class="text-lg leading-relaxed mb-4">
+                    Change namespaces from <code>MediatR</code> to <code>Concordia</code> and <code>Concordia.Contracts</code> where necessary.
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed mb-4">
+                    <li><strong>Interfaces</strong>:
+                        <ul class="list-circle list-inside ml-4">
+                            <li><code>MediatR.IRequest&lt;TResponse&gt;</code> becomes <code>Concordia.Contracts.IRequest&lt;TResponse&gt;</code></li>
+                            <li><code>MediatR.IRequest</code> becomes <code>Concordia.Contracts.IRequest</code></li>
+                            <li><code>MediatR.IRequestHandler&lt;TRequest, TResponse&gt;</code> becomes <code>Concordia.Contracts.IRequestHandler&lt;TRequest, TResponse&gt;</code></li>
+                            <li><code>MediatR.IRequestHandler&lt;TRequest&gt;</code> becomes <code>Concordia.Contracts.IRequestHandler&lt;TRequest&gt;</code></li>
+                            <li><code>MediatR.INotification</code> becomes <code>Concordia.Contracts.INotification</code></li>
+                            <li><code>MediatR.INotificationHandler&lt;TNotification&gt;</code> becomes <code>Concordia.Contracts.INotificationHandler&lt;TNotification&gt;</code></li>
+                            <li><code>MediatR.IPipelineBehavior&lt;TRequest, TResponse&gt;</code> becomes <code>Concordia.Contracts.IPipelineBehavior&lt;TRequest, TResponse&gt;</code></li>
+                            <li><code>MediatR.IRequestPreProcessor&lt;TRequest&gt;</code> becomes <code>Concordia.Contracts.IRequestPreProcessor&lt;TRequest&gt;</code></li>
+                            <li><code>MediatR.IRequestPostProcessor&lt;TRequest, TResponse&gt;</code> becomes <code>Concordia.Contracts.IRequestPostProcessor&lt;TRequest, TResponse&gt;</code></li>
+                            <li><code>MediatR.INotificationPublisher</code> becomes <code>Concordia.Contracts.INotificationPublisher</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Mediator Implementation</strong>:
+                        <ul class="list-circle list-inside ml-4">
+                            <li><code>MediatR.IMediator</code> becomes <code>Concordia.IMediator</code></li>
+                            <li><code>MediatR.ISender</code> becomes <code>Concordia.ISender</code></li>
+                            <li><code>MediatR.Mediator</code> becomes <code>Concordia.Mediator</code></li>
+                        </ul>
+                    </li>
+                </ul>
 
-            <h3 class="text-2xl font-semibold mb-4 text-slate-700">3. Update Service Registration in `Program.cs` (or `Startup.cs`)</h3>
-            <p class="text-lg leading-relaxed mb-4">
-                Replace the `AddMediatR` extension method with Concordia's `AddMediator`.
-            </p>
-            <h4 class="text-xl font-semibold mb-3 text-slate-700">Before (MediatR):</h4>
-            <div class="code-block mb-6">
-                <pre><code class="language-csharp">using MediatR;
+                <h3 class="text-2xl font-semibold mb-4 text-slate-700">3. Update Service Registration in <code>Program.cs</code> (or <code>Startup.cs</code>)</h3>
+                <p class="text-lg leading-relaxed mb-4">
+                    Replace the <code>AddMediatR</code> extension method with <strong>Concordia</strong>'s <code>AddMediator</code>.
+                </p>
+                <h4 class="text-xl font-semibold mb-3 text-slate-700">Before (MediatR):</h4>
+                <div class="code-block mb-6">
+                    <pre><code class="language-csharp">using MediatR;
 using MediatR.Extensions.Microsoft.DependencyInjection; // If present
 using System.Reflection;
 
@@ -710,10 +727,10 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     // Other MediatR configurations
 });</code></pre>
-            </div>
-            <h4 class="text-xl font-semibold mb-3 text-slate-700">After (Concordia.MediatR):</h4>
-            <div class="code-block mb-6">
-                <pre><code class="language-csharp">using Concordia; // For IMediator, ISender
+                </div>
+                <h4 class="text-xl font-semibold mb-3 text-slate-700">After (Concordia.MediatR):</h4>
+                <div class="code-block mb-6">
+                    <pre><code class="language-csharp">using Concordia; // For IMediator, ISender
 using Concordia.MediatR; // For the AddMediator extension method
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection; // For ServiceLifetime
@@ -729,34 +746,50 @@ builder.Services.AddMediator(cfg =>
     // cfg.AddOpenBehavior(typeof(MyCustomPipelineBehavior&lt;,&gt;)); // Example
     // cfg.AddRequestPreProcessor&lt;MyCustomPreProcessor&gt;(); // Example
     // cfg.AddRequestPostProcessor&lt;MyCustomPostProcessor&gt;(); // Example
+    // cfg.AddStreamBehavior&lt;MyCustomStreamBehavior&gt;(); // Example
 });</code></pre>
-            </div>
+                </div>
 
-            <h3 class="text-2xl font-semibold mb-4 text-slate-700">4. Verify and Test</h3>
-            <p class="text-lg leading-relaxed mb-4">
-                Rebuild your project and run your tests. Given the interface parity, most of your existing code should function without significant changes.
-            </p>
-        </section>
+                <h3 class="text-2xl font-semibold mb-4 text-slate-700">4. Verify and Test</h3>
+                <p class="text-lg leading-relaxed mb-4">
+                    Rebuild your project and run your tests. Given the interface parity, most of your existing code should function without significant changes.
+                </p>
+            </section>
 
-        <hr class="my-12 border-slate-200">
+            <hr class="my-12 border-slate-200">
 
-        <!-- Source Code Section -->
-        <section id="source-code" class="mb-12 anchor-offset">
-            <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Source Code</h2>
-            <p class="text-lg leading-relaxed mb-4">
-                The complete source code for the Concordia library is available on GitHub. Feel free to explore, contribute, or fork the repository.
-            </p>
-            <div class="flex justify-center">
-                <a href="https://github.com/lucafabbri/Concordia" target="_blank" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-300">
-                    View on GitHub
-                </a>
-            </div>
-        </section>
+            <!-- Source Code Section -->
+            <section id="source-code" class="mb-12">
+                <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Source Code</h2>
+                <p class="text-lg leading-relaxed mb-4">
+                    The complete source code for the <strong>Concordia</strong> library is available on GitHub. Feel free to explore, contribute, or fork the repository.
+                </p>
+                <div class="flex justify-center">
+                    <a href="https://github.com/lucafabbri/Concordia" target="_blank" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-300">
+                        View on GitHub
+                    </a>
+                </div>
+            </section>
 
-    </main>
+            <!-- Contributing Section -->
+            <section id="contributing" class="mb-12">
+                <h2 class="text-4xl font-extrabold mb-6 text-indigo-700 section-title">Contributing</h2>
+                <p class="text-lg leading-relaxed mb-4">
+                    We welcome contributions from the community! Please make sure to read our 
+                    <a href="CONTRIBUTING.md" class="text-indigo-600 hover:underline">Contributing Guidelines</a> 
+                    and our <a href="CODE_OF_CONDUCT.md" class="text-indigo-600 hover:underline">Code of Conduct</a> 
+                    before getting started.
+                </p>
+                <p class="text-lg leading-relaxed">
+                    Your contributions help us improve and grow Concordia. Thank you for your support!
+                </p>
+            </section>
 
+        </main>
+    </div>
+    
     <!-- Footer -->
-    <footer class="bg-slate-800 text-slate-200 p-6 text-center rounded-t-lg">
+    <footer class="page-footer bg-slate-800 text-slate-200 p-6 text-center rounded-t-lg">
         <p>&copy; 2025 Concordia Library. All rights reserved.</p>
         <p class="text-sm mt-2">Built with ❤️ and .NET</p>
     </footer>
