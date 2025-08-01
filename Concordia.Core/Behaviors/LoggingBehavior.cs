@@ -1,6 +1,6 @@
 ﻿using Concordia.Contracts;
 
-namespace Concordia;
+namespace Concordia.Behaviors;
 
 /// <summary>
 /// A simple pipeline behavior for logging requests.
