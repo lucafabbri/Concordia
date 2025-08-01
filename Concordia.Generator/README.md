@@ -2,6 +2,17 @@
 
 **Concordia.Generator** is the C# Source Generator component of the Concordia library. It automates the registration of your request handlers, notification handlers, pre-processors, post-processors, and pipeline behaviors at **compile-time**, eliminating the need for runtime reflection and significantly improving application startup performance.
 
+# Table of Contents
+- [Why Concordia?](#why-concordia)
+- [Key Features](#key-features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contribution](#contribution)
+- [License](#license)
+- [NuGet Packages](#nuget-packages)
+- [Contact](#contact)
+- [Support](#support)
+
 ## Why Concordia?
 
 * **An Open-Source Alternative**: Concordia was created as an open-source alternative in response to other popular mediator libraries (like MediatR) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.
@@ -76,10 +87,23 @@ dotnet add package Concordia.Generator --version 1.0.0
 
 The Source Generator will automatically find your handler implementations and generate a static class (e.g., `ConcordiaGeneratedRegistrations`) containing an extension method (e.g., `AddMyCustomMediatorHandlers`) that registers all your services with the DI container.
 
+
 ## Contribution
 
 Feel free to contribute to the project! Report bugs, suggest new features, or submit pull requests.
+Please follow the [Contributing Guidelines](https://github.com/lucafabbri/Concordia/blob/main/CONTRIBUTING.md).
 
 ## License
 
-This project is released under the [Insert your license here, e.g., MIT License].
+This project is released under the [MIT License](https://opensource.org/licenses/MIT). See the [LICENSE](https://github.com/lucafabbri/Concordia/blob/main/LICENSE) file for more information.
+
+## NuGet Packages
+- [Concordia.Core](https://www.nuget.org/packages/Concordia.Core)   
+- [Concordia.Generator](https://www.nuget.org/packages/Concordia.Generator) (for compile-time handler registration)
+- [Concordia.MediatR](https://www.nuget.org/packages/Concordia.MediatR) (for MediatR compatibility)
+
+## Contact
+For any questions, issues, or feedback, please open an issue on the [GitHub repository](https://github.com/YourUsername/Concordia/issues).
+
+## Support
+If you find this library useful, consider supporting its development: [Buy Me a Coffee](https://www.buymeacoffee.com/lucafabbriu).

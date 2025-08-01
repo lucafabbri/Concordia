@@ -2,6 +2,31 @@
 
 Concordia is a .NET library implementing the **Mediator pattern**, designed to be lightweight, performant, and easily integrated with the .NET Dependency Injection system. It leverages **C# Source Generators** for automatic handler registration at compile-time, eliminating the need for runtime reflection and improving application startup performance.
 
+|Project|NuGet Downloads|NuGet Version|
+|---|---|---|
+| Concordia.Core | ![NuGet Downloads](https://img.shields.io/nuget/dt/Concordia.Core?cacheSeconds=600) | ![NuGet Version](https://img.shields.io/nuget/v/Concordia.Core) |
+| Concordia.Generator | ![NuGet Downloads](https://img.shields.io/nuget/dt/Concordia.Generator?cacheSeconds=600) | ![NuGet Version](https://img.shields.io/nuget/v/Concordia.Generator) |
+| Concordia.MediatR | ![NuGet Downloads](https://img.shields.io/nuget/dt/Concordia.MediatR?cacheSeconds=600) | ![NuGet Version](https://img.shields.io/nuget/v/Concordia.MediatR) |
+
+
+## Table of Contents
+- [Why Concordia?](#why-concordia)
+- [Key Features](#key-features)
+- [Installation](#installation)
+- [Usage](#usage)
+    - [1. Define Requests, Commands, and Notifications](#1-define-requests-commands-and-notifications)
+    - [2. Define Handlers, Processors, and Behaviors](#2-define-handlers-processors-and-behaviors)
+    - [3. Choose Your Registration Method in `Program.cs`](#3-choose-your-registration-method-in-programcs)
+        - [Option A: Using the Source Generator (Recommended)](#option-a-using-the-source-generator-recommended)
+        - [Option B: Using the MediatR Compatibility Layer](#option-b-using-the-mediatr-compatibility-layer)
+- [Migration Guide from MediatR](#migration-guide-from-mediatr)
+- [Contributing](#contributing)
+- [License](#license)
+- [NuGet Packages](#nuget-packages)
+- [Contact](#contact)
+- [Support](#support)
+
+
 -----
 
 ## Why Concordia?
@@ -676,3 +701,31 @@ builder.Services.AddMediator(cfg =>
 ### 4. Verify and Test
 
 Rebuild your project and run your tests. Given the interface parity, most of your existing code should function without significant changes.
+
+
+-----
+## Contributing
+Concordia is an open-source project, and contributions are welcome! If you find a bug, have a feature request, or want to contribute code, please open an issue or pull request on GitHub.
+Please ensure your contributions adhere to the project's coding standards and include appropriate tests. For larger changes, consider discussing your ideas in an issue first.
+
+We also have a [Code of Conduct](CODE_OF_CONDUCT.md) that we expect all contributors to adhere to.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+
+
+## License
+Concordia is licensed under the [MIT License](LICENSE).
+
+## NuGet Packages
+- [Concordia.Core](https://www.nuget.org/packages/Concordia.Core)
+- [Concordia.Generator](https://www.nuget.org/packages/Concordia.Generator)
+- [Concordia.MediatR](https://www.nuget.org/packages/Concordia.MediatR)
+
+## Contact
+For questions, feedback, or support, please reach out via the project's GitHub repository or contact the maintainers directly.
+For more information, visit the [Concordia GitHub repository](https://github.com/Concordia).
+
+## Support
+If you find Concordia useful, consider supporting the project by starring it on GitHub or sharing it with your developer community. Your support helps keep the project active and encourages further development.  
+
+

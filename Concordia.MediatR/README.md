@@ -2,6 +2,17 @@
 
 **Concordia.MediatR** provides a compatibility layer for the Concordia library, offering a reflection-based handler registration experience similar to the popular MediatR library. This package is ideal for projects migrating from MediatR or for those who prefer runtime discovery over compile-time code generation.
 
+# Table of Contents
+- [Why Concordia?](#why-concordia)
+- [Key Features](#key-features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contribution](#contribution)
+- [License](#license)   
+- [NuGet Packages](#nuget-packages)
+- [Contact](#contact)
+- [Support](#support)
+
 ## Why Concordia?
 
 * **An Open-Source Alternative**: Concordia was created as an open-source alternative in response to other popular mediator libraries (like MediatR) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.
@@ -262,3 +273,24 @@ builder.Services.AddMediator(cfg =>
 ### 4. Verify and Test
 
 Rebuild your project and run your tests. Given the interface parity, most of your existing code should function without significant changes.
+
+
+## Contribution
+
+Feel free to contribute to the project! Report bugs, suggest new features, or submit pull requests.
+Please follow the [Contributing Guidelines](https://github.com/lucafabbri/Concordia/blob/main/CONTRIBUTING.md).
+
+## License
+
+This project is released under the [MIT License](https://opensource.org/licenses/MIT). See the [LICENSE](https://github.com/lucafabbri/Concordia/blob/main/LICENSE) file for more information.
+
+## NuGet Packages
+- [Concordia.Core](https://www.nuget.org/packages/Concordia.Core)   
+- [Concordia.Generator](https://www.nuget.org/packages/Concordia.Generator) (for compile-time handler registration)
+- [Concordia.MediatR](https://www.nuget.org/packages/Concordia.MediatR) (for MediatR compatibility)
+
+## Contact
+For any questions, issues, or feedback, please open an issue on the [GitHub repository](https://github.com/YourUsername/Concordia/issues).
+
+## Support
+If you find this library useful, consider supporting its development: [Buy Me a Coffee](https://www.buymeacoffee.com/lucafabbriu).
