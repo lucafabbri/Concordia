@@ -7,7 +7,7 @@
 
     <!-- NuGet Metadata -->
     <PackageId>Concordia.Generator</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <Authors>Luca Fabbri</Authors>
     <Description>A C# Source Generator for automatic handler registration in Concordia.</Description>
     <RepositoryUrl>https://github.com/lucafabbri/Concordia</RepositoryUrl>

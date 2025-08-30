@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.1.0"></a>
+## [1.1.0](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.1.0) (2025-08-30)
+
+### Features
+
+* adds support to net9.0 ([4e9d9f5](https://www.github.com/lucafabbri/Concordia/commit/4e9d9f5fc4626c39edc2facc50419ea4cf879747))
+
 <a name="1.0.1"></a>
 ## [1.0.1](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.0.1) (2025-07-30)
 
