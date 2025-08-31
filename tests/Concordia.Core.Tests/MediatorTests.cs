@@ -1,6 +1,6 @@
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using Concordia.Contracts;
+using Concordia;
 using Concordia.MediatR;
 using System.Reflection;
 

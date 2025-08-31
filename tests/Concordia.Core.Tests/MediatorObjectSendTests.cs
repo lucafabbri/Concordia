@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using Concordia;
-using Concordia.Contracts;
+using Concordia;
 using System.Reflection; // Added for TargetInvocationException
 
 namespace Concordia.Core.Tests

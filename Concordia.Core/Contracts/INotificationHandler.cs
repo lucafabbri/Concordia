@@ -1,4 +1,4 @@
-﻿namespace Concordia.Contracts;
+﻿namespace Concordia;
 
 /// <summary>
 /// Handles a notification of type <typeparamref name="TNotification"/>.

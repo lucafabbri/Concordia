@@ -103,27 +103,27 @@ public class ConcordiaGenerator : IIncrementalGenerator
                 var genericDefinitionFullName = genericDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
                 // Checks if the interface is a Concordia handler interface.
-                if (genericDefinitionFullName == "Concordia.Contracts.IRequestHandler<TRequest, TResponse>")
+                if (genericDefinitionFullName == "Concordia.IRequestHandler<TRequest, TResponse>")
                 {
                     var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                     var responseType = @interface.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"Concordia.Contracts.IRequestHandler<{requestType}, {responseType}>");
+                    implementedInterfaces.Add($"Concordia.IRequestHandler<{requestType}, {responseType}>");
                 }
-                else if (genericDefinitionFullName == "Concordia.Contracts.IRequestHandler<TRequest>")
+                else if (genericDefinitionFullName == "Concordia.IRequestHandler<TRequest>")
                 {
                     var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"Concordia.Contracts.IRequestHandler<{requestType}>");
+                    implementedInterfaces.Add($"Concordia.IRequestHandler<{requestType}>");
                 }
-                else if (genericDefinitionFullName == "Concordia.Contracts.INotificationHandler<TNotification>")
+                else if (genericDefinitionFullName == "Concordia.INotificationHandler<TNotification>")
                 {
                     var notificationType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"Concordia.Contracts.INotificationHandler<{notificationType}>");
+                    implementedInterfaces.Add($"Concordia.INotificationHandler<{notificationType}>");
                 }
-                else if (genericDefinitionFullName == "Concordia.Contracts.IPipelineBehavior<TRequest, TResponse>")
+                else if (genericDefinitionFullName == "Concordia.IPipelineBehavior<TRequest, TResponse>")
                 {
                     var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                     var responseType = @interface.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"Concordia.Contracts.IPipelineBehavior<{requestType}, {responseType}>");
+                    implementedInterfaces.Add($"Concordia.IPipelineBehavior<{requestType}, {responseType}>");
                 }
             }
         }
@@ -185,7 +185,7 @@ public class ConcordiaGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
         sb.AppendLine("using Concordia;");
-        sb.AppendLine("using Concordia.Contracts;");
+        sb.AppendLine("using Concordia;");
         sb.AppendLine();
         sb.AppendLine($"namespace {generatedNamespace}");
         sb.AppendLine("{");

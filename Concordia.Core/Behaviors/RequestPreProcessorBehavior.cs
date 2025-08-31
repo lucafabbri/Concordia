@@ -1,4 +1,4 @@
-﻿using Concordia.Contracts;
+﻿using Concordia;
 using System;
 using System.Collections.Generic;
 using System.Linq;

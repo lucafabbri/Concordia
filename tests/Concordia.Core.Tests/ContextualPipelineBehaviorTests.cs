@@ -4,7 +4,7 @@
 
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using Concordia.Contracts;
+using Concordia;
 using Concordia.Behaviors;
 using System.Reflection;
 

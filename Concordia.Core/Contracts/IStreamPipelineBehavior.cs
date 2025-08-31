@@ -1,4 +1,4 @@
-﻿namespace Concordia.Contracts;
+﻿namespace Concordia;
 
 // Note: The IRequestStream interface is not yet defined in Concordia,
 // but this interface is included for compatibility with MediatR configuration.

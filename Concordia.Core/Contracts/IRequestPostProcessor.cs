@@ -1,4 +1,4 @@
-﻿namespace Concordia.Contracts;
+﻿namespace Concordia;
 
 /// <summary>
 /// Defines a post-processor for a request of type <typeparamref name="TRequest"/> and its response <typeparamref name="TResponse"/>.

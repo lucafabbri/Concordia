@@ -1,4 +1,4 @@
-﻿using Concordia.Contracts;
+﻿using Concordia;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 

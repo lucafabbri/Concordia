@@ -1,4 +1,4 @@
-﻿namespace Concordia.Contracts;
+﻿namespace Concordia;
 
 public delegate Task<TResponse> RequestHandlerDelegate<TResponse>(CancellationToken t = default);
 

@@ -3,7 +3,7 @@
 // manage a shared context. The comments have been updated to be
 // in English for broader accessibility.
 
-using Concordia.Contracts;
+using Concordia;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

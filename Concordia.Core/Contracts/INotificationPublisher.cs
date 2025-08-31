@@ -1,4 +1,4 @@
-﻿namespace Concordia.Contracts;
+﻿namespace Concordia;
 
 /// <summary>
 /// Definisce la strategia per la pubblicazione delle notifiche a più handler.

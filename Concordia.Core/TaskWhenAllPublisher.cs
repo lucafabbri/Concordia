@@ -1,4 +1,4 @@
-﻿using Concordia.Contracts;
+﻿using Concordia;
 
 namespace Concordia;
 
