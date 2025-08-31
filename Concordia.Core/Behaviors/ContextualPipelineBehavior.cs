@@ -3,7 +3,7 @@
 // manage a shared context. The comments have been updated to be
 // in English for broader accessibility.
 
-using Concordia.Contracts;
+using Concordia;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,7 +54,7 @@ namespace Concordia.Behaviors
                 {
                     // Execute the inbound logic of the behavior and then the rest of the pipeline.
                     await OnInbound((TContext)_currentContext.Value, request, cancellationToken);
-                    response = await next();
+                    response = await next(cancellationToken);
                 }
                 catch (Exception ex)
                 {
@@ -78,7 +78,7 @@ namespace Concordia.Behaviors
             {
                 // If it's a subsequent behavior, simply use the existing context.
                 await OnInbound((TContext)_currentContext.Value, request, cancellationToken);
-                response = await next();
+                response = await next(cancellationToken);
                 await OnOutbound((TContext)_currentContext.Value, response, cancellationToken);
             }
 

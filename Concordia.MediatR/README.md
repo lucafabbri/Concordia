@@ -209,19 +209,19 @@ dotnet add package Concordia.MediatR --version 1.0.0
 
 ### 2. Update Namespaces
 
-Change namespaces from `MediatR` to `Concordia` and `Concordia.Contracts` where necessary.
+Change namespaces from `MediatR` to `Concordia` and `Concordia` where necessary.
 
 * **Interfaces**:
-    * `MediatR.IRequest<TResponse>` becomes `Concordia.Contracts.IRequest<TResponse>`
-    * `MediatR.IRequest` becomes `Concordia.Contracts.IRequest`
-    * `MediatR.IRequestHandler<TRequest, TResponse>` becomes `Concordia.Contracts.IRequestHandler<TRequest, TResponse>`
-    * `MediatR.IRequestHandler<TRequest>` becomes `Concordia.Contracts.IRequestHandler<TRequest>`
-    * `MediatR.INotification` becomes `Concordia.Contracts.INotification`
-    * `MediatR.INotificationHandler<TNotification>` becomes `Concordia.Contracts.INotificationHandler<TNotification>`
-    * `MediatR.IPipelineBehavior<TRequest, TResponse>` becomes `Concordia.Contracts.IPipelineBehavior<TRequest, TResponse>`
-    * `MediatR.IRequestPreProcessor<TRequest>` becomes `Concordia.Contracts.IRequestPreProcessor<TRequest>`
-    * `MediatR.IRequestPostProcessor<TRequest, TResponse>` becomes `Concordia.Contracts.IRequestPostProcessor<TRequest, TResponse>`
-    * `MediatR.INotificationPublisher` becomes `Concordia.Contracts.INotificationPublisher`
+    * `MediatR.IRequest<TResponse>` becomes `Concordia.IRequest<TResponse>`
+    * `MediatR.IRequest` becomes `Concordia.IRequest`
+    * `MediatR.IRequestHandler<TRequest, TResponse>` becomes `Concordia.IRequestHandler<TRequest, TResponse>`
+    * `MediatR.IRequestHandler<TRequest>` becomes `Concordia.IRequestHandler<TRequest>`
+    * `MediatR.INotification` becomes `Concordia.INotification`
+    * `MediatR.INotificationHandler<TNotification>` becomes `Concordia.INotificationHandler<TNotification>`
+    * `MediatR.IPipelineBehavior<TRequest, TResponse>` becomes `Concordia.IPipelineBehavior<TRequest, TResponse>`
+    * `MediatR.IRequestPreProcessor<TRequest>` becomes `Concordia.IRequestPreProcessor<TRequest>`
+    * `MediatR.IRequestPostProcessor<TRequest, TResponse>` becomes `Concordia.IRequestPostProcessor<TRequest, TResponse>`
+    * `MediatR.INotificationPublisher` becomes `Concordia.INotificationPublisher`
 
 * **Mediator Implementation**:
     * `MediatR.IMediator` becomes `Concordia.IMediator`

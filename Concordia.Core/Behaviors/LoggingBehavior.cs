@@ -1,4 +1,4 @@
-﻿using Concordia.Contracts;
+﻿using Concordia;
 
 namespace Concordia.Behaviors;
 
@@ -13,7 +13,7 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         Console.WriteLine($"--- Handling Request: {typeof(TRequest).Name} ---");
-        var response = await next(); // Calls the next delegate in the pipeline (or the final handler)
+        var response = await next(cancellationToken); // Calls the next delegate in the pipeline (or the final handler)
         Console.WriteLine($"--- Handled Request: {typeof(TRequest).Name} - Response Type: {typeof(TResponse).Name} ---");
         return response;
     }

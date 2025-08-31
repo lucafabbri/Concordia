@@ -1,7 +1,7 @@
 using Concordia.MediatR; // Namespace for the AddMediator method
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection; // Needed for Assembly.GetExecutingAssembly()
-using Concordia.Contracts; // Needed for ServiceLifetime
+using Concordia; // Needed for ServiceLifetime
 using Microsoft.OpenApi.Models; // Add this using for OpenApiInfo
 
 var builder = WebApplication.CreateBuilder(args);

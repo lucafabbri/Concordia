@@ -1,6 +1,6 @@
-﻿namespace Concordia.Contracts;
+﻿namespace Concordia;
 
-public delegate Task<TResponse> RequestHandlerDelegate<TResponse>();
+public delegate Task<TResponse> RequestHandlerDelegate<TResponse>(CancellationToken t = default);
 
 /// <summary>
 /// Defines a behavior in the request processing pipeline.

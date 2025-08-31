@@ -1,4 +1,4 @@
-﻿namespace Concordia.Contracts;
+﻿namespace Concordia;
 
 /// <summary>
 /// Defines a mediator for publishing notifications to multiple handlers.

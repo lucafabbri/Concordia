@@ -111,11 +111,11 @@ Alternatively, you can install them via the NuGet Package Manager in Visual Stud
 
 ### 1. Define Requests, Commands, and Notifications
 
-Your requests, commands, and notifications must implement the `Concordia.Contracts` interfaces.
+Your requests, commands, and notifications must implement the `Concordia` interfaces.
 
 ```csharp
 // Request with response
-using Concordia.Contracts;
+using Concordia;
 
 namespace MyProject.Requests
 {
@@ -133,7 +133,7 @@ namespace MyProject.Requests
 }
 
 // Fire-and-forget command
-using Concordia.Contracts;
+using Concordia;
 
 namespace MyProject.Commands
 {
@@ -145,7 +145,7 @@ namespace MyProject.Commands
 }
 
 // Notification
-using Concordia.Contracts;
+using Concordia;
 
 namespace MyProject.Notifications
 {
@@ -163,7 +163,7 @@ Your handlers must implement `IRequestHandler` or `INotificationHandler`. Pre-pr
 
 ```csharp
 // Handler for a request with response
-using Concordia.Contracts;
+using Concordia;
 using MyProject.Requests;
 using System.Threading;
 using System.Threading.Tasks;
@@ -182,7 +182,7 @@ namespace MyProject.Handlers
 }
 
 // Handler for a fire-and-forget command
-using Concordia.Contracts;
+using Concordia;
 using MyProject.Commands;
 using System.Threading;
 using System.Threading.Tasks;
@@ -200,7 +200,7 @@ namespace MyProject.Handlers
 }
 
 // Notification Handler
-using Concordia.Contracts;
+using Concordia;
 using MyProject.Notifications;
 using System.Threading;
 using System.Threading.Tasks;
@@ -227,7 +227,7 @@ namespace MyProject.Handlers
 }
 
 // Example Request Pre-Processor
-using Concordia.Contracts;
+using Concordia;
 using MyProject.Requests; // Assuming your requests are here
 using System.Threading;
 using System.Threading.Tasks;
@@ -245,7 +245,7 @@ namespace MyProject.Processors
 }
 
 // Example Request Post-Processor
-using Concordia.Contracts;
+using Concordia;
 using MyProject.Requests; // Assuming your requests are here
 using System.Threading;
 using System.Threading.Tasks;
@@ -263,7 +263,7 @@ namespace MyProject.Processors
 }
 
 // Example Pipeline Behavior
-// using Concordia.Contracts;
+// using Concordia;
 // using System.Collections.Generic;
 // using System.Threading;
 // using System.Threading.Tasks;
@@ -278,7 +278,7 @@ namespace MyProject.Processors
 //         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 //         {
 //             _logs.Add($"Before {typeof(TRequest).Name}");
-//             var response = await next();
+//             var response = await next(cancellationToken);
 //             _logs.Add($"After {typeof(TRequest).Name}");
 //             return response;
 //         }
@@ -637,19 +637,19 @@ dotnet add package Concordia.MediatR --version 1.1.0
 
 ### 2. Update Namespaces
 
-Change namespaces from `MediatR` to `Concordia` and `Concordia.Contracts` where necessary.
+Change namespaces from `MediatR` to `Concordia` and `Concordia` where necessary.
 
 * **Interfaces**:
-    * `MediatR.IRequest<TResponse>` becomes `Concordia.Contracts.IRequest<TResponse>`
-    * `MediatR.IRequest` becomes `Concordia.Contracts.IRequest`
-    * `MediatR.IRequestHandler<TRequest, TResponse>` becomes `Concordia.Contracts.IRequestHandler<TRequest, TResponse>`
-    * `MediatR.IRequestHandler<TRequest>` becomes `Concordia.Contracts.IRequestHandler<TRequest>`
-    * `MediatR.INotification` becomes `Concordia.Contracts.INotification`
-    * `MediatR.INotificationHandler<TNotification>` becomes `Concordia.Contracts.INotificationHandler<TNotification>`
-    * `MediatR.IPipelineBehavior<TRequest, TResponse>` becomes `Concordia.Contracts.IPipelineBehavior<TRequest, TResponse>`
-    * `MediatR.IRequestPreProcessor<TRequest>` becomes `Concordia.Contracts.IRequestPreProcessor<TRequest>`
-    * `MediatR.IRequestPostProcessor<TRequest, TResponse>` becomes `Concordia.Contracts.IRequestPostProcessor<TRequest, TResponse>`
-    * `MediatR.INotificationPublisher` becomes `Concordia.Contracts.INotificationPublisher`
+    * `MediatR.IRequest<TResponse>` becomes `Concordia.IRequest<TResponse>`
+    * `MediatR.IRequest` becomes `Concordia.IRequest`
+    * `MediatR.IRequestHandler<TRequest, TResponse>` becomes `Concordia.IRequestHandler<TRequest, TResponse>`
+    * `MediatR.IRequestHandler<TRequest>` becomes `Concordia.IRequestHandler<TRequest>`
+    * `MediatR.INotification` becomes `Concordia.INotification`
+    * `MediatR.INotificationHandler<TNotification>` becomes `Concordia.INotificationHandler<TNotification>`
+    * `MediatR.IPipelineBehavior<TRequest, TResponse>` becomes `Concordia.IPipelineBehavior<TRequest, TResponse>`
+    * `MediatR.IRequestPreProcessor<TRequest>` becomes `Concordia.IRequestPreProcessor<TRequest>`
+    * `MediatR.IRequestPostProcessor<TRequest, TResponse>` becomes `Concordia.IRequestPostProcessor<TRequest, TResponse>`
+    * `MediatR.INotificationPublisher` becomes `Concordia.INotificationPublisher`
 
 * **Mediator Implementation**:
     * `MediatR.IMediator` becomes `Concordia.IMediator`

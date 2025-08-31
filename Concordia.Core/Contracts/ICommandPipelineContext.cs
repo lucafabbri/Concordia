@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Concordia.Contracts;
+namespace Concordia;
 
 /// <summary>
 /// The base interface for a command pipeline context, now including
