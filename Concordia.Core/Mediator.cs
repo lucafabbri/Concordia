@@ -72,7 +72,7 @@ public class Mediator : IMediator, ISender
         var pipelineBehaviors = _serviceProvider.GetServices(pipelineBehaviorInterfaces).ToList();
 
         // The 'next' delegate starts by invoking the actual handler
-        RequestHandlerDelegate<TResponse> next = async () =>
+        RequestHandlerDelegate<TResponse> next = async (CancellationToken) =>
         {
             var handleMethod = handler.GetType().GetMethod(
                 "Handle",
@@ -95,7 +95,7 @@ public class Mediator : IMediator, ISender
             var currentBehavior = pipelineBehaviors[i];
             var previousNext = next; // Capture current 'next' for the closure
 
-            next = async () =>
+            next = async (CancellationToken) =>
             {
                 var behaviorHandleMethod = currentBehavior.GetType().GetMethod(
                     "Handle",
@@ -113,7 +113,7 @@ public class Mediator : IMediator, ISender
         }
 
         // Execute the chained pipeline
-        TResponse response = await next();
+        TResponse response = await next(cancellationToken);
 
         // 4. Resolve and execute Post-Processors
         var postProcessorInterfaces = typeof(IRequestPostProcessor<,>).MakeGenericType(requestType, responseType);

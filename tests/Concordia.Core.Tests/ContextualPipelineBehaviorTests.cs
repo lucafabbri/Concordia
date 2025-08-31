@@ -121,7 +121,7 @@ public class ErrorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TR
         }
 
         // Se non è un errore, continua la pipeline normalmente.
-        return next();
+        return next(cancellationToken);
     }
 }
 

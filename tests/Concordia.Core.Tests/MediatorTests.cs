@@ -68,7 +68,7 @@ public class MediatorTests
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             _logs.Add($"Before {typeof(TRequest).Name}");
-            var response = await next();
+            var response = await next(cancellationToken);
             _logs.Add($"After {typeof(TRequest).Name}");
             return response;
         }
@@ -86,7 +86,7 @@ public class MediatorTests
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             _logs.Add($"Validating {typeof(TRequest).Name}");
-            var response = await next();
+            var response = await next(cancellationToken);
             _logs.Add($"Validation complete for {typeof(TRequest).Name}");
             return response;
         }
