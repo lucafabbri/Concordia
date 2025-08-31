@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.2.0"></a>
+## [1.2.0](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.2.0) (2025-08-31)
+
+### Features
+
+* adds default pre and post behavior and task when all publisher ([9ff508f](https://www.github.com/lucafabbri/Concordia/commit/9ff508f1077dcb2d2910e68a848f394331a6d944))
+
+### Bug Fixes
+
+* adds cancellation token to next call for pipelines ([0d1237b](https://www.github.com/lucafabbri/Concordia/commit/0d1237b21a364f8a8434602b0ae6c1b2b34a2d4a))
+* move contracts to Concordia namespace ([bfe98df](https://www.github.com/lucafabbri/Concordia/commit/bfe98df2c889fe0faca1b31057687dcc41abb22d))
+
 <a name="1.1.0"></a>
 ## [1.1.0](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.1.0) (2025-08-30)
 
