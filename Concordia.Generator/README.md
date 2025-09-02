@@ -56,9 +56,8 @@ dotnet add package Concordia.Generator --version 1.0.0
       </PropertyGroup>
 
       <ItemGroup>
-        <ProjectReference Include="PathToYour\Concordia.Core\Concordia.Core.csproj" />
-        <ProjectReference Include="PathToYour\Concordia.Generator\Concordia.Generator.csproj"
-                          OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <PackageReference Include="Concordia" Version="1.2.0"/>
+        <PackageReference Include="Concordia.Generator" Version="1.2.0" PrivateAssets="all" />
       </ItemGroup>
     </Project>
     ```
