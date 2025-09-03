@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.2.1"></a>
+## [1.2.1](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.2.1) (2025-09-03)
+
+### Bug Fixes
+
+* corrects reamde ([b6bddf5](https://www.github.com/lucafabbri/Concordia/commit/b6bddf5ebecdde8df514ab4ff3267024d998da3e))
+* corrects the generator ([84158d6](https://www.github.com/lucafabbri/Concordia/commit/84158d65291dcf7f4c3e61dd0b47544fd8703bfb))
+* corrects the generator ([463f0ea](https://www.github.com/lucafabbri/Concordia/commit/463f0eaf5c53423e9e7f9240b5d6d3081bfdc15b))
+
 <a name="1.2.0"></a>
 ## [1.2.0](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.2.0) (2025-08-31)
 
