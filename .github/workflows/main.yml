@@ -1,0 +1,83 @@
+# Nome del workflow visualizzato su GitHub
+name: Publish to NuGet
+
+# --- Trigger ---
+# Elenco degli eventi che attivano questo workflow
+on:
+  push:
+    branches:
+      - main # Si attiva a ogni push sul branch 'main'
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' # Si attiva quando viene pushato un tag come 'v1.0.0'
+  pull_request:
+    branches:
+      - main # Si attiva quando viene aperta/aggiornata una PR verso 'main'
+  workflow_dispatch: # Permette di avviare il workflow manualmente dalla UI di GitHub
+
+jobs:
+  build_and_publish:
+    # SPECIFICA L'AMBIENTE PER ACCEDERE AI SEGRETI CORRISPONDENTI
+    environment: Production
+    runs-on: ubuntu-latest
+    
+    # AGGIUNGE I PERMESSI NECESSARI PER CREARE UNA RELEASE
+    permissions:
+      contents: write
+
+    steps:
+      # 1. Scarica il codice del repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Installa la versione specificata di .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # 3. Ripristina le dipendenze NuGet del progetto
+      - name: Restore dependencies
+        run: dotnet restore Concordia.sln
+
+      # 4. Compila la soluzione in configurazione Release
+      - name: Build
+        run: dotnet build Concordia.sln --no-restore --configuration Release
+
+      # 5. Esegue i test della soluzione
+      - name: Run tests
+        run: dotnet test Concordia.sln --no-build --configuration Release
+
+      # --- Pubblicazione ---
+      # I seguenti passaggi vengono eseguiti SOLO se il workflow
+      # è stato attivato dal push di un tag (es. v1.2.3)
+
+      # 6. Crea i pacchetti NuGet per tutti i progetti nella soluzione
+      - name: Pack projects
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: dotnet pack Concordia.sln --no-build --configuration Release --output ./packages
+
+      # 7. Pubblica tutti i pacchetti .nupkg creati nel passo precedente
+      - name: Publish to NuGet
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: dotnet nuget push "./packages/*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json
+      
+      # 8. Estrae le note di rilascio dal CHANGELOG.md per la versione corrente
+      - name: Extract Release Notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION=$(echo "${{ github.ref_name }}" | sed 's/^v//')
+          awk -v ver="$VERSION" '
+            BEGIN { p=0 }
+            $0 ~ "^<a name=\"" ver "\">" { p=1; next }
+            p==1 && /^<a name=/ { p=0 }
+            p==1 { print }
+          ' CHANGELOG.md > RELEASE_NOTES.md
+      
+      # 9. Crea una Release su GitHub e carica i pacchetti come artefatti
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./packages/*.nupkg
+          # Usa solo le note specifiche della versione estratte nel passo precedente
+          body_path: RELEASE_NOTES.md
