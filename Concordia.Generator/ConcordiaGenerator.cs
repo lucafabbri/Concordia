@@ -16,6 +16,10 @@ public class ConcordiaGenerator : IIncrementalGenerator
     // Initializes the incremental generator.
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+#if DEBUG
+        // Uncomment the following line to enable debugging during development.
+        //System.Diagnostics.Debugger.Launch();
+#endif
         // Retrieves analyzer config options.
         var compilationAndOptions = context.AnalyzerConfigOptionsProvider
             .Select((options, cancellationToken) => options);
@@ -103,27 +107,27 @@ public class ConcordiaGenerator : IIncrementalGenerator
                 var genericDefinitionFullName = genericDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
                 // Checks if the interface is a Concordia handler interface.
-                if (genericDefinitionFullName == "Concordia.IRequestHandler<TRequest, TResponse>")
+                if (genericDefinitionFullName == "global::Concordia.IRequestHandler<TRequest, TResponse>")
                 {
                     var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                     var responseType = @interface.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"Concordia.IRequestHandler<{requestType}, {responseType}>");
+                    implementedInterfaces.Add($"global::Concordia.IRequestHandler<{requestType}, {responseType}>");
                 }
-                else if (genericDefinitionFullName == "Concordia.IRequestHandler<TRequest>")
+                else if (genericDefinitionFullName == "global::Concordia.IRequestHandler<TRequest>")
                 {
                     var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"Concordia.IRequestHandler<{requestType}>");
+                    implementedInterfaces.Add($"global::Concordia.IRequestHandler<{requestType}>");
                 }
-                else if (genericDefinitionFullName == "Concordia.INotificationHandler<TNotification>")
+                else if (genericDefinitionFullName == "global::Concordia.INotificationHandler<TNotification>")
                 {
                     var notificationType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"Concordia.INotificationHandler<{notificationType}>");
+                    implementedInterfaces.Add($"global::Concordia.INotificationHandler<{notificationType}>");
                 }
-                else if (genericDefinitionFullName == "Concordia.IPipelineBehavior<TRequest, TResponse>")
+                else if (genericDefinitionFullName == "global::Concordia.IPipelineBehavior<TRequest, TResponse>")
                 {
                     var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                     var responseType = @interface.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"Concordia.IPipelineBehavior<{requestType}, {responseType}>");
+                    implementedInterfaces.Add($"global::Concordia.IPipelineBehavior<{requestType}, {responseType}>");
                 }
             }
         }

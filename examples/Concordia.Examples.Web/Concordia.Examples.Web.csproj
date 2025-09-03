@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <ConcordiaGeneratedMethodName>AddHandlers</ConcordiaGeneratedMethodName>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,8 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Concordia.Generator\Concordia.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\Concordia.MediatR\Concordia.MediatR.csproj" />
+    <ProjectReference Include="..\..\Concordia.Generator\Concordia.Generator.csproj"
+                  OutputItemType="Analyzer" 
+                  ReferenceOutputAssembly="false" />
   </ItemGroup>
 
+  <ItemGroup>
+    <CompilerVisibleProperty Include="ConcordiaGeneratedMethodName" />
+  </ItemGroup>
+  
 </Project>

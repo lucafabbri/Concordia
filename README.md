@@ -306,12 +306,16 @@ Add the `Concordia.Generator` as a `ProjectReference` to your application projec
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Optional: Customize the generated extension method name -->
     <ConcordiaGeneratedMethodName>AddMyConcordiaHandlers</ConcordiaGeneratedMethodName>
-    <!-- Optional: Customize the namespace for the generated class (defaults to project's RootNamespace) -->
-    <!-- <ConcordiaGeneratedNamespace>MyProject.Generated</ConcordiaGeneratedNamespace> -->
   </PropertyGroup>
+
+  <!-- Informs that the following property is compiler-visible -->
+  <ItemGroup>
+    <CompilerVisibleProperty Include="ConcordiaGeneratedMethodName" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Concordia" Version="1.2.0"/>
+    <!-- Required for compile-time handler registration -->
     <PackageReference Include="Concordia.Generator" Version="1.2.0" PrivateAssets="all" />
   </ItemGroup>
 

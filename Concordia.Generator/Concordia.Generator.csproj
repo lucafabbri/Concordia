@@ -1,18 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsRoslynComponent>true</IsRoslynComponent>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-
-    <PackageId>Concordia.Generator</PackageId>
-    <Version>1.2.0</Version>
-    <Authors>Luca Fabbri</Authors>
-    <Description>A C# Source Generator for automatic handler registration in Concordia.</Description>
-    <RepositoryUrl>https://github.com/lucafabbri/Concordia</RepositoryUrl>
-    <PackageTags>mediator;cqrs;source-generator;code-generation;concordia;lucafabbri</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -22,15 +14,31 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
-
     <PackageReference Include="Concordia.Core" Version="1.2.0">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>analyzers</IncludeAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
+  <!-- NuGet Metadata -->
+  <PropertyGroup>
+    <PackageId>Concordia.Generator</PackageId>
+    <Version>1.2.0</Version>
+    <Authors>Luca Fabbri</Authors>
+    <Description>A C# Source Generator for automatic handler registration in Concordia.</Description>
+    <RepositoryUrl>https://github.com/lucafabbri/Concordia</RepositoryUrl>
+    <PackageTags>mediator;cqrs;source-generator;code-generation;concordia;lucafabbri</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <DevelopmentDependency>true</DevelopmentDependency>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="build\Concordia.Generator.props" Pack="true" PackagePath="buildTransitive\" />
   </ItemGroup>
 
 </Project>
