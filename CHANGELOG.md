@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.2.4"></a>
+## [1.2.4](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.2.4) (2025-09-05)
+
+### Bug Fixes
+
+* corrects generator csproj for nuget ([4d79fa2](https://www.github.com/lucafabbri/Concordia/commit/4d79fa2fc9daaeaa45e781e10b1c8288b31232fc))
+
 <a name="1.2.3"></a>
 ## [1.2.3](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.2.3) (2025-09-05)
 
