@@ -53,7 +53,7 @@ builder.Services.AddMediator(cfg =>
     // cfg.AddStreamBehavior<MyCustomStreamBehavior>();
 });
 builder.Services.AddControllers();
-builder.Services.AddHandlers(); 
+builder.Services.AddMyCustomHandlers();  
 
 var app = builder.Build();
 
@@ -178,6 +178,19 @@ namespace Concordia.Examples.Web.Controllers
         {
             Console.WriteLine($"Logging product creation: {notification.ProductName} (Id: {notification.ProductId}) created at {DateTime.Now}");
             return Task.CompletedTask;
+        }
+    }
+
+    public class HelloCommand : IRequest<string>
+    {
+        public string Name { get; set; } = string.Empty;
+    }
+
+    public class HelloCommandHandler : IRequestHandler<HelloCommand, string>
+    {
+        public Task<string> Handle(HelloCommand request, CancellationToken cancellationToken)
+        {
+            return Task.FromResult($"Hello, {request.Name}!");
         }
     }
 }

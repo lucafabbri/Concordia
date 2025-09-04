@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <ConcordiaGeneratedMethodName>AddHandlers</ConcordiaGeneratedMethodName>
+    <ConcordiaGeneratedMethodName>AddMyCustomHandlers</ConcordiaGeneratedMethodName>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 

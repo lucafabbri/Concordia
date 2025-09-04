@@ -18,7 +18,7 @@ public class ConcordiaGenerator : IIncrementalGenerator
     {
 #if DEBUG
         // Uncomment the following line to enable debugging during development.
-        //System.Diagnostics.Debugger.Launch();
+        // System.Diagnostics.Debugger.Launch();
 #endif
         // Retrieves analyzer config options.
         var compilationAndOptions = context.AnalyzerConfigOptionsProvider
