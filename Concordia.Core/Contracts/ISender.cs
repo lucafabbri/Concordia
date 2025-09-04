@@ -1,4 +1,4 @@
-﻿namespace Concordia;
+namespace Concordia;
 
 /// <summary>
 /// Defines a sender interface for dispatching requests to their respective handlers.

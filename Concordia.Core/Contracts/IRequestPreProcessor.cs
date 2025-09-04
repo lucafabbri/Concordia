@@ -1,4 +1,4 @@
-﻿namespace Concordia;
+namespace Concordia;
 
 /// <summary>
 /// Defines a pre-processor for a request of type <typeparamref name="TRequest"/>.

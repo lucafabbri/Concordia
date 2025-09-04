@@ -1,4 +1,4 @@
-﻿namespace Concordia;
+namespace Concordia;
 
 /// <summary>
 /// Handles a request of type <typeparamref name="TRequest"/> and returns <typeparamref name="TResponse"/>.

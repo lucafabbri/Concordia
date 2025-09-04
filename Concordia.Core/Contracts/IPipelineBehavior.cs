@@ -1,5 +1,8 @@
-﻿namespace Concordia;
+namespace Concordia;
 
+/// <summary>
+/// The request handler delegate
+/// </summary>
 public delegate Task<TResponse> RequestHandlerDelegate<TResponse>(CancellationToken t = default);
 
 /// <summary>

@@ -1,10 +1,13 @@
-﻿namespace Concordia;
+namespace Concordia;
 
 // Note: The IRequestStream interface is not yet defined in Concordia,
 // but this interface is included for compatibility with MediatR configuration.
 // If you intend to implement streaming, you will need to define IRequestStream<TResponse>.
 // For now, we use IRequest<IAsyncEnumerable<TResponse>> as a constraint for compatibility.
 
+/// <summary>
+/// The stream handler delegate
+/// </summary>
 public delegate IAsyncEnumerable<TResponse> StreamHandlerDelegate<TResponse>();
 
 /// <summary>

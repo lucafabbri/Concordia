@@ -1,4 +1,4 @@
-﻿namespace Concordia;
+namespace Concordia;
 
 /// <summary>
 /// Marker interface for a request.

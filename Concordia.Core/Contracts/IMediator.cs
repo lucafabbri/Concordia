@@ -1,4 +1,4 @@
-﻿namespace Concordia;
+namespace Concordia;
 
 /// <summary>
 /// Defines a mediator for publishing notifications to multiple handlers.
@@ -8,5 +8,10 @@
 /// are delivered to all appropriate handlers in a reliable manner.</remarks>
 public interface IMediator : ISender
 {
+    /// <summary>
+    /// Publishes the notification
+    /// </summary>
+    /// <param name="notification">The notification</param>
+    /// <param name="cancellationToken">The cancellation token</param>
     Task Publish(INotification notification, CancellationToken cancellationToken = default);
 }

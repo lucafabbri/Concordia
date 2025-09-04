@@ -1,4 +1,4 @@
-﻿using Concordia;
+using Concordia;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -10,11 +10,23 @@ namespace Concordia.MediatR;
 /// </summary>
 internal static class ReflectionExtensions
 {
+    /// <summary>
+    /// Finds the interfaces that close using the specified plugged type
+    /// </summary>
+    /// <param name="pluggedType">The plugged type</param>
+    /// <param name="templateType">The template type</param>
+    /// <returns>An enumerable of type</returns>
     public static IEnumerable<Type> FindInterfacesThatClose(this Type pluggedType, Type templateType)
     {
         return FindInterfacesThatCloseAll(pluggedType, templateType);
     }
 
+    /// <summary>
+    /// Finds the interfaces that close all using the specified plugged type
+    /// </summary>
+    /// <param name="pluggedType">The plugged type</param>
+    /// <param name="templateType">The template type</param>
+    /// <returns>An enumerable of type</returns>
     private static IEnumerable<Type> FindInterfacesThatCloseAll(Type pluggedType, Type templateType)
     {
         if (!pluggedType.IsClass) // Only classes can implement interfaces
@@ -73,6 +85,9 @@ public class ConcordiaMediatRServiceConfiguration
     /// </summary>
     public bool DisableAssemblyScanning { get; set; } = false;
 
+    /// <summary>
+    /// Gets the value of the assemblies to register
+    /// </summary>
     internal List<Assembly> AssembliesToRegister { get; } = new();
 
     /// <summary>

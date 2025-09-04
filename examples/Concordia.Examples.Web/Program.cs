@@ -78,19 +78,39 @@ app.Run();
 // Example Controller for usage (remains unchanged)
 namespace Concordia.Examples.Web.Controllers
 {
+    /// <summary>
+    /// The products controller class
+    /// </summary>
+    /// <seealso cref="ControllerBase"/>
     [ApiController]
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
+        /// <summary>
+        /// The mediator
+        /// </summary>
         private readonly IMediator _mediator;
+        /// <summary>
+        /// The sender
+        /// </summary>
         private readonly ISender _sender;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductsController"/> class
+        /// </summary>
+        /// <param name="mediator">The mediator</param>
+        /// <param name="sender">The sender</param>
         public ProductsController(IMediator mediator, ISender sender)
         {
             _mediator = mediator;
             _sender = sender;
         }
 
+        /// <summary>
+        /// Gets the id
+        /// </summary>
+        /// <param name="id">The id</param>
+        /// <returns>A task containing the action result</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -103,6 +123,11 @@ namespace Concordia.Examples.Web.Controllers
             return Ok(product);
         }
 
+        /// <summary>
+        /// Creates the product using the specified command
+        /// </summary>
+        /// <param name="command">The command</param>
+        /// <returns>A task containing the action result</returns>
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
         {
@@ -120,20 +145,49 @@ namespace Concordia.Examples.Web.Controllers
     }
 
     // Examples of requests, commands, notifications, and handlers for the web project
+    /// <summary>
+    /// The product dto class
+    /// </summary>
     public class ProductDto
     {
+        /// <summary>
+        /// Gets or sets the value of the id
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// Gets or sets the value of the name
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Gets or sets the value of the price
+        /// </summary>
         public decimal Price { get; set; }
     }
 
+    /// <summary>
+    /// The get product by id query class
+    /// </summary>
+    /// <seealso cref="IRequest{ProductDto}"/>
     public class GetProductByIdQuery : IRequest<ProductDto>
     {
+        /// <summary>
+        /// Gets or sets the value of the product id
+        /// </summary>
         public int ProductId { get; set; }
     }
 
+    /// <summary>
+    /// The get product by id query handler class
+    /// </summary>
+    /// <seealso cref="IRequestHandler{GetProductByIdQuery, ProductDto}"/>
     public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductDto>
     {
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>A task containing the product dto</returns>
         public Task<ProductDto> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Handling GetProductByIdQuery for ProductId: {request.ProductId}");
@@ -142,14 +196,33 @@ namespace Concordia.Examples.Web.Controllers
         }
     }
 
+    /// <summary>
+    /// The create product command class
+    /// </summary>
+    /// <seealso cref="IRequest"/>
     public class CreateProductCommand : IRequest
     {
+        /// <summary>
+        /// Gets or sets the value of the product id
+        /// </summary>
         public int ProductId { get; set; }
+        /// <summary>
+        /// Gets or sets the value of the product name
+        /// </summary>
         public string ProductName { get; set; }
     }
 
+    /// <summary>
+    /// The create product command handler class
+    /// </summary>
+    /// <seealso cref="IRequestHandler{CreateProductCommand}"/>
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand>
     {
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Creating product: {request.ProductName} with ID: {request.ProductId}");
@@ -157,14 +230,33 @@ namespace Concordia.Examples.Web.Controllers
         }
     }
 
+    /// <summary>
+    /// The product created notification class
+    /// </summary>
+    /// <seealso cref="INotification"/>
     public class ProductCreatedNotification : INotification
     {
+        /// <summary>
+        /// Gets or sets the value of the product id
+        /// </summary>
         public int ProductId { get; set; }
+        /// <summary>
+        /// Gets or sets the value of the product name
+        /// </summary>
         public string ProductName { get; set; }
     }
 
+    /// <summary>
+    /// The send email on product created class
+    /// </summary>
+    /// <seealso cref="INotificationHandler{ProductCreatedNotification}"/>
     public class SendEmailOnProductCreated : INotificationHandler<ProductCreatedNotification>
     {
+        /// <summary>
+        /// Handles the notification
+        /// </summary>
+        /// <param name="notification">The notification</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Sending email for new product: {notification.ProductName} (Id: {notification.ProductId})");
@@ -172,8 +264,17 @@ namespace Concordia.Examples.Web.Controllers
         }
     }
 
+    /// <summary>
+    /// The log product creation class
+    /// </summary>
+    /// <seealso cref="INotificationHandler{ProductCreatedNotification}"/>
     public class LogProductCreation : INotificationHandler<ProductCreatedNotification>
     {
+        /// <summary>
+        /// Handles the notification
+        /// </summary>
+        /// <param name="notification">The notification</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Logging product creation: {notification.ProductName} (Id: {notification.ProductId}) created at {DateTime.Now}");
@@ -181,13 +282,30 @@ namespace Concordia.Examples.Web.Controllers
         }
     }
 
+    /// <summary>
+    /// The hello command class
+    /// </summary>
+    /// <seealso cref="IRequest{string}"/>
     public class HelloCommand : IRequest<string>
     {
+        /// <summary>
+        /// Gets or sets the value of the name
+        /// </summary>
         public string Name { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// The hello command handler class
+    /// </summary>
+    /// <seealso cref="IRequestHandler{HelloCommand, string}"/>
     public class HelloCommandHandler : IRequestHandler<HelloCommand, string>
     {
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>A task containing the string</returns>
         public Task<string> Handle(HelloCommand request, CancellationToken cancellationToken)
         {
             return Task.FromResult($"Hello, {request.Name}!");

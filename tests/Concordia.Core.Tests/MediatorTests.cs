@@ -6,27 +6,73 @@ using System.Reflection;
 
 namespace Concordia.Core.Tests;
 
+/// <summary>
+/// The mediator tests class
+/// </summary>
 public class MediatorTests
 {
     // --- Mock Requests and Notifications ---
 
-    public class TestRequest : IRequest<string> { public string Message { get; set; } }
-    public class TestCommand : IRequest { public string CommandName { get; set; } }
-    public class TestNotification : INotification { public string EventName { get; set; } }
+    /// <summary>
+    /// The test request class
+    /// </summary>
+    /// <seealso cref="IRequest{string}"/>
+    public class TestRequest : IRequest<string> { /// <summary>
+/// Gets or sets the value of the message
+/// </summary>
+public string Message { get; set; } }
+    /// <summary>
+    /// The test command class
+    /// </summary>
+    /// <seealso cref="IRequest"/>
+    public class TestCommand : IRequest { /// <summary>
+/// Gets or sets the value of the command name
+/// </summary>
+public string CommandName { get; set; } }
+    /// <summary>
+    /// The test notification class
+    /// </summary>
+    /// <seealso cref="INotification"/>
+    public class TestNotification : INotification { /// <summary>
+/// Gets or sets the value of the event name
+/// </summary>
+public string EventName { get; set; } }
 
     // --- Mock Handlers ---
 
+    /// <summary>
+    /// The test request handler class
+    /// </summary>
+    /// <seealso cref="IRequestHandler{TestRequest, string}"/>
     public class TestRequestHandler : IRequestHandler<TestRequest, string>
     {
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>A task containing the string</returns>
         public Task<string> Handle(TestRequest request, CancellationToken cancellationToken)
         {
             return Task.FromResult($"Handled: {request.Message}");
         }
     }
 
+    /// <summary>
+    /// The test command handler class
+    /// </summary>
+    /// <seealso cref="IRequestHandler{TestCommand}"/>
     public class TestCommandHandler : IRequestHandler<TestCommand>
     {
+        /// <summary>
+        /// Gets or sets the value of the was handled
+        /// </summary>
         public bool WasHandled { get; private set; }
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Handle(TestCommand request, CancellationToken cancellationToken)
         {
             WasHandled = true;
@@ -34,9 +80,21 @@ public class MediatorTests
         }
     }
 
+    /// <summary>
+    /// The test notification handler class
+    /// </summary>
+    /// <seealso cref="INotificationHandler{TestNotification}"/>
     public class TestNotificationHandler1 : INotificationHandler<TestNotification>
     {
+        /// <summary>
+        /// Gets or sets the value of the was handled
+        /// </summary>
         public bool WasHandled { get; private set; }
+        /// <summary>
+        /// Handles the notification
+        /// </summary>
+        /// <param name="notification">The notification</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Handle(TestNotification notification, CancellationToken cancellationToken)
         {
             WasHandled = true;
@@ -44,9 +102,21 @@ public class MediatorTests
         }
     }
 
+    /// <summary>
+    /// The test notification handler class
+    /// </summary>
+    /// <seealso cref="INotificationHandler{TestNotification}"/>
     public class TestNotificationHandler2 : INotificationHandler<TestNotification>
     {
+        /// <summary>
+        /// Gets or sets the value of the was handled
+        /// </summary>
         public bool WasHandled { get; private set; }
+        /// <summary>
+        /// Handles the notification
+        /// </summary>
+        /// <param name="notification">The notification</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Handle(TestNotification notification, CancellationToken cancellationToken)
         {
             WasHandled = true;
@@ -56,15 +126,33 @@ public class MediatorTests
 
     // --- Mock Pipeline Behaviors ---
 
+    /// <summary>
+    /// The test logging behavior class
+    /// </summary>
+    /// <seealso cref="IPipelineBehavior{TRequest, TResponse}"/>
     public class TestLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
+        /// <summary>
+        /// The logs
+        /// </summary>
         private readonly List<string> _logs;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestLoggingBehavior{TRequest,TResponse}"/> class
+        /// </summary>
+        /// <param name="logs">The logs</param>
         public TestLoggingBehavior(List<string> logs) // Constructor now resolves List<string> from DI
         {
             _logs = logs;
         }
 
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="next">The next</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>The response</returns>
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             _logs.Add($"Before {typeof(TRequest).Name}");
@@ -74,15 +162,33 @@ public class MediatorTests
         }
     }
 
+    /// <summary>
+    /// The test validation behavior class
+    /// </summary>
+    /// <seealso cref="IPipelineBehavior{TRequest, TResponse}"/>
     public class TestValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
+        /// <summary>
+        /// The logs
+        /// </summary>
         private readonly List<string> _logs;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestValidationBehavior{TRequest,TResponse}"/> class
+        /// </summary>
+        /// <param name="logs">The logs</param>
         public TestValidationBehavior(List<string> logs) // Constructor now resolves List<string> from DI
         {
             _logs = logs;
         }
 
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="next">The next</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>The response</returns>
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             _logs.Add($"Validating {typeof(TRequest).Name}");
@@ -93,12 +199,28 @@ public class MediatorTests
     }
 
     // --- Mock Request Pre-Processors ---
+    /// <summary>
+    /// The test pre processor class
+    /// </summary>
+    /// <seealso cref="IRequestPreProcessor{TRequest}"/>
     public class TestPreProcessor1<TRequest> : IRequestPreProcessor<TRequest>
         where TRequest : IRequest
     {
+        /// <summary>
+        /// The logs
+        /// </summary>
         private readonly List<string> _logs;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestPreProcessor1{TRequest}"/> class
+        /// </summary>
+        /// <param name="logs">The logs</param>
         public TestPreProcessor1(List<string> logs) { _logs = logs; }
 
+        /// <summary>
+        /// Processes the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Process(TRequest request, CancellationToken cancellationToken)
         {
             _logs.Add($"Pre-Processor 1 for {typeof(TRequest).Name}");
@@ -106,12 +228,28 @@ public class MediatorTests
         }
     }
 
+    /// <summary>
+    /// The test pre processor class
+    /// </summary>
+    /// <seealso cref="IRequestPreProcessor{TRequest}"/>
     public class TestPreProcessor2<TRequest> : IRequestPreProcessor<TRequest>
         where TRequest : IRequest
     {
+        /// <summary>
+        /// The logs
+        /// </summary>
         private readonly List<string> _logs;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestPreProcessor2{TRequest}"/> class
+        /// </summary>
+        /// <param name="logs">The logs</param>
         public TestPreProcessor2(List<string> logs) { _logs = logs; }
 
+        /// <summary>
+        /// Processes the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Process(TRequest request, CancellationToken cancellationToken)
         {
             _logs.Add($"Pre-Processor 2 for {typeof(TRequest).Name}");
@@ -120,12 +258,29 @@ public class MediatorTests
     }
 
     // --- Mock Request Post-Processors ---
+    /// <summary>
+    /// The test post processor class
+    /// </summary>
+    /// <seealso cref="IRequestPostProcessor{TRequest, TResponse}"/>
     public class TestPostProcessor1<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
+        /// <summary>
+        /// The logs
+        /// </summary>
         private readonly List<string> _logs;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestPostProcessor1{TRequest,TResponse}"/> class
+        /// </summary>
+        /// <param name="logs">The logs</param>
         public TestPostProcessor1(List<string> logs) { _logs = logs; }
 
+        /// <summary>
+        /// Processes the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="response">The response</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
         {
             _logs.Add($"Post-Processor 1 for {typeof(TRequest).Name} with response {response}");
@@ -133,12 +288,29 @@ public class MediatorTests
         }
     }
 
+    /// <summary>
+    /// The test post processor class
+    /// </summary>
+    /// <seealso cref="IRequestPostProcessor{TRequest, TResponse}"/>
     public class TestPostProcessor2<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
+        /// <summary>
+        /// The logs
+        /// </summary>
         private readonly List<string> _logs;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestPostProcessor2{TRequest,TResponse}"/> class
+        /// </summary>
+        /// <param name="logs">The logs</param>
         public TestPostProcessor2(List<string> logs) { _logs = logs; }
 
+        /// <summary>
+        /// Processes the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="response">The response</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
         {
             _logs.Add($"Post-Processor 2 for {typeof(TRequest).Name} with response {response}");
@@ -147,11 +319,27 @@ public class MediatorTests
     }
 
     // --- Mock of a Custom Notification Publisher ---
+    /// <summary>
+    /// The custom notification publisher class
+    /// </summary>
+    /// <seealso cref="INotificationPublisher"/>
     public class CustomNotificationPublisher : INotificationPublisher
     {
+        /// <summary>
+        /// Gets or sets the value of the was called
+        /// </summary>
         public bool WasCalled { get; private set; }
+        /// <summary>
+        /// Gets the value of the handlers called
+        /// </summary>
         public List<string> HandlersCalled { get; } = new List<string>();
 
+        /// <summary>
+        /// Publishes the handler calls
+        /// </summary>
+        /// <param name="handlerCalls">The handler calls</param>
+        /// <param name="notification">The notification</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public async Task Publish(IEnumerable<Func<INotification, CancellationToken, Task>> handlerCalls, INotification notification, CancellationToken cancellationToken)
         {
             WasCalled = true;
@@ -166,6 +354,9 @@ public class MediatorTests
 
     // --- Tests for Send Method (with response) ---
 
+    /// <summary>
+    /// Tests that send should invoke correct request handler and return response
+    /// </summary>
     [Fact]
     public async Task Send_ShouldInvokeCorrectRequestHandler_AndReturnResponse()
     {
@@ -185,6 +376,9 @@ public class MediatorTests
         Assert.Equal("Handled: Hello World", result);
     }
 
+    /// <summary>
+    /// Tests that send should execute pipeline behaviors in correct order
+    /// </summary>
     [Fact]
     public async Task Send_ShouldExecutePipelineBehaviors_InCorrectOrder()
     {
@@ -222,6 +416,9 @@ public class MediatorTests
     }
 
 
+    /// <summary>
+    /// Tests that send should throw exception when no handler found
+    /// </summary>
     [Fact]
     public async Task Send_ShouldThrowException_WhenNoHandlerFound()
     {
@@ -239,6 +436,9 @@ public class MediatorTests
 
     // --- Tests for Send Method (without response) ---
 
+    /// <summary>
+    /// Tests that send command should invoke correct command handler
+    /// </summary>
     [Fact]
     public async Task SendCommand_ShouldInvokeCorrectCommandHandler()
     {
@@ -260,6 +460,9 @@ public class MediatorTests
         Assert.True(handler.WasHandled);
     }
 
+    /// <summary>
+    /// Tests that send command should throw exception when no handler found
+    /// </summary>
     [Fact]
     public async Task SendCommand_ShouldThrowException_WhenNoHandlerFound()
     {
@@ -277,6 +480,9 @@ public class MediatorTests
 
     // --- Tests for Publish Method ---
 
+    /// <summary>
+    /// Tests that publish should invoke all registered notification handlers
+    /// </summary>
     [Fact]
     public async Task Publish_ShouldInvokeAllRegisteredNotificationHandlers()
     {
@@ -304,6 +510,9 @@ public class MediatorTests
         Assert.True(handler2.WasHandled);
     }
 
+    /// <summary>
+    /// Tests that publish should not throw exception when no notification handlers found
+    /// </summary>
     [Fact]
     public async Task Publish_ShouldNotThrowException_WhenNoNotificationHandlersFound()
     {
@@ -321,6 +530,9 @@ public class MediatorTests
 
     // --- NEW TESTS: Pre-Processors ---
 
+    /// <summary>
+    /// Tests that send should execute pre processors for request with response
+    /// </summary>
     [Fact]
     public async Task Send_ShouldExecutePreProcessors_ForRequestWithResponse()
     {
@@ -347,6 +559,9 @@ public class MediatorTests
         Assert.Equal("Pre-Processor 2 for TestRequest", logs[1]);
     }
 
+    /// <summary>
+    /// Tests that send should execute pre processors for request without response
+    /// </summary>
     [Fact]
     public async Task Send_ShouldExecutePreProcessors_ForRequestWithoutResponse()
     {
@@ -375,6 +590,9 @@ public class MediatorTests
 
     // --- NEW TESTS: Post-Processors ---
 
+    /// <summary>
+    /// Tests that send should execute post processors for request with response
+    /// </summary>
     [Fact]
     public async Task Send_ShouldExecutePostProcessors_ForRequestWithResponse()
     {
@@ -404,6 +622,9 @@ public class MediatorTests
     }
 
     // --- NEW TEST: Custom Notification Publisher via AddConcordiaCoreServices<TNotificationPublisher> ---
+    /// <summary>
+    /// Tests that publish should use custom notification publisher when registered via core services
+    /// </summary>
     [Fact]
     public async Task Publish_ShouldUseCustomNotificationPublisher_WhenRegisteredViaCoreServices()
     {
@@ -442,6 +663,9 @@ public class MediatorTests
 
 
     // --- ORIGINAL TEST: Custom Notification Publisher via AddMediator (needs further debugging) ---
+    /// <summary>
+    /// Tests that publish should use custom notification publisher when registered
+    /// </summary>
     [Fact]
     public async Task Publish_ShouldUseCustomNotificationPublisher_WhenRegistered()
     {

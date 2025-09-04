@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Text;
@@ -9,11 +9,19 @@ using System.Threading;
 
 namespace Concordia.Generator;
 
+/// <summary>
+/// The concordia generator class
+/// </summary>
+/// <seealso cref="IIncrementalGenerator"/>
 [Generator]
 // This class is a source generator that automatically registers Concordia handlers.
 public class ConcordiaGenerator : IIncrementalGenerator
 {
     // Initializes the incremental generator.
+    /// <summary>
+    /// Initializes the context
+    /// </summary>
+    /// <param name="context">The context</param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
 #if DEBUG
@@ -73,6 +81,11 @@ public class ConcordiaGenerator : IIncrementalGenerator
     }
 
     // Checks if a syntax node is a candidate for a handler.
+    /// <summary>
+    /// Ises the handler candidate using the specified node
+    /// </summary>
+    /// <param name="node">The node</param>
+    /// <returns>The bool</returns>
     private static bool IsHandlerCandidate(SyntaxNode node)
     {
         return node is ClassDeclarationSyntax classDeclaration &&
@@ -85,6 +98,12 @@ public class ConcordiaGenerator : IIncrementalGenerator
     }
 
     // Retrieves handler information from a syntax context.
+    /// <summary>
+    /// Gets the handler info using the specified context
+    /// </summary>
+    /// <param name="context">The context</param>
+    /// <param name="cancellationToken">The cancellation token</param>
+    /// <returns>The handler info</returns>
     private static HandlerInfo? GetHandlerInfo(GeneratorSyntaxContext context, CancellationToken cancellationToken)
     {
         var classDeclaration = (ClassDeclarationSyntax)context.Node;
@@ -143,6 +162,13 @@ public class ConcordiaGenerator : IIncrementalGenerator
     }
 
     // Generates the handlers registration code.
+    /// <summary>
+    /// Generates the handlers registration code using the specified method name
+    /// </summary>
+    /// <param name="methodName">The method name</param>
+    /// <param name="generatedNamespace">The generated namespace</param>
+    /// <param name="handlers">The handlers</param>
+    /// <returns>The string</returns>
     private static string GenerateHandlersRegistrationCode(string methodName, string generatedNamespace, ImmutableArray<HandlerInfo> handlers)
     {
         var sb = new StringBuilder();

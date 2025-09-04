@@ -1,4 +1,4 @@
-﻿using Xunit;
+using Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using System.Threading;
@@ -13,27 +13,63 @@ namespace Concordia.Core.Tests
     // Queste classi dovrebbero idealmente essere in file separati o in una cartella "TestHelpers"
     // all'interno del progetto di test, ma sono incluse qui per completezza dello snippet.
 
+    /// <summary>
+    /// The test object request class
+    /// </summary>
+    /// <seealso cref="IRequest{string}"/>
     public class TestObjectRequest : IRequest<string>
     {
+        /// <summary>
+        /// Gets or sets the value of the message
+        /// </summary>
         public string Message { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// The test object request handler class
+    /// </summary>
+    /// <seealso cref="IRequestHandler{TestObjectRequest, string}"/>
     public class TestObjectRequestHandler : IRequestHandler<TestObjectRequest, string>
     {
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>A task containing the string</returns>
         public Task<string> Handle(TestObjectRequest request, CancellationToken cancellationToken)
         {
             return Task.FromResult($"Handled: {request.Message}");
         }
     }
 
+    /// <summary>
+    /// The test object command class
+    /// </summary>
+    /// <seealso cref="IRequest"/>
     public class TestObjectCommand : IRequest
     {
+        /// <summary>
+        /// Gets or sets the value of the command message
+        /// </summary>
         public string CommandMessage { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// The test object command handler class
+    /// </summary>
+    /// <seealso cref="IRequestHandler{TestObjectCommand}"/>
     public class TestObjectCommandHandler : IRequestHandler<TestObjectCommand>
     {
+        /// <summary>
+        /// Gets or sets the value of the was handled
+        /// </summary>
         public bool WasHandled { get; private set; }
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         public Task Handle(TestObjectCommand request, CancellationToken cancellationToken)
         {
             WasHandled = true;
@@ -43,8 +79,18 @@ namespace Concordia.Core.Tests
     }
 
     // Handler di supporto per testare la propagazione del CancellationToken
+    /// <summary>
+    /// The test object request handler with cancellation class
+    /// </summary>
+    /// <seealso cref="IRequestHandler{TestObjectRequest, string}"/>
     public class TestObjectRequestHandlerWithCancellation : IRequestHandler<TestObjectRequest, string>
     {
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>A task containing the string</returns>
         public Task<string> Handle(TestObjectRequest request, CancellationToken cancellationToken)
         {
             // Lancia un'eccezione se il token di cancellazione è stato richiesto
@@ -54,8 +100,14 @@ namespace Concordia.Core.Tests
     }
 
 
+    /// <summary>
+    /// The mediator object send tests class
+    /// </summary>
     public class MediatorObjectSendTests
     {
+        /// <summary>
+        /// Tests that send object request with response should return correct response
+        /// </summary>
         [Fact]
         public async Task Send_ObjectRequestWithResponse_ShouldReturnCorrectResponse()
         {
@@ -78,6 +130,9 @@ namespace Concordia.Core.Tests
             Assert.Equal("Handled: Hello World", response);
         }
 
+        /// <summary>
+        /// Tests that send object request without response should execute handler
+        /// </summary>
         [Fact]
         public async Task Send_ObjectRequestWithoutResponse_ShouldExecuteHandler()
         {
@@ -103,6 +158,9 @@ namespace Concordia.Core.Tests
             Assert.Null(response);
         }
 
+        /// <summary>
+        /// Tests that send unregistered object request should throw invalid operation exception
+        /// </summary>
         [Fact]
         public async Task Send_UnregisteredObjectRequest_ShouldThrowInvalidOperationException()
         {
@@ -120,6 +178,9 @@ namespace Concordia.Core.Tests
             Assert.Contains("No handler found for object request of type TestObjectRequest", exception.Message);
         }
 
+        /// <summary>
+        /// Tests that send object request with cancellation token should propagate token
+        /// </summary>
         [Fact]
         public async Task Send_ObjectRequestWithCancellationToken_ShouldPropagateToken()
         {

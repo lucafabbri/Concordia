@@ -1,4 +1,4 @@
-﻿using Concordia;
+using Concordia;
 
 namespace Concordia;
 

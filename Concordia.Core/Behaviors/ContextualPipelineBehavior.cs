@@ -1,4 +1,4 @@
-﻿// This file contains the abstract ContextualPipelineBehavior class,
+// This file contains the abstract ContextualPipelineBehavior class,
 // which provides a base implementation for pipeline behaviors that
 // manage a shared context. The comments have been updated to be
 // in English for broader accessibility.
@@ -28,6 +28,9 @@ namespace Concordia.Behaviors
         // that the value is isolated for each asynchronous execution flow, such as the one
         // generated for a single HTTP request. It's not a single application-wide context,
         // but a context for each pipeline instance.
+        /// <summary>
+        /// The command pipeline context
+        /// </summary>
         private static readonly AsyncLocal<ICommandPipelineContext> _currentContext = new AsyncLocal<ICommandPipelineContext>();
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿// Questo file è un polyfill per System.Runtime.CompilerServices.IsExternalInit.
+// Questo file è un polyfill per System.Runtime.CompilerServices.IsExternalInit.
 // È necessario per consentire l'uso di tipi 'record' (C# 9.0) in progetti .NET Standard 2.0.
 
 namespace System.Runtime.CompilerServices

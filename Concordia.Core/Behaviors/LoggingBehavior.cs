@@ -1,4 +1,4 @@
-﻿using Concordia;
+using Concordia;
 
 namespace Concordia.Behaviors;
 
@@ -10,6 +10,13 @@ namespace Concordia.Behaviors;
 public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
+    /// <summary>
+    /// Handles the request
+    /// </summary>
+    /// <param name="request">The request</param>
+    /// <param name="next">The next</param>
+    /// <param name="cancellationToken">The cancellation token</param>
+    /// <returns>The response</returns>
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         Console.WriteLine($"--- Handling Request: {typeof(TRequest).Name} ---");
