@@ -2,22 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+
     <IsRoslynComponent>true</IsRoslynComponent>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
-  </ItemGroup>
-
-  <!-- NuGet Metadata -->
-  <PropertyGroup>
+    <IsPackable>true</IsPackable>
     <PackageId>Concordia.Generator</PackageId>
     <Version>1.2.3</Version>
     <Authors>Luca Fabbri</Authors>
@@ -26,19 +16,29 @@
     <PackageTags>mediator;cqrs;source-generator;code-generation;concordia;lucafabbri</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
     <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
     <None Include="build\Concordia.Generator.props" Pack="true" PackagePath="buildTransitive\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Concordia.Core\Concordia.Core.csproj" />
+    <ProjectReference Include="..\Concordia.Core\Concordia.Core.csproj" PrivateAssets="all" />
   </ItemGroup>
+
+  <Target Name="AddTransitiveDependenciesToPackage" AfterTargets="GetPackageContents">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(TargetDir)\Concordia.Core.dll" PackagePath="analyzers/dotnet/cs" />
+    </ItemGroup>
+  </Target>
 
 </Project>
