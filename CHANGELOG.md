@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.2.5"></a>
+## [1.2.5](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.2.5) (2025-09-05)
+
 <a name="1.2.4"></a>
 ## [1.2.4](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.2.4) (2025-09-05)
 
