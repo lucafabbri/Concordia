@@ -122,7 +122,7 @@ public class ComprehensiveCoverageTests
     /// <summary>
     /// Pipeline behavior that records execution order
     /// </summary>
-    public class OrderTrackingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    internal class OrderTrackingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
         public static List<string> ExecutionOrder { get; set; } = new();
@@ -379,7 +379,7 @@ public class ComprehensiveCoverageTests
     /// <summary>
     /// Bad pipeline behavior
     /// </summary>
-    public class BadPipelineBehavior : IPipelineBehavior<CoverageTestRequest, string>
+    internal class BadPipelineBehavior : IPipelineBehavior<CoverageTestRequest, string>
     {
         Task<string> IPipelineBehavior<CoverageTestRequest, string>.Handle(CoverageTestRequest request, RequestHandlerDelegate<string> next, CancellationToken cancellationToken)
         {

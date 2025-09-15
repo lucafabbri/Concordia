@@ -130,7 +130,7 @@ public string EventName { get; set; } }
     /// The test logging behavior class
     /// </summary>
     /// <seealso cref="IPipelineBehavior{TRequest, TResponse}"/>
-    public class TestLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    internal class TestLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
         /// <summary>
@@ -166,7 +166,7 @@ public string EventName { get; set; } }
     /// The test validation behavior class
     /// </summary>
     /// <seealso cref="IPipelineBehavior{TRequest, TResponse}"/>
-    public class TestValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    internal class TestValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
         /// <summary>

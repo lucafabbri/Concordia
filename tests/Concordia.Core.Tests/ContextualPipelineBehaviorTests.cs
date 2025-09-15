@@ -119,212 +119,211 @@ public class CounterHolder : ICounterHolder
     public int Counter { get; set; }
 }
 
-// Il primo comportamento contestuale. Incrementa il contatore.
-/// <summary>
-/// The first contextual behavior class
-/// </summary>
-/// <seealso cref="ContextualPipelineBehavior{TRequest, TResponse, SharedTestContext}"/>
-public class FirstContextualBehavior<TRequest, TResponse> : ContextualPipelineBehavior<TRequest, TResponse, SharedTestContext>
-    where TRequest : IRequest<TResponse>
-{
-    /// <summary>
-    /// Ons the inbound using the specified context
-    /// </summary>
-    /// <param name="context">The context</param>
-    /// <param name="request">The request</param>
-    /// <param name="cancellationToken">The cancellation token</param>
-    protected override Task OnInbound(SharedTestContext context, TRequest request, CancellationToken cancellationToken)
-    {
-        context.Counter++;
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Ons the outbound using the specified context
-    /// </summary>
-    /// <param name="context">The context</param>
-    /// <param name="response">The response</param>
-    /// <param name="cancellationToken">The cancellation token</param>
-    protected override Task OnOutbound(SharedTestContext context, TResponse response, CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-}
-
-// Il secondo comportamento contestuale. Incrementa il contatore e memorizza il valore finale.
-/// <summary>
-/// The second contextual behavior class
-/// </summary>
-/// <seealso cref="ContextualPipelineBehavior{TRequest, TResponse, SharedTestContext}"/>
-public class SecondContextualBehavior<TRequest, TResponse> : ContextualPipelineBehavior<TRequest, TResponse, SharedTestContext>
-    where TRequest : IRequest<TResponse>
-{
-    /// <summary>
-    /// The counter holder
-    /// </summary>
-    private readonly ICounterHolder _counterHolder;
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SecondContextualBehavior{TRequest,TResponse}"/> class
-    /// </summary>
-    /// <param name="counterHolder">The counter holder</param>
-    public SecondContextualBehavior(ICounterHolder counterHolder) => _counterHolder = counterHolder;
-
-    /// <summary>
-    /// Ons the inbound using the specified context
-    /// </summary>
-    /// <param name="context">The context</param>
-    /// <param name="request">The request</param>
-    /// <param name="cancellationToken">The cancellation token</param>
-    protected override Task OnInbound(SharedTestContext context, TRequest request, CancellationToken cancellationToken)
-    {
-        context.Counter++;
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Ons the outbound using the specified context
-    /// </summary>
-    /// <param name="context">The context</param>
-    /// <param name="response">The response</param>
-    /// <param name="cancellationToken">The cancellation token</param>
-    protected override Task OnOutbound(SharedTestContext context, TResponse response, CancellationToken cancellationToken)
-    {
-        // Questo è l'ultimo punto in cui il contatore è aggiornato prima della pulizia.
-        // Lo salviamo per poterlo verificare nel test.
-        _counterHolder.Counter = context.Counter;
-        return Task.CompletedTask;
-    }
-}
-
-// Un comportamento che ferma la pipeline in caso di errore.
-/// <summary>
-/// The error behavior class
-/// </summary>
-/// <seealso cref="IPipelineBehavior{TRequest, TResponse}"/>
-public class ErrorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
-{
-    /// <summary>
-    /// The counter holder
-    /// </summary>
-    private readonly ICounterHolder _counterHolder;
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ErrorBehavior{TRequest,TResponse}"/> class
-    /// </summary>
-    /// <param name="counterHolder">The counter holder</param>
-    public ErrorBehavior(ICounterHolder counterHolder) => _counterHolder = counterHolder;
-
-    /// <summary>
-    /// Handles the request
-    /// </summary>
-    /// <param name="request">The request</param>
-    /// <param name="next">The next</param>
-    /// <param name="cancellationToken">The cancellation token</param>
-    /// <returns>A task containing the response</returns>
-    public Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-    {
-        // Se la richiesta è di tipo ErrorRequest, interrompiamo la pipeline.
-        if (request is ErrorRequest)
-        {
-            // Resetta il contatore per verificare che i behavior successivi non siano eseguiti.
-            _counterHolder.Counter = 0;
-            // Restituisce un Task con una risposta di errore, senza chiamare 'next()'.
-            return Task.FromResult((TResponse)(object)"Error occurred");
-        }
-
-        // Se non è un errore, continua la pipeline normalmente.
-        return next(cancellationToken);
-    }
-}
-
-// Un comportamento che induce un errore nel contesto e cortocircuita la pipeline.
-/// <summary>
-/// The error inducing behavior class
-/// </summary>
-/// <seealso cref="ContextualPipelineBehavior{TRequest, TResponse, SharedTestContext}"/>
-public class ErrorInducingBehavior<TRequest, TResponse> : ContextualPipelineBehavior<TRequest, TResponse, SharedTestContext>
-    where TRequest : IRequest<TResponse>
-{
-    /// <summary>
-    /// The counter holder
-    /// </summary>
-    private readonly ICounterHolder _counterHolder;
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ErrorInducingBehavior{TRequest,TResponse}"/> class
-    /// </summary>
-    /// <param name="counterHolder">The counter holder</param>
-    public ErrorInducingBehavior(ICounterHolder counterHolder) => _counterHolder = counterHolder;
-
-    /// <summary>
-    /// Ons the inbound using the specified context
-    /// </summary>
-    /// <param name="context">The context</param>
-    /// <param name="request">The request</param>
-    /// <param name="cancellationToken">The cancellation token</param>
-    protected override Task OnInbound(SharedTestContext context, TRequest request, CancellationToken cancellationToken)
-    {
-        // Qui simuliamo l'errore.
-        context.IsSuccess = false;
-        context.ErrorMessage = "Simulated error from ErrorInducingBehavior";
-
-        // Incrementiamo il contatore per verificare che questo comportamento venga eseguito.
-        context.Counter++;
-        _counterHolder.Counter = context.Counter;
-
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Ons the outbound using the specified context
-    /// </summary>
-    /// <param name="context">The context</param>
-    /// <param name="response">The response</param>
-    /// <param name="cancellationToken">The cancellation token</param>
-    protected override Task OnOutbound(SharedTestContext context, TResponse response, CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-}
-
-// Un comportamento che dovrebbe essere saltato a causa del cortocircuito.
-/// <summary>
-/// The follow up behavior class
-/// </summary>
-/// <seealso cref="ContextualPipelineBehavior{TRequest, TResponse, SharedTestContext}"/>
-public class FollowUpBehavior<TRequest, TResponse> : ContextualPipelineBehavior<TRequest, TResponse, SharedTestContext>
-    where TRequest : IRequest<TResponse>
-{
-    /// <summary>
-    /// Ons the inbound using the specified context
-    /// </summary>
-    /// <param name="context">The context</param>
-    /// <param name="request">The request</param>
-    /// <param name="cancellationToken">The cancellation token</param>
-    protected override Task OnInbound(SharedTestContext context, TRequest request, CancellationToken cancellationToken)
-    {
-        // Questo contatore non dovrebbe mai essere incrementato se la pipeline si interrompe.
-        context.Counter++;
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Ons the outbound using the specified context
-    /// </summary>
-    /// <param name="context">The context</param>
-    /// <param name="response">The response</param>
-    /// <param name="cancellationToken">The cancellation token</param>
-    protected override Task OnOutbound(SharedTestContext context, TResponse response, CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-}
+// Behavior classes moved to ContextualPipelineIntegrationTests as nested classes
 
 // ---------- La classe di test xUnit ----------
-/// <summary>
-/// The contextual pipeline integration tests class
-/// </summary>
 public class ContextualPipelineIntegrationTests
 {
+    // Il primo comportamento contestuale. Incrementa il contatore.
+    /// <summary>
+    /// The first contextual behavior class
+    /// </summary>
+    /// <seealso cref="ContextualPipelineBehavior{TRequest, TResponse, SharedTestContext}"/>
+    internal class FirstContextualBehavior<TRequest, TResponse> : ContextualPipelineBehavior<TRequest, TResponse, SharedTestContext>
+        where TRequest : IRequest<TResponse>
+    {
+        /// <summary>
+        /// Ons the inbound using the specified context
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        protected override Task OnInbound(SharedTestContext context, TRequest request, CancellationToken cancellationToken)
+        {
+            context.Counter++;
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Ons the outbound using the specified context
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="response">The response</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        protected override Task OnOutbound(SharedTestContext context, TResponse response, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+    }
+
+    // Il secondo comportamento contestuale. Incrementa il contatore e memorizza il valore finale.
+    /// <summary>
+    /// The second contextual behavior class
+    /// </summary>
+    /// <seealso cref="ContextualPipelineBehavior{TRequest, TResponse, SharedTestContext}"/>
+    internal class SecondContextualBehavior<TRequest, TResponse> : ContextualPipelineBehavior<TRequest, TResponse, SharedTestContext>
+        where TRequest : IRequest<TResponse>
+    {
+        /// <summary>
+        /// The counter holder
+        /// </summary>
+        private readonly ICounterHolder _counterHolder;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SecondContextualBehavior{TRequest,TResponse}"/> class
+        /// </summary>
+        /// <param name="counterHolder">The counter holder</param>
+        public SecondContextualBehavior(ICounterHolder counterHolder) => _counterHolder = counterHolder;
+
+        /// <summary>
+        /// Ons the inbound using the specified context
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        protected override Task OnInbound(SharedTestContext context, TRequest request, CancellationToken cancellationToken)
+        {
+            context.Counter++;
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Ons the outbound using the specified context
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="response">The response</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        protected override Task OnOutbound(SharedTestContext context, TResponse response, CancellationToken cancellationToken)
+        {
+            // Questo è l'ultimo punto in cui il contatore è aggiornato prima della pulizia.
+            // Lo salviamo per poterlo verificare nel test.
+            _counterHolder.Counter = context.Counter;
+            return Task.CompletedTask;
+        }
+    }
+
+    // Un comportamento che ferma la pipeline in caso di errore.
+    /// <summary>
+    /// The error behavior class
+    /// </summary>
+    /// <seealso cref="IPipelineBehavior{TRequest, TResponse}"/>
+    internal class ErrorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
+    {
+        /// <summary>
+        /// The counter holder
+        /// </summary>
+        private readonly ICounterHolder _counterHolder;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ErrorBehavior{TRequest,TResponse}"/> class
+        /// </summary>
+        /// <param name="counterHolder">The counter holder</param>
+        public ErrorBehavior(ICounterHolder counterHolder) => _counterHolder = counterHolder;
+
+        /// <summary>
+        /// Handles the request
+        /// </summary>
+        /// <param name="request">The request</param>
+        /// <param name="next">The next</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>A task containing the response</returns>
+        public Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        {
+            // Se la richiesta è di tipo ErrorRequest, interrompiamo la pipeline.
+            if (request is ErrorRequest)
+            {
+                // Resetta il contatore per verificare che i behavior successivi non siano eseguiti.
+                _counterHolder.Counter = 0;
+                // Restituisce un Task con una risposta di errore, senza chiamare 'next()'.
+                return Task.FromResult((TResponse)(object)"Error occurred");
+            }
+
+            // Se non è un errore, continua la pipeline normalmente.
+            return next(cancellationToken);
+        }
+    }
+
+    // Un comportamento che induce un errore nel contesto e cortocircuita la pipeline.
+    /// <summary>
+    /// The error inducing behavior class
+    /// </summary>
+    /// <seealso cref="ContextualPipelineBehavior{TRequest, TResponse, SharedTestContext}"/>
+    internal class ErrorInducingBehavior<TRequest, TResponse> : ContextualPipelineBehavior<TRequest, TResponse, SharedTestContext>
+        where TRequest : IRequest<TResponse>
+    {
+        /// <summary>
+        /// The counter holder
+        /// </summary>
+        private readonly ICounterHolder _counterHolder;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ErrorInducingBehavior{TRequest,TResponse}"/> class
+        /// </summary>
+        /// <param name="counterHolder">The counter holder</param>
+        public ErrorInducingBehavior(ICounterHolder counterHolder) => _counterHolder = counterHolder;
+
+        /// <summary>
+        /// Ons the inbound using the specified context
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        protected override Task OnInbound(SharedTestContext context, TRequest request, CancellationToken cancellationToken)
+        {
+            // Qui simuliamo l'errore.
+            context.IsSuccess = false;
+            context.ErrorMessage = "Simulated error from ErrorInducingBehavior";
+
+            // Incrementiamo il contatore per verificare che questo comportamento venga eseguito.
+            context.Counter++;
+            _counterHolder.Counter = context.Counter;
+
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Ons the outbound using the specified context
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="response">The response</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        protected override Task OnOutbound(SharedTestContext context, TResponse response, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+    }
+
+    // Un comportamento di follow-up che non dovrebbe essere mai eseguito in caso di errore del contesto.
+    /// <summary>
+    /// The follow up behavior class
+    /// </summary>
+    /// <seealso cref="ContextualPipelineBehavior{TRequest, TResponse, SharedTestContext}"/>
+    internal class FollowUpBehavior<TRequest, TResponse> : ContextualPipelineBehavior<TRequest, TResponse, SharedTestContext>
+        where TRequest : IRequest<TResponse>
+    {
+        /// <summary>
+        /// Ons the inbound using the specified context
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        protected override Task OnInbound(SharedTestContext context, TRequest request, CancellationToken cancellationToken)
+        {
+            // Questo contatore non dovrebbe mai essere incrementato se la pipeline si interrompe.
+            context.Counter++;
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Ons the outbound using the specified context
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="response">The response</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        protected override Task OnOutbound(SharedTestContext context, TResponse response, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+    }
+
     /// <summary>
     /// Tests that send with multiple contextual behaviors should share context and clean up
     /// </summary>
