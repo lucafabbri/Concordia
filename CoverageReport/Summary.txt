@@ -1,0 +1,35 @@
+Summary
+  Generated on: 09/15/2025 - 08:24:30
+  Coverage date: 09/15/2025 - 08:11:16 - 09/15/2025 - 08:23:24
+  Parser: MultiReport (2x Cobertura)
+  Assemblies: 2
+  Classes: 11
+  Files: 10
+  Line coverage: 85.8%
+  Covered lines: 571
+  Uncovered lines: 94
+  Coverable lines: 665
+  Total lines: 1542
+  Branch coverage: 80.3% (233 of 290)
+  Covered branches: 233
+  Total branches: 290
+  Method coverage: 98.3% (59 of 60)
+  Full method coverage: 66.6% (40 of 60)
+  Covered methods: 59
+  Fully covered methods: 40
+  Total methods: 60
+
+Concordia.Core                                                    96.5%
+  Concordia.Behaviors.ContextualPipelineBehavior<T1, T2, T3>       100%
+  Concordia.Behaviors.LoggingBehavior<T1, T2>                      100%
+  Concordia.ConcordiaCoreServiceCollectionExtensions               100%
+  Concordia.Core.Behaviors.RequestPostProcessorBehavior<T1, T2>    100%
+  Concordia.Core.Behaviors.RequestPreProcessorBehavior<T1, T2>     100%
+  Concordia.ForeachAwaitPublisher                                  100%
+  Concordia.Mediator                                              95.1%
+  Concordia.TaskWhenAllPublisher                                   100%
+
+Concordia.MediatR                                                 78.8%
+  Concordia.MediatR.ConcordiaMediatRServiceCollectionExtensions    100%
+  Concordia.MediatR.ConcordiaMediatRServiceConfiguration          64.6%
+  Concordia.MediatR.ReflectionExtensions                          63.6%
