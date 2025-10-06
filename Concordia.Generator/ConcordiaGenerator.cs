@@ -88,13 +88,7 @@ public class ConcordiaGenerator : IIncrementalGenerator
     /// <returns>The bool</returns>
     private static bool IsHandlerCandidate(SyntaxNode node)
     {
-        return node is ClassDeclarationSyntax classDeclaration &&
-               classDeclaration.BaseList != null &&
-               classDeclaration.BaseList.Types.Any(baseType =>
-                   baseType.Type is GenericNameSyntax genericName &&
-                   (genericName.Identifier.Text.Contains("RequestHandler") ||
-                    genericName.Identifier.Text.Contains("NotificationHandler") ||
-                    genericName.Identifier.Text.Contains("PipelineBehavior")));
+        return node is ClassDeclarationSyntax { BaseList: not null };
     }
 
     // Retrieves handler information from a syntax context.
@@ -111,6 +105,11 @@ public class ConcordiaGenerator : IIncrementalGenerator
 
         // Gets the declared symbol for the class.
         if (semanticModel.GetDeclaredSymbol(classDeclaration, cancellationToken) is not INamedTypeSymbol classSymbol)
+        {
+            return null;
+        }
+
+        if (classSymbol.IsAbstract)
         {
             return null;
         }
