@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.3.0"></a>
+## [1.3.0](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.3.0) (2025-11-10)
+
+### Features
+
+* adds background parallel publisher ([8d65323](https://www.github.com/lucafabbri/Concordia/commit/8d65323dbb017cb5b7ac075d447cee1b81472d6a))
+
 <a name="1.2.6"></a>
 ## [1.2.6](https://www.github.com/lucafabbri/Concordia/releases/tag/v1.2.6) (2025-10-06)
 

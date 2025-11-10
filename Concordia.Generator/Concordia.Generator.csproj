@@ -9,7 +9,7 @@
 
     <IsPackable>true</IsPackable>
     <PackageId>Concordia.Generator</PackageId>
-    <Version>1.2.6</Version>
+    <Version>1.3.0</Version>
     <Authors>Luca Fabbri</Authors>
     <Description>A C# Source Generator for automatic handler registration in Concordia.</Description>
     <RepositoryUrl>https://github.com/lucafabbri/Concordia</RepositoryUrl>
