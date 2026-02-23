@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 
-// Example Controller for usage (remains unchanged)
+// REST API controller demonstrating full CRUD database management via Concordia mediator
 namespace Concordia.Examples.Web.Controllers
 {
     /// <summary>
-    /// The products controller class
+    /// REST API controller for product database management.
+    /// Demonstrates full CRUD operations using the Concordia mediator pattern.
     /// </summary>
     /// <seealso cref="ControllerBase"/>
     [ApiController]
@@ -32,9 +33,20 @@ namespace Concordia.Examples.Web.Controllers
         }
 
         /// <summary>
-        /// Gets the id
+        /// Returns all products from the database.
         /// </summary>
-        /// <param name="id">The id</param>
+        /// <returns>A task containing the action result with the product list</returns>
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var products = await _sender.Send(new ListProductsQuery());
+            return Ok(products);
+        }
+
+        /// <summary>
+        /// Returns the product with the specified identifier.
+        /// </summary>
+        /// <param name="id">The product identifier</param>
         /// <returns>A task containing the action result</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -49,9 +61,9 @@ namespace Concordia.Examples.Web.Controllers
         }
 
         /// <summary>
-        /// Creates the product using the specified command
+        /// Creates a new product in the database.
         /// </summary>
-        /// <param name="command">The command</param>
+        /// <param name="command">The create product command</param>
         /// <returns>A task containing the action result</returns>
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
@@ -66,6 +78,32 @@ namespace Concordia.Examples.Web.Controllers
             await _mediator.Publish(notification);
 
             return CreatedAtAction(nameof(Get), new { id = command.ProductId }, null);
+        }
+
+        /// <summary>
+        /// Updates an existing product in the database.
+        /// </summary>
+        /// <param name="id">The product identifier</param>
+        /// <param name="command">The update product command</param>
+        /// <returns>A task containing the action result</returns>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductCommand command)
+        {
+            command.ProductId = id;
+            await _sender.Send(command);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Deletes the product with the specified identifier from the database.
+        /// </summary>
+        /// <param name="id">The product identifier</param>
+        /// <returns>A task containing the action result</returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            await _sender.Send(new DeleteProductCommand { ProductId = id });
+            return NoContent();
         }
     }
 }

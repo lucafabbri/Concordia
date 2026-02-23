@@ -1,5 +1,6 @@
 using Concordia;
 using Concordia.Examples.Web;
+using Concordia.Examples.Web.Generated;
 using Microsoft.OpenApi;
 using System.Reflection; // Namespace for the generated registrations
 
