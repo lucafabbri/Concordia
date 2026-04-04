@@ -7,7 +7,7 @@
 
     <!-- NuGet Metadata -->
     <PackageId>Concordia.MediatR</PackageId>
-    <Version>2.3.3</Version>
+    <Version>2.4.0</Version>
     <Authors>Luca Fabbri</Authors>
     <Description>A compatibility layer for Concordia, mirroring MediatR's reflection-based handler registration.</Description>
     <RepositoryUrl>https://github.com/lucafabbri/Concordia</RepositoryUrl>
