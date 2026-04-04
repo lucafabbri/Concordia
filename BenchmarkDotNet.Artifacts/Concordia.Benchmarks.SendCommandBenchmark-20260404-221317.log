@@ -1,0 +1,298 @@
+// Validating benchmarks:
+// ***** BenchmarkRunner: Start   *****
+// ***** Found 3 benchmark(s) in total *****
+// ***** Building 1 exe(s) in Parallel: Start   *****
+// start dotnet  restore --nodeReuse:false /p:UseSharedCompilation=false /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1/" /p:OutDir="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\bin\Release\net10.0/" /p:OutputPath="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\bin\Release\net10.0/" /p:PublishDir="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\publish/" in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1
+// command took 7.99 sec and exited with 0
+// start dotnet  build -c Release --no-restore --nodeReuse:false /p:UseSharedCompilation=false /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1/" /p:OutDir="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\bin\Release\net10.0/" /p:OutputPath="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\bin\Release\net10.0/" /p:PublishDir="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\publish/" --output "C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\bin\Release\net10.0/" in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1
+// command took 16.92 sec and exited with 0
+// ***** Done, took 00:00:25 (25.06 sec)   *****
+// Found 3 benchmarks:
+//   SendCommandBenchmark.MediatR_SendCommand: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+//   SendCommandBenchmark.Concordia_SendCommand: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+//   SendCommandBenchmark.Martin_SendCommand: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prestazioni elevate)
+// **************************
+// Benchmark: SendCommandBenchmark.MediatR_SendCommand: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet Concordia.Benchmarks-ShortRun-1.dll --anonymousPipes 2012 2016 --benchmarkName Concordia.Benchmarks.SendCommandBenchmark.MediatR_SendCommand --job ShortRun --benchmarkId 0 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\bin\Release\net10.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.8
+// Runtime=.NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX2+BMI1+BMI2+F16C+FMA+LZCNT+MOVBE,AVX,SSE3+SSSE3+SSE4.1+SSE4.2+POPCNT,X86Base+SSE+SSE2,AES+PCLMUL,AvxVnni,SERIALIZE VectorSize=256
+// Job: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+
+OverheadJitting  1: 1 op, 220800.00 ns, 220.8000 us/op
+WorkloadJitting  1: 1 op, 7854900.00 ns, 7.8549 ms/op
+
+OverheadJitting  2: 16 op, 346200.00 ns, 21.6375 us/op
+WorkloadJitting  2: 16 op, 1686100.00 ns, 105.3813 us/op
+
+WorkloadPilot    1: 16 op, 214400.00 ns, 13.4000 us/op
+WorkloadPilot    2: 32 op, 44300.00 ns, 1.3844 us/op
+WorkloadPilot    3: 64 op, 79400.00 ns, 1.2406 us/op
+WorkloadPilot    4: 128 op, 320100.00 ns, 2.5008 us/op
+WorkloadPilot    5: 256 op, 136200.00 ns, 532.0313 ns/op
+WorkloadPilot    6: 512 op, 327800.00 ns, 640.2344 ns/op
+WorkloadPilot    7: 1024 op, 561800.00 ns, 548.6328 ns/op
+WorkloadPilot    8: 2048 op, 1052000.00 ns, 513.6719 ns/op
+WorkloadPilot    9: 4096 op, 2204900.00 ns, 538.3057 ns/op
+WorkloadPilot   10: 8192 op, 4014400.00 ns, 490.0391 ns/op
+WorkloadPilot   11: 16384 op, 11700800.00 ns, 714.1602 ns/op
+WorkloadPilot   12: 32768 op, 16586400.00 ns, 506.1768 ns/op
+WorkloadPilot   13: 65536 op, 35656000.00 ns, 544.0674 ns/op
+WorkloadPilot   14: 131072 op, 84294300.00 ns, 643.1145 ns/op
+WorkloadPilot   15: 262144 op, 74194900.00 ns, 283.0311 ns/op
+WorkloadPilot   16: 524288 op, 57620700.00 ns, 109.9028 ns/op
+WorkloadPilot   17: 1048576 op, 89822200.00 ns, 85.6611 ns/op
+WorkloadPilot   18: 2097152 op, 181954800.00 ns, 86.7628 ns/op
+WorkloadPilot   19: 4194304 op, 410416700.00 ns, 97.8510 ns/op
+WorkloadPilot   20: 8388608 op, 560003800.00 ns, 66.7577 ns/op
+
+OverheadWarmup   1: 8388608 op, 16851800.00 ns, 2.0089 ns/op
+OverheadWarmup   2: 8388608 op, 16074200.00 ns, 1.9162 ns/op
+OverheadWarmup   3: 8388608 op, 15533000.00 ns, 1.8517 ns/op
+OverheadWarmup   4: 8388608 op, 18863300.00 ns, 2.2487 ns/op
+OverheadWarmup   5: 8388608 op, 20020000.00 ns, 2.3866 ns/op
+OverheadWarmup   6: 8388608 op, 25304400.00 ns, 3.0165 ns/op
+OverheadWarmup   7: 8388608 op, 27201300.00 ns, 3.2426 ns/op
+OverheadWarmup   8: 8388608 op, 26750100.00 ns, 3.1889 ns/op
+OverheadWarmup   9: 8388608 op, 27010900.00 ns, 3.2200 ns/op
+OverheadWarmup  10: 8388608 op, 27670800.00 ns, 3.2986 ns/op
+
+OverheadActual   1: 8388608 op, 19631000.00 ns, 2.3402 ns/op
+OverheadActual   2: 8388608 op, 20206100.00 ns, 2.4088 ns/op
+OverheadActual   3: 8388608 op, 19599900.00 ns, 2.3365 ns/op
+OverheadActual   4: 8388608 op, 19674500.00 ns, 2.3454 ns/op
+OverheadActual   5: 8388608 op, 19361300.00 ns, 2.3080 ns/op
+OverheadActual   6: 8388608 op, 19360600.00 ns, 2.3080 ns/op
+OverheadActual   7: 8388608 op, 19404800.00 ns, 2.3132 ns/op
+OverheadActual   8: 8388608 op, 19356500.00 ns, 2.3075 ns/op
+OverheadActual   9: 8388608 op, 19387300.00 ns, 2.3111 ns/op
+OverheadActual  10: 8388608 op, 19445200.00 ns, 2.3180 ns/op
+OverheadActual  11: 8388608 op, 19372200.00 ns, 2.3093 ns/op
+OverheadActual  12: 8388608 op, 19433200.00 ns, 2.3166 ns/op
+OverheadActual  13: 8388608 op, 19362200.00 ns, 2.3082 ns/op
+OverheadActual  14: 8388608 op, 19356000.00 ns, 2.3074 ns/op
+OverheadActual  15: 8388608 op, 19357500.00 ns, 2.3076 ns/op
+
+WorkloadWarmup   1: 8388608 op, 752935800.00 ns, 89.7569 ns/op
+WorkloadWarmup   2: 8388608 op, 919084300.00 ns, 109.5634 ns/op
+WorkloadWarmup   3: 8388608 op, 653990100.00 ns, 77.9617 ns/op
+
+// BeforeActualRun
+WorkloadActual   1: 8388608 op, 901166500.00 ns, 107.4274 ns/op
+WorkloadActual   2: 8388608 op, 938087700.00 ns, 111.8288 ns/op
+WorkloadActual   3: 8388608 op, 869036800.00 ns, 103.5973 ns/op
+
+// AfterActualRun
+WorkloadResult   1: 8388608 op, 881779200.00 ns, 105.1163 ns/op
+WorkloadResult   2: 8388608 op, 918700400.00 ns, 109.5176 ns/op
+WorkloadResult   3: 8388608 op, 849649500.00 ns, 101.2861 ns/op
+// GC:  85 0 0 1073741824 8388608
+// Threading:  0 0 8388608
+
+// AfterAll
+// Benchmark Process 63156 has exited with code 0.
+
+Mean = 105.307 ns, StdErr = 2.378 ns (2.26%), N = 3, StdDev = 4.119 ns
+Min = 101.286 ns, Q1 = 103.201 ns, Median = 105.116 ns, Q3 = 107.317 ns, Max = 109.518 ns
+IQR = 4.116 ns, LowerFence = 97.028 ns, UpperFence = 113.491 ns
+ConfidenceInterval = [30.160 ns; 180.454 ns] (CI 99.9%), Margin = 75.147 ns (71.36% of Mean)
+Skewness = 0.05, Kurtosis = 0.67, MValue = 2
+
+// ** Remained 2 (66,7%) benchmark(s) to run. Estimated finish 2026-04-04 22:14 (0h 0m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prestazioni elevate)
+// **************************
+// Benchmark: SendCommandBenchmark.Concordia_SendCommand: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet Concordia.Benchmarks-ShortRun-1.dll --anonymousPipes 1964 2892 --benchmarkName Concordia.Benchmarks.SendCommandBenchmark.Concordia_SendCommand --job ShortRun --benchmarkId 1 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\bin\Release\net10.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.8
+// Runtime=.NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX2+BMI1+BMI2+F16C+FMA+LZCNT+MOVBE,AVX,SSE3+SSSE3+SSE4.1+SSE4.2+POPCNT,X86Base+SSE+SSE2,AES+PCLMUL,AvxVnni,SERIALIZE VectorSize=256
+// Job: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+
+OverheadJitting  1: 1 op, 276200.00 ns, 276.2000 us/op
+WorkloadJitting  1: 1 op, 7889700.00 ns, 7.8897 ms/op
+
+OverheadJitting  2: 16 op, 331300.00 ns, 20.7063 us/op
+WorkloadJitting  2: 16 op, 2165300.00 ns, 135.3313 us/op
+
+WorkloadPilot    1: 16 op, 353200.00 ns, 22.0750 us/op
+WorkloadPilot    2: 32 op, 162000.00 ns, 5.0625 us/op
+WorkloadPilot    3: 64 op, 252600.00 ns, 3.9469 us/op
+WorkloadPilot    4: 128 op, 416400.00 ns, 3.2531 us/op
+WorkloadPilot    5: 256 op, 621100.00 ns, 2.4262 us/op
+WorkloadPilot    6: 512 op, 1085800.00 ns, 2.1207 us/op
+WorkloadPilot    7: 1024 op, 2135700.00 ns, 2.0856 us/op
+WorkloadPilot    8: 2048 op, 6198500.00 ns, 3.0266 us/op
+WorkloadPilot    9: 4096 op, 12533900.00 ns, 3.0600 us/op
+WorkloadPilot   10: 8192 op, 24040600.00 ns, 2.9346 us/op
+WorkloadPilot   11: 16384 op, 48562900.00 ns, 2.9640 us/op
+WorkloadPilot   12: 32768 op, 125033800.00 ns, 3.8157 us/op
+WorkloadPilot   13: 65536 op, 201205700.00 ns, 3.0702 us/op
+WorkloadPilot   14: 131072 op, 244224800.00 ns, 1.8633 us/op
+WorkloadPilot   15: 262144 op, 203238000.00 ns, 775.2914 ns/op
+WorkloadPilot   16: 524288 op, 597689800.00 ns, 1.1400 us/op
+
+OverheadWarmup   1: 524288 op, 1800000.00 ns, 3.4332 ns/op
+OverheadWarmup   2: 524288 op, 1768100.00 ns, 3.3724 ns/op
+OverheadWarmup   3: 524288 op, 1758400.00 ns, 3.3539 ns/op
+OverheadWarmup   4: 524288 op, 1886600.00 ns, 3.5984 ns/op
+OverheadWarmup   5: 524288 op, 1811900.00 ns, 3.4559 ns/op
+OverheadWarmup   6: 524288 op, 1723900.00 ns, 3.2881 ns/op
+OverheadWarmup   7: 524288 op, 1725200.00 ns, 3.2906 ns/op
+OverheadWarmup   8: 524288 op, 1820200.00 ns, 3.4718 ns/op
+OverheadWarmup   9: 524288 op, 1703800.00 ns, 3.2497 ns/op
+
+OverheadActual   1: 524288 op, 1727100.00 ns, 3.2942 ns/op
+OverheadActual   2: 524288 op, 1787400.00 ns, 3.4092 ns/op
+OverheadActual   3: 524288 op, 1807900.00 ns, 3.4483 ns/op
+OverheadActual   4: 524288 op, 1766000.00 ns, 3.3684 ns/op
+OverheadActual   5: 524288 op, 1859000.00 ns, 3.5458 ns/op
+OverheadActual   6: 524288 op, 1715400.00 ns, 3.2719 ns/op
+OverheadActual   7: 524288 op, 1793800.00 ns, 3.4214 ns/op
+OverheadActual   8: 524288 op, 1809100.00 ns, 3.4506 ns/op
+OverheadActual   9: 524288 op, 1735100.00 ns, 3.3094 ns/op
+OverheadActual  10: 524288 op, 1998600.00 ns, 3.8120 ns/op
+OverheadActual  11: 524288 op, 1772900.00 ns, 3.3815 ns/op
+OverheadActual  12: 524288 op, 1741400.00 ns, 3.3215 ns/op
+OverheadActual  13: 524288 op, 1754100.00 ns, 3.3457 ns/op
+OverheadActual  14: 524288 op, 1802000.00 ns, 3.4370 ns/op
+OverheadActual  15: 524288 op, 1773900.00 ns, 3.3834 ns/op
+
+WorkloadWarmup   1: 524288 op, 719393000.00 ns, 1.3721 us/op
+WorkloadWarmup   2: 524288 op, 619108000.00 ns, 1.1809 us/op
+WorkloadWarmup   3: 524288 op, 491291800.00 ns, 937.0647 ns/op
+
+// BeforeActualRun
+WorkloadActual   1: 524288 op, 463435500.00 ns, 883.9331 ns/op
+WorkloadActual   2: 524288 op, 291881600.00 ns, 556.7200 ns/op
+WorkloadActual   3: 524288 op, 269322100.00 ns, 513.6911 ns/op
+
+// AfterActualRun
+WorkloadResult   1: 524288 op, 461661600.00 ns, 880.5496 ns/op
+WorkloadResult   2: 524288 op, 290107700.00 ns, 553.3365 ns/op
+WorkloadResult   3: 524288 op, 267548200.00 ns, 510.3077 ns/op
+// GC:  19 0 0 239075328 524288
+// Threading:  0 0 524288
+
+// AfterAll
+// Benchmark Process 41832 has exited with code 0.
+
+Mean = 648.065 ns, StdErr = 116.904 ns (18.04%), N = 3, StdDev = 202.484 ns
+Min = 510.308 ns, Q1 = 531.822 ns, Median = 553.337 ns, Q3 = 716.943 ns, Max = 880.550 ns
+IQR = 185.121 ns, LowerFence = 254.141 ns, UpperFence = 994.625 ns
+ConfidenceInterval = [-3,046.000 ns; 4,342.129 ns] (CI 99.9%), Margin = 3,694.065 ns (570.01% of Mean)
+Skewness = 0.37, Kurtosis = 0.67, MValue = 2
+
+// ** Remained 1 (33,3%) benchmark(s) to run. Estimated finish 2026-04-04 22:14 (0h 0m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prestazioni elevate)
+// **************************
+// Benchmark: SendCommandBenchmark.Martin_SendCommand: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet Concordia.Benchmarks-ShortRun-1.dll --anonymousPipes 1228 1936 --benchmarkName Concordia.Benchmarks.SendCommandBenchmark.Martin_SendCommand --job ShortRun --benchmarkId 2 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\bin\Release\net10.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.8
+// Runtime=.NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX2+BMI1+BMI2+F16C+FMA+LZCNT+MOVBE,AVX,SSE3+SSSE3+SSE4.1+SSE4.2+POPCNT,X86Base+SSE+SSE2,AES+PCLMUL,AvxVnni,SERIALIZE VectorSize=256
+// Job: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+
+OverheadJitting  1: 1 op, 939800.00 ns, 939.8000 us/op
+
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+ ---> Mediator.InvalidMessageException: Tried to send/publish invalid message type to Mediator: Concordia.Benchmarks.Requests.MartinCommand
+   at Mediator.Mediator.ThrowInvalidMessage[T](T msg) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1149
+   at Mediator.Mediator.ThrowInvalidMessage[T](T msg, String paramName) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1043
+   at Mediator.Mediator.Send(Object message, CancellationToken cancellationToken) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 969
+   at Concordia.Benchmarks.SendCommandBenchmark.Martin_SendCommand() in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\Benchmarks\SendCommandBenchmark.cs:line 54
+   at BenchmarkDotNet.Autogenerated.Runnable_2.<.ctor>b__3_3() in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\Concordia.Benchmarks-ShortRun-1.notcs:line 590
+   at BenchmarkDotNet.Autogenerated.Runnable_2.WorkloadActionNoUnroll(Int64 invokeCount) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\Concordia.Benchmarks-ShortRun-1.notcs:line 706
+   at BenchmarkDotNet.Engines.Engine.Measure(Action`1 action, Int64 invokeCount)
+   at BenchmarkDotNet.Engines.Engine.RunIteration(IterationData data)
+   at BenchmarkDotNet.Engines.EngineFactory.Jit(Engine engine, Int32 jitIndex, Int32 invokeCount, Int32 unrollFactor)
+   at BenchmarkDotNet.Engines.EngineFactory.CreateReadyToRun(EngineParameters engineParameters)
+   at BenchmarkDotNet.Autogenerated.Runnable_2.Run(IHost host, String benchmarkName) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\Concordia.Benchmarks-ShortRun-1.notcs:line 569
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+   --- End of inner exception stack trace ---
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+   at BenchmarkDotNet.Autogenerated.UniqueProgramName.AfterAssemblyLoadingAttached(String[] args) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-ShortRun-1\Concordia.Benchmarks-ShortRun-1.notcs:line 57
+// AfterAll
+No Workload Results were obtained from the run.
+// Benchmark Process 241652 has exited with code -1.
+
+// ** Remained 0 (0,0%) benchmark(s) to run. Estimated finish 2026-04-04 22:13 (0h 0m from now) **
+Successfully reverted power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prestazioni elevate)
+// ***** BenchmarkRunner: Finish  *****
+
+// * Export *
+  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.SendCommandBenchmark-report.csv
+  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.SendCommandBenchmark-report-github.md
+  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.SendCommandBenchmark-report.html
+
+// * Detailed results *
+SendCommandBenchmark.MediatR_SendCommand: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+Runtime = .NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3; GC = Concurrent Workstation
+Mean = 105.307 ns, StdErr = 2.378 ns (2.26%), N = 3, StdDev = 4.119 ns
+Min = 101.286 ns, Q1 = 103.201 ns, Median = 105.116 ns, Q3 = 107.317 ns, Max = 109.518 ns
+IQR = 4.116 ns, LowerFence = 97.028 ns, UpperFence = 113.491 ns
+ConfidenceInterval = [30.160 ns; 180.454 ns] (CI 99.9%), Margin = 75.147 ns (71.36% of Mean)
+Skewness = 0.05, Kurtosis = 0.67, MValue = 2
+-------------------- Histogram --------------------
+[ 99.453 ns ; 106.950 ns) | @@
+[106.950 ns ; 113.266 ns) | @
+---------------------------------------------------
+
+SendCommandBenchmark.Concordia_SendCommand: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+Runtime = .NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3; GC = Concurrent Workstation
+Mean = 648.065 ns, StdErr = 116.904 ns (18.04%), N = 3, StdDev = 202.484 ns
+Min = 510.308 ns, Q1 = 531.822 ns, Median = 553.337 ns, Q3 = 716.943 ns, Max = 880.550 ns
+IQR = 185.121 ns, LowerFence = 254.141 ns, UpperFence = 994.625 ns
+ConfidenceInterval = [-3,046.000 ns; 4,342.129 ns] (CI 99.9%), Margin = 3,694.065 ns (570.01% of Mean)
+Skewness = 0.37, Kurtosis = 0.67, MValue = 2
+-------------------- Histogram --------------------
+[326.040 ns ;   716.090 ns) | @@
+[716.090 ns ; 1,064.818 ns) | @
+---------------------------------------------------
+
+SendCommandBenchmark.Martin_SendCommand: ShortRun(IterationCount=3, LaunchCount=1, WarmupCount=3)
+Runtime = .NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3; GC = Concurrent Workstation
+There are not any results runs
+
+// * Summary *
+
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.22631.6783/23H2/2023Update/SunValley3)
+13th Gen Intel Core i7-13800H 2.50GHz, 1 CPU, 20 logical and 14 physical cores
+.NET SDK 10.0.200
+  [Host]   : .NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3
+  ShortRun : .NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3
+
+Job=ShortRun  IterationCount=3  LaunchCount=1  
+WarmupCount=3  
+
+| Method                | Mean     | Ratio | Gen0   | Allocated | Alloc Ratio |
+|---------------------- |---------:|------:|-------:|----------:|------------:|
+| MediatR_SendCommand   | 105.3 ns |  1.00 | 0.0101 |     128 B |        1.00 |
+| Concordia_SendCommand | 648.1 ns |  6.16 | 0.0362 |     456 B |        3.56 |
+| Martin_SendCommand    |       NA |     ? |     NA |        NA |           ? |
+
+Benchmarks with issues:
+  SendCommandBenchmark.Martin_Sen

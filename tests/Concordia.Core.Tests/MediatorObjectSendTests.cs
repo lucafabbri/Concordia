@@ -197,13 +197,10 @@ namespace Concordia.Core.Tests
             cts.Cancel(); // Cancella immediatamente il token
 
             // Act & Assert
-            // Quando si invoca un metodo tramite reflection e questo lancia un'eccezione,
-            // l'eccezione viene incapsulata in TargetInvocationException.
-            // Dobbiamo quindi asserire su TargetInvocationException e poi controllare la sua InnerException.
-            var targetInvocationException = await Assert.ThrowsAsync<TargetInvocationException>(() => mediator.Send(request, cts.Token));
-            Assert.NotNull(targetInvocationException.InnerException);
-            Assert.IsType<OperationCanceledException>(targetInvocationException.InnerException);
-            Assert.Contains("operation was canceled.", targetInvocationException.InnerException.Message);
+            // The new implementation does not use reflection, so OperationCanceledException
+            // is propagated directly without being wrapped in TargetInvocationException.
+            var ex = await Assert.ThrowsAsync<OperationCanceledException>(() => mediator.Send(request, cts.Token));
+            Assert.NotNull(ex);
         }
     }
 }

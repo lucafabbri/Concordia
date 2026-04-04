@@ -11,6 +11,7 @@ Concordia is a .NET library implementing the **Mediator pattern**, designed to b
 
 ## Table of Contents
 - [Why Concordia?](#why-concordia)
+- [Performance Benchmarks](#performance-benchmarks)
 - [Key Features](#key-features)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -29,13 +30,52 @@ Concordia is a .NET library implementing the **Mediator pattern**, designed to b
 
 -----
 
+## Performance Benchmarks
+
+The following benchmarks compare Concordia (reflection-based `Mediator`), **ConcordiaGen** (`GeneratedMediator` produced by the Source Generator), [MediatR](https://github.com/jbogard/MediatR) and [Martin](https://github.com/martinothamar/Mediator) — measured with [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet) on .NET 10, Intel Core i7-13800H.
+
+> **Smaller is better.** Ratio is relative to MediatR (1.00). `0 B` allocated means no heap allocation on the hot path.
+
+### Send Command (fire-and-forget, no pipeline)
+
+| Method | Mean | Ratio | Allocated | Alloc Ratio |
+|---|---:|---:|---:|---:|
+| MediatR | 50.5 ns | 1.00 | 128 B | 1.00 |
+| Concordia | 22.2 ns | 0.44 | 0 B | 0.00 |
+| **ConcordiaGen** | **1.7 ns** | **0.03** | **0 B** | **0.00** |
+| Martin | 5.8 ns | 0.11 | 0 B | 0.00 |
+
+### Send Query (returns response, no pipeline)
+
+| Method | Mean | Ratio | Allocated | Alloc Ratio |
+|---|---:|---:|---:|---:|
+| MediatR | 66.8 ns | 1.00 | 240 B | 1.00 |
+| Concordia | 64.1 ns | 0.96 | 112 B | 0.47 |
+| **ConcordiaGen** | **32.8 ns** | **0.49** | **112 B** | **0.47** |
+| Martin | 27.7 ns | 0.42 | 40 B | 0.17 |
+
+> The 112 B allocation in queries is inherent to returning a heap-allocated `Task<TResponse>` from the handler itself — the mediator dispatch overhead is zero.
+
+### Publish Notification (2 handlers, no pipeline)
+
+| Method | Mean | Ratio | Allocated | Alloc Ratio |
+|---|---:|---:|---:|---:|
+| MediatR | 87.2 ns | 1.00 | 440 B | 1.00 |
+| Concordia | 74.0 ns | 0.85 | 224 B | 0.51 |
+| **ConcordiaGen** | **1.6 ns** | **0.02** | **0 B** | **0.00** |
+| Martin | 7.9 ns | 0.09 | 0 B | 0.00 |
+
+`ConcordiaGen` achieves near-zero cost by generating inline sequential dispatch with an `IsCompletedSuccessfully` fast-path — no DI resolution, no delegate allocations, no virtual dispatch through a publisher interface on the hot path.
+
+-----
+
 ## Why Concordia?
 
 * **An Open-Source Alternative**: Concordia was created as an open-source alternative in response to other popular mediator libraries (like MediatR) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.
 
 * **Lightweight and Minimal**: Provides only the essential Mediator pattern functionalities, without unnecessary overhead.
 
-* **Optimized Performance**: Thanks to Source Generators, handler discovery and registration happen entirely at compile-time, ensuring faster application startup and zero runtime reflection.
+* **Optimized Performance**: Thanks to Source Generators, handler discovery and registration happen entirely at compile-time, ensuring faster application startup and zero runtime reflection. The generator goes one step further: it produces a `GeneratedMediator` class with constructor-injected handlers and direct type-switch dispatch, achieving **~1–2 ns per call with zero allocations** on the hot path.
 
 * **Easy DI Integration**: Integrates seamlessly with `Microsoft.Extensions.DependencyInjection`.
 
@@ -69,7 +109,9 @@ Concordia is a .NET library implementing the **Mediator pattern**, designed to b
 
 * **Automatic Handler Registration**: Concordia offers two approaches for handler registration:
 
-    * **Compile-time (Source Generator)**: The recommended approach for new projects. It requires **Zero Configuration**: just install the package, and handlers are automatically discovered (even in referenced projects).
+    * **Compile-time (Source Generator)**: The recommended approach for new projects. It requires **Zero Configuration**: just install the package, and handlers are automatically discovered (even in referenced projects). The generator produces two files:
+        * `ConcordiaGeneratedHandlersRegistrations.g.cs` — the `AddConcordiaHandlers()` DI extension method registering all handlers.
+        * `ConcordiaGeneratedMediator.g.cs` — the `GeneratedMediator` class: a concrete `IMediator`/`ISender` implementation with constructor-injected handler singletons and branch-free type-switch dispatch, eliminating all DI lookups on the hot path.
 
     * **Runtime Reflection**: A compatibility layer for easier migration from existing MediatR setups, now using its own `ConcordiaMediatRServiceConfiguration` class, offering flexible configuration options including service lifetimes, pre/post-processors, and custom notification publishers.
 
@@ -292,11 +334,18 @@ You will use either the **Source Generator method** (recommended for new project
 
 #### Option A: Using the Source Generator (Recommended)
 
-This method provides optimal startup performance by registering handlers at compile-time. It is **Zero-Config**: the necessary attributes are automatically injected by the NuGet package, enabling seamless discovery of handlers in the current project and any referenced assemblies that also use Concordia.
+This method provides maximum performance. The generator runs at **compile-time** and produces two C# files:
+
+| Generated file | What it contains |
+|---|---|
+| `ConcordiaGeneratedHandlersRegistrations.g.cs` | An `AddConcordiaHandlers()` DI extension method that registers all handlers, processors, and behaviors discovered in your project and any referenced assemblies. |
+| `ConcordiaGeneratedMediator.g.cs` | A `GeneratedMediator` sealed class — a concrete `IMediator`/`ISender` with constructor-injected handler singletons and a direct `is`-type-switch dispatch, achieving **zero DI lookups and zero allocations** on the hot path. |
+
+The `[assembly: DiscoverConcordiaHandlers]` attribute that triggers the generator is **injected automatically** by the NuGet package via a `.targets` file — no manual setup required.
 
 ##### i. Configure your `.csproj`
 
-Add the `Concordia.Generator` as a `ProjectReference` to your application project's `.csproj` file. Ensure the `OutputItemType="Analyzer"` and `ReferenceOutputAssembly="false"` attributes are set. You can also customize the generated extension method's name using the `ConcordiaGeneratedMethodName` property.
+Install both packages. The generator is consumed as a Roslyn Analyzer, so use `PrivateAssets="all"` to avoid exposing it as a transitive dependency:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
@@ -304,54 +353,38 @@ Add the `Concordia.Generator` as a `ProjectReference` to your application projec
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <!-- Optional: Customize the generated extension method name -->
-    <ConcordiaGeneratedMethodName>AddMyConcordiaHandlers</ConcordiaGeneratedMethodName>
+    <!-- Optional: rename the generated DI extension method (default: AddConcordiaHandlers) -->
+    <ConcordiaGeneratedMethodName>AddMyAppHandlers</ConcordiaGeneratedMethodName>
   </PropertyGroup>
 
-  <!-- Informs that the following property is compiler-visible -->
   <ItemGroup>
+    <!-- Informs that the above property is compiler-visible to the generator -->
     <CompilerVisibleProperty Include="ConcordiaGeneratedMethodName" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Concordia" Version="2.3.0"/>
-    <!-- Required for compile-time handler registration -->
+    <PackageReference Include="Concordia.Core" Version="2.3.0" />
     <PackageReference Include="Concordia.Generator" Version="2.3.0" PrivateAssets="all" />
-  </ItemGroup>
-
-  <!-- Ensure your Request, Handler, Processor, and Behavior files are included in the project -->
-  <ItemGroup>
-    <Compile Include="Requests\MySimpleQuery.cs" />
-    <Compile Include="Handlers\MySimpleQueryHandler.cs" />
-    <Compile Include="Processors\MyRequestLoggerPreProcessor.cs" />
-    <Compile Include="Processors\MyResponseLoggerPostProcessor.cs" />
-    <Compile Include="Behaviors\TestLoggingBehavior.cs" />
-    <!-- ... other handlers, processors, behaviors ... -->
   </ItemGroup>
 </Project>
 ```
 
 ##### ii. Register services in `Program.cs`
 
-After configuring your `.csproj`, the Source Generator will automatically generate an extension method (e.g., `AddMyConcordiaHandlers`) that registers all your handlers, processors, and behaviors. Call this method in your `Program.cs` after registering Concordia's core services.
+Calling `AddConcordiaHandlers()` (or your custom name) does everything in one step: it registers handlers as Singletons and wires up the `GeneratedMediator` as both `IMediator` and `ISender`.
 
 ```csharp
-using Concordia; // Required for IMediator, ISender
-using Concordia.DependencyInjection; // For AddConcordiaCoreServices
-using Microsoft.AspNetCore.Mvc;
-using MyProject.Web; // Example: Namespace where ConcordiaGeneratedRegistrations is generated
+using Concordia;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Register Concordia's core services (IMediator, ISender).
-// You can use the parameterless method for the default publisher, or:
-builder.Services.AddConcordiaCoreServices<Concordia.ForeachAwaitPublisher>(); // Example: Explicitly register the default publisher
-// Or, if you have a custom publisher:
-// builder.Services.AddConcordiaCoreServices<MyCustomNotificationPublisher>(); // Example: Register your custom publisher
+// Single call registers all handlers + wires GeneratedMediator as IMediator/ISender.
+// Uses the method name from ConcordiaGeneratedMethodName (default: AddConcordiaHandlers).
+builder.Services.AddConcordiaHandlers();
 
-// 2. Register your specific handlers and pipeline behaviors discovered by the generator.
-// The method name will depend on your .csproj configuration (e.g., AddMyConcordiaHandlers).
-builder.Services.AddMyConcordiaHandlers(); // Example with a custom name
+// If you also need a notification publisher for Concordia.Mediator (non-generated path),
+// you can register the default one:
+builder.Services.AddConcordiaCoreServices();
 
 builder.Services.AddControllers();
 
@@ -360,114 +393,74 @@ var app = builder.Build();
 app.MapControllers();
 
 app.Run();
+```
 
-// Example Controller for usage (remains unchanged)
-namespace Concordia.Examples.Web.Controllers
+##### iii. What the generator produces (for reference)
+
+Look inside **Dependencies → Analyzers → Concordia.Generator** in Solution Explorer to inspect the generated files:
+
+`ConcordiaGeneratedHandlersRegistrations.g.cs` — the DI extension method:
+
+```csharp
+// Auto-generated — do not edit
+public static IServiceCollection AddConcordiaHandlers(this IServiceCollection services)
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class ProductsController : ControllerBase
-    {
-        private readonly IMediator _mediator;
-        private readonly ISender _sender;
+    // Singleton registrations for GeneratedMediator constructor injection
+    services.AddSingleton<IRequestHandler<GetProductByIdQuery, ProductDto>, GetProductByIdQueryHandler>();
+    services.AddSingleton<IRequestHandler<CreateProductCommand>, CreateProductCommandHandler>();
+    services.AddSingleton<INotificationHandler<ProductCreatedNotification>, SendEmailOnProductCreated>();
+    services.AddSingleton<INotificationHandler<ProductCreatedNotification>, LogProductCreation>();
 
-        public ProductsController(IMediator mediator, ISender sender)
+    // Wire up GeneratedMediator as the IMediator and ISender implementations
+    services.AddSingleton<GeneratedMediator>();
+    services.AddSingleton<IMediator>(sp => sp.GetRequiredService<GeneratedMediator>());
+    services.AddSingleton<ISender>(sp => sp.GetRequiredService<GeneratedMediator>());
+    return services;
+}
+```
+
+`ConcordiaGeneratedMediator.g.cs` — the zero-overhead mediator:
+
+```csharp
+// Auto-generated — do not edit
+public sealed partial class GeneratedMediator : IMediator, ISender
+{
+    private readonly IRequestHandler<GetProductByIdQuery, ProductDto> _handler1;
+    private readonly IRequestHandler<CreateProductCommand> _handler2;
+    private readonly INotificationHandler<ProductCreatedNotification> _handler3;
+    private readonly INotificationHandler<ProductCreatedNotification> _handler4;
+
+    public GeneratedMediator(
+        IRequestHandler<GetProductByIdQuery, ProductDto> handler1,
+        IRequestHandler<CreateProductCommand> handler2,
+        INotificationHandler<ProductCreatedNotification> handler3,
+        INotificationHandler<ProductCreatedNotification> handler4)
+    { /* assign fields */ }
+
+    // Direct type-switch dispatch — no DI lookup, no reflection, no boxing
+    public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken ct = default)
+    {
+        if (request is GetProductByIdQuery q1) return (Task<TResponse>)(object)_handler1.Handle(q1, ct);
+        throw new InvalidOperationException(...);
+    }
+
+    // Inline sequential publish with IsCompletedSuccessfully fast-path
+    public Task Publish(INotification notification, CancellationToken ct = default)
+    {
+        if (notification is ProductCreatedNotification n)
         {
-            _mediator = mediator;
-            _sender = sender;
+            var t0 = _handler3.Handle(n, ct);
+            if (!t0.IsCompletedSuccessfully) return FinishPublish_From0(n, t0, ct);
+            var t1 = _handler4.Handle(n, ct);
+            if (t1.IsCompletedSuccessfully) return Task.CompletedTask;
+            return t1;
         }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var query = new GetProductByIdQuery { ProductId = id };
-            var product = await _sender.Send(query);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return Ok(product);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
-        {
-            await _sender.Send(command);
-
-            var notification = new ProductCreatedNotification
-            {
-                ProductId = command.ProductId,
-                ProductName = command.ProductName
-            };
-            await _mediator.Publish(notification);
-
-            return CreatedAtAction(nameof(Get), new { id = command.ProductId }, null);
-        }
-    }
-
-    // Examples of requests, commands, notifications and handlers for the web project
-    public class ProductDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-    }
-
-    public class GetProductByIdQuery : IRequest<ProductDto>
-    {
-        public int ProductId { get; set; }
-    }
-
-    public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductDto>
-    {
-        public Task<ProductDto> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
-        {
-            Console.WriteLine($"Handling GetProductByIdQuery for ProductId: {request.ProductId}");
-            var product = new ProductDto { Id = request.ProductId, Name = $"Product {request.ProductId}", Price = 10.50m };
-            return Task.FromResult(product);
-        }
-    }
-
-    public class CreateProductCommand : IRequest
-    {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; }
-    }
-
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand>
-    {
-        public Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
-        {
-            Console.WriteLine($"Creating product: {request.ProductName} with ID: {request.ProductId}");
-            return Task.CompletedTask;
-        }
-    }
-
-    public class ProductCreatedNotification : INotification
-    {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; }
-    }
-
-    public class SendEmailOnProductCreated : INotificationHandler<ProductCreatedNotification>
-    {
-        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
-        {
-            Console.WriteLine($"Sending email for new product: {notification.ProductName} (Id: {notification.ProductId})");
-            return Task.CompletedTask;
-        }
-    }
-
-    public class LogProductCreation : INotificationHandler<ProductCreatedNotification>
-    {
-        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
-        {
-            Console.WriteLine($"Logging product creation: {notification.ProductName} (Id: {notification.ProductId}) created at {DateTime.Now}");
-            return Task.CompletedTask;
-        }
+        throw new InvalidOperationException(...);
     }
 }
 ```
+
+> **Note**: The example above is simplified for clarity. The real generated code uses fully-qualified type names and handles all edge cases.
 
 #### Option B: Using the MediatR Compatibility Layer
 
@@ -512,114 +505,9 @@ var app = builder.Build();
 app.MapControllers();
 
 app.Run();
-
-// Example Controller for usage (remains unchanged)
-namespace Concordia.Examples.Web.Controllers
-{
-    [ApiController]
-    [Route("[controller]")]
-    public class ProductsController : ControllerBase
-    {
-        private readonly IMediator _mediator;
-        private readonly ISender _sender;
-
-        public ProductsController(IMediator mediator, ISender sender)
-        {
-            _mediator = mediator;
-            _sender = sender;
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var query = new GetProductByIdQuery { ProductId = id };
-            var product = await _sender.Send(query);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return Ok(product);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
-        {
-            await _sender.Send(command);
-
-            var notification = new ProductCreatedNotification
-            {
-                ProductId = command.ProductId,
-                ProductName = command.ProductName
-            };
-            await _mediator.Publish(notification);
-
-            return CreatedAtAction(nameof(Get), new { id = command.ProductId }, null);
-        }
-    }
-
-    // Examples of requests, commands, notifications and handlers for the web project
-    public class ProductDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-    }
-
-    public class GetProductByIdQuery : IRequest<ProductDto>
-    {
-        public int ProductId { get; set; }
-    }
-
-    public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductDto>
-    {
-        public Task<ProductDto> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
-        {
-            Console.WriteLine($"Handling GetProductByIdQuery for ProductId: {request.ProductId}");
-            var product = new ProductDto { Id = request.ProductId, Name = $"Product {request.ProductId}", Price = 10.50m };
-            return Task.FromResult(product);
-        }
-    }
-
-    public class CreateProductCommand : IRequest
-    {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; }
-    }
-
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand>
-    {
-        public Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
-        {
-            Console.WriteLine($"Creating product: {request.ProductName} with ID: {request.ProductId}");
-            return Task.CompletedTask;
-        }
-    }
-
-    public class ProductCreatedNotification : INotification
-    {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; }
-    }
-
-    public class SendEmailOnProductCreated : INotificationHandler<ProductCreatedNotification>
-    {
-        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
-        {
-            Console.WriteLine($"Sending email for new product: {notification.ProductName} (Id: {notification.ProductId})");
-            return Task.CompletedTask;
-        }
-    }
-
-    public class LogProductCreation : INotificationHandler<ProductCreatedNotification>
-    {
-        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
-        {
-            Console.WriteLine($"Logging product creation: {notification.ProductName} (Id: {notification.ProductId}) created at {DateTime.Now}");
-            return Task.CompletedTask;
-        }
-    }
-}
 ```
+
+For a complete controller example, see the [Option A section](#option-a-using-the-source-generator-recommended) above — the injected `IMediator` / `ISender` API is identical regardless of the registration method.
 
 -----
 
