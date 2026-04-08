@@ -296,10 +296,24 @@ public class ConcordiaGenerator : IIncrementalGenerator
         sb.AppendLine("            }");
 
         sb.AppendLine();
-        sb.AppendLine("            // Register the source-generated mediator as Singleton.");
-        sb.AppendLine($"            services.AddSingleton<global::{generatedNamespace}.Generated.GeneratedMediator>();");
-        sb.AppendLine($"            services.AddSingleton<global::Concordia.IMediator>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
-        sb.AppendLine($"            services.AddSingleton<global::Concordia.ISender>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
+        if (handlers.IsEmpty)
+        {
+            // No local handlers: GeneratedMediator is not produced for this project.
+            // Fall back to the reflection-based Mediator so IMediator/ISender are still resolvable.
+            sb.AppendLine("            // No local handlers found: register the standard Mediator as fallback.");
+            sb.AppendLine("            if (!services.Any(d => d.ServiceType == typeof(global::Concordia.IMediator)))");
+            sb.AppendLine("            {");
+            sb.AppendLine("                services.AddTransient<global::Concordia.IMediator, global::Concordia.Mediator>();");
+            sb.AppendLine("                services.AddTransient<global::Concordia.ISender, global::Concordia.Mediator>();");
+            sb.AppendLine("            }");
+        }
+        else
+        {
+            sb.AppendLine("            // Register the source-generated mediator as Singleton.");
+            sb.AppendLine($"            services.AddSingleton<global::{generatedNamespace}.Generated.GeneratedMediator>();");
+            sb.AppendLine($"            services.AddSingleton<global::Concordia.IMediator>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
+            sb.AppendLine($"            services.AddSingleton<global::Concordia.ISender>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
+        }
 
         sb.AppendLine();
         sb.AppendLine("            return services;");
