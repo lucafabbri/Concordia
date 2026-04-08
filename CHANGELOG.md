@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="2.4.1"></a>
+## [2.4.1](https://www.github.com/mrdevrobot/Concordia/releases/tag/v2.4.1) (2026-04-08)
+
+### Bug Fixes
+
+* Add mediator fallback and update project files ([5f96ff4](https://www.github.com/mrdevrobot/Concordia/commit/5f96ff4a0d2a10fab19bbce7821528fd615fff43))
+
 <a name="2.4.0"></a>
 ## [2.4.0](https://www.github.com/mrdevrobot/Concordia/releases/tag/v2.4.0) (2026-04-05)
 
