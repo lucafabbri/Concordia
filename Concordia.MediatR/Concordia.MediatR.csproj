@@ -7,9 +7,9 @@
 
     <!-- NuGet Metadata -->
     <PackageId>Concordia.MediatR</PackageId>
-    <Version>2.4.1</Version>
+    <Version>2.5.0</Version>
     <Authors>Luca Fabbri</Authors>
-    <Description>A compatibility layer for Concordia, mirroring MediatR's reflection-based handler registration.</Description>
+    <Description>[Deprecated] This package has been discontinued. Concordia has been renamed to Synaptrix. Install the Synaptrix meta-package instead: dotnet add package Synaptrix</Description>
     <RepositoryUrl>https://github.com/lucafabbri/Concordia</RepositoryUrl>
     <PackageTags>mediator;cqrs;reflection;mediatr-compatibility;concordia;lucafabbri</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>

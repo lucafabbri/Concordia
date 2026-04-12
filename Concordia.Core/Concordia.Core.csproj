@@ -7,9 +7,9 @@
 
     <!-- NuGet Metadata -->
     <PackageId>Concordia.Core</PackageId>
-    <Version>2.4.1</Version>
+    <Version>2.5.0</Version>
     <Authors>Luca Fabbri</Authors>
-    <Description>A lightweight and powerful .NET Mediator library implementing the Mediator pattern.</Description>
+    <Description>[Deprecated] This package has been renamed to Synaptrix.Core. Install the Synaptrix meta-package instead: dotnet add package Synaptrix</Description>
     <RepositoryUrl>https://github.com/mrdevrobot/Concordia</RepositoryUrl>
     <PackageTags>mediator;cqrs;messaging;pipeline;concordia;lucafabbri</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
