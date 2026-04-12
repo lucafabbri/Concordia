@@ -2,7 +2,7 @@
 <html lang='en'>
 <head>
 <meta charset='utf-8' />
-<title>Synaptrix.Benchmarks.SendQueryBenchmark-20260412-062115</title>
+<title>Synaptrix.Benchmarks.SendQueryBenchmark-20260412-064318</title>
 
 <style type="text/css">
 	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
@@ -24,9 +24,10 @@ BenchmarkDotNet v0.15.8, Windows 11 (10.0.22631.6783/23H2/2023Update/SunValley3)
 <table>
 <thead><tr><th>Method          </th><th>Mean</th><th>Ratio</th><th>Gen0</th><th>Allocated</th><th>Alloc Ratio</th>
 </tr>
-</thead><tbody><tr><td>Synaptrix_SendQuery</td><td>50.74 ns</td><td>1.00</td><td>0.0032</td><td>40 B</td><td>1.00</td>
-</tr><tr><td>SynaptrixGen_SendQuery</td><td>26.77 ns</td><td>0.53</td><td>0.0032</td><td>40 B</td><td>1.00</td>
-</tr><tr><td>Martin_SendQuery</td><td>16.88 ns</td><td>0.33</td><td>0.0032</td><td>40 B</td><td>1.00</td>
+</thead><tbody><tr><td>MediatR_SendQuery</td><td>55.98 ns</td><td>1.00</td><td>0.0191</td><td>240 B</td><td>1.00</td>
+</tr><tr><td>Synaptrix_SendQuery</td><td>49.31 ns</td><td>0.88</td><td>0.0032</td><td>40 B</td><td>0.17</td>
+</tr><tr><td>SynaptrixGen_SendQuery</td><td>25.77 ns</td><td>0.46</td><td>0.0032</td><td>40 B</td><td>0.17</td>
+</tr><tr><td>Martin_SendQuery</td><td>16.36 ns</td><td>0.29</td><td>0.0032</td><td>40 B</td><td>0.17</td>
 </tr></tbody></table>
 </body>
 </html>

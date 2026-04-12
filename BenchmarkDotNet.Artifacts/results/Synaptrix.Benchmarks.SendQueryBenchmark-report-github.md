@@ -10,6 +10,7 @@ BenchmarkDotNet v0.15.8, Windows 11 (10.0.22631.6783/23H2/2023Update/SunValley3)
 ```
 | Method                 | Mean     | Ratio | Gen0   | Allocated | Alloc Ratio |
 |----------------------- |---------:|------:|-------:|----------:|------------:|
-| Synaptrix_SendQuery    | 50.74 ns |  1.00 | 0.0032 |      40 B |        1.00 |
-| SynaptrixGen_SendQuery | 26.77 ns |  0.53 | 0.0032 |      40 B |        1.00 |
-| Martin_SendQuery       | 16.88 ns |  0.33 | 0.0032 |      40 B |        1.00 |
+| MediatR_SendQuery      | 55.98 ns |  1.00 | 0.0191 |     240 B |        1.00 |
+| Synaptrix_SendQuery    | 49.31 ns |  0.88 | 0.0032 |      40 B |        0.17 |
+| SynaptrixGen_SendQuery | 25.77 ns |  0.46 | 0.0032 |      40 B |        0.17 |
+| Martin_SendQuery       | 16.36 ns |  0.29 | 0.0032 |      40 B |        0.17 |

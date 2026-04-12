@@ -57,30 +57,30 @@ The following benchmarks compare Synaptrix (reflection-based `Mediator`), **Syna
 
 | Method | Mean | Ratio | Allocated | Alloc Ratio |
 |---|---:|---:|---:|---:|
-| MediatR | 50.5 ns | 1.00 | 128 B | 1.00 |
-| Synaptrix | 22.2 ns | 0.44 | 0 B | 0.00 |
-| **SynaptrixGen** | **1.7 ns** | **0.03** | **0 B** | **0.00** |
-| Martin | 5.8 ns | 0.11 | 0 B | 0.00 |
+| MediatR | 40.5 ns | 1.00 | 128 B | 1.00 |
+| Synaptrix | 21.8 ns | 0.54 | 0 B | 0.00 |
+| **SynaptrixGen** | **4.4 ns** | **0.11** | **0 B** | **0.00** |
+| Martin | 4.4 ns | 0.11 | 0 B | 0.00 |
 
 ### Send Query (returns response, no pipeline)
 
 | Method | Mean | Ratio | Allocated | Alloc Ratio |
 |---|---:|---:|---:|---:|
-| MediatR | 66.8 ns | 1.00 | 240 B | 1.00 |
-| Synaptrix | 64.1 ns | 0.96 | 112 B | 0.47 |
-| **SynaptrixGen** | **32.8 ns** | **0.49** | **112 B** | **0.47** |
-| Martin | 27.7 ns | 0.42 | 40 B | 0.17 |
+| MediatR | 56.0 ns | 1.00 | 240 B | 1.00 |
+| Synaptrix | 49.3 ns | 0.88 | 40 B | 0.17 |
+| **SynaptrixGen** | **25.8 ns** | **0.46** | **40 B** | **0.17** |
+| Martin | 16.4 ns | 0.29 | 40 B | 0.17 |
 
-> The 112 B allocation in queries is inherent to returning a heap-allocated `Task<TResponse>` from the handler itself — the mediator dispatch overhead is zero.
+> The 40 B allocation in queries is inherent to boxing the `ValueTask<TResponse>` result — the mediator dispatch overhead is zero.
 
 ### Publish Notification (2 handlers, no pipeline)
 
 | Method | Mean | Ratio | Allocated | Alloc Ratio |
 |---|---:|---:|---:|---:|
-| MediatR | 87.2 ns | 1.00 | 440 B | 1.00 |
-| Synaptrix | 74.0 ns | 0.85 | 224 B | 0.51 |
-| **SynaptrixGen** | **1.6 ns** | **0.02** | **0 B** | **0.00** |
-| Martin | 7.9 ns | 0.09 | 0 B | 0.00 |
+| MediatR | 67.2 ns | 1.00 | 440 B | 1.00 |
+| Synaptrix | 62.6 ns | 0.93 | 224 B | 0.51 |
+| **SynaptrixGen** | **0.5 ns** | **0.007** | **0 B** | **0.00** |
+| Martin | 6.0 ns | 0.09 | 0 B | 0.00 |
 
 `SynaptrixGen` achieves near-zero cost by generating inline sequential dispatch with an `IsCompletedSuccessfully` fast-path — no DI resolution, no delegate allocations, no virtual dispatch through a publisher interface on the hot path.
 
@@ -92,7 +92,7 @@ The following benchmarks compare Synaptrix (reflection-based `Mediator`), **Syna
 
 * **Lightweight and Minimal**: Provides only the essential Mediator pattern functionalities, without unnecessary overhead.
 
-* **Optimized Performance**: Thanks to Source Generators, handler discovery and registration happen entirely at compile-time, ensuring faster application startup and zero runtime reflection. The generator goes one step further: it produces a `GeneratedMediator` class with constructor-injected handlers and direct type-switch dispatch, achieving **~1–2 ns per call with zero allocations** on the hot path.
+* **Optimized Performance**: Thanks to Source Generators, handler discovery and registration happen entirely at compile-time, ensuring faster application startup and zero runtime reflection. The generator goes one step further: it produces a `GeneratedMediator` class with constructor-injected handlers and direct type-switch dispatch, achieving **sub-nanosecond to ~4 ns per call with zero allocations** on the hot path.
 
 * **Easy DI Integration**: Integrates seamlessly with `Microsoft.Extensions.DependencyInjection`.
 
@@ -120,7 +120,9 @@ The following benchmarks compare Synaptrix (reflection-based `Mediator`), **Syna
 
 * **Request Post-Processors (`IRequestPostProcessor<TRequest, TResponse>`)**: Execute logic after a request handler and before the response is returned.
 
-* **Stream Pipeline Behaviors (`IStreamPipelineBehavior<TRequest, TResponse>`)**: (For future streaming request support) Intercept streaming requests.
+* **Streaming Requests (`IStreamRequest<TResponse>`, `IStreamRequestHandler<TRequest, TResponse>`)**: For operations that return an `IAsyncEnumerable<TResponse>`, enabling efficient streaming of multiple results. Dispatch via `ISender.CreateStream<TResponse>()`.
+
+* **Stream Pipeline Behaviors (`IStreamPipelineBehavior<TRequest, TResponse>`)**: Intercept streaming requests before and after their handlers for cross-cutting concerns.
 
 * **Custom Notification Publishers (`INotificationPublisher`)**: Define how notifications are dispatched to multiple handlers (e.g., parallel, sequential).
 
@@ -220,11 +222,11 @@ namespace MyProject.Handlers
 {
     public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductDto>
     {
-        public Task<ProductDto> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+        public ValueTask<ProductDto> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Handling GetProductByIdQuery for ProductId: {request.ProductId}");
             var product = new ProductDto { Id = request.ProductId, Name = $"Product {request.ProductId}", Price = 10.50m };
-            return Task.FromResult(product);
+            return new ValueTask<ProductDto>(product);
         }
     }
 }
@@ -237,10 +239,10 @@ namespace MyProject.Handlers
 {
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand>
     {
-        public Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public ValueTask Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Creating product: {request.ProductName} with ID: {request.ProductId}");
-            return Task.CompletedTask;
+            return default;
         }
     }
 }
@@ -253,19 +255,19 @@ namespace MyProject.Handlers
 {
     public class SendEmailOnProductCreated : INotificationHandler<ProductCreatedNotification>
     {
-        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
+        public ValueTask Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Sending email for new product: {notification.ProductName} (Id: {notification.ProductId})");
-            return Task.CompletedTask;
+            return default;
         }
     }
 
     public class LogProductCreation : INotificationHandler<ProductCreatedNotification>
     {
-        public Task Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
+        public ValueTask Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Logging product creation: {notification.ProductName} (Id: {notification.ProductId}) created at {DateTime.Now}");
-            return Task.CompletedTask;
+            return default;
         }
     }
 }
@@ -278,10 +280,10 @@ namespace MyProject.Processors
 {
     public class MyRequestLoggerPreProcessor : IRequestPreProcessor<GetProductByIdQuery>
     {
-        public Task Process(GetProductByIdQuery request, CancellationToken cancellationToken)
+        public ValueTask Process(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Pre-processing GetProductByIdQuery for ProductId: {request.ProductId}");
-            return Task.CompletedTask;
+            return default;
         }
     }
 }
@@ -294,10 +296,10 @@ namespace MyProject.Processors
 {
     public class MyResponseLoggerPostProcessor : IRequestPostProcessor<GetProductByIdQuery, ProductDto>
     {
-        public Task Process(GetProductByIdQuery request, ProductDto response, CancellationToken cancellationToken)
+        public ValueTask Process(GetProductByIdQuery request, ProductDto response, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Post-processing GetProductByIdQuery. Response: {response.Name}");
-            return Task.CompletedTask;
+            return default;
         }
     }
 }
@@ -412,21 +414,22 @@ public sealed partial class GeneratedMediator : IMediator, ISender
     { /* assign fields */ }
 
     // Direct type-switch dispatch — no DI lookup, no reflection, no boxing
-    public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken ct = default)
+    public async ValueTask<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken ct = default)
     {
-        if (request is GetProductByIdQuery q1) return (Task<TResponse>)(object)_handler1.Handle(q1, ct);
+        if (request is GetProductByIdQuery q1)
+            return (TResponse)(object)await _handler1.Handle(q1, ct).ConfigureAwait(false);
         throw new InvalidOperationException(...);
     }
 
     // Inline sequential publish with IsCompletedSuccessfully fast-path
-    public Task Publish(INotification notification, CancellationToken ct = default)
+    public ValueTask Publish(INotification notification, CancellationToken ct = default)
     {
         if (notification is ProductCreatedNotification n)
         {
             var t0 = _handler3.Handle(n, ct);
-            if (!t0.IsCompletedSuccessfully) return FinishPublish_From0(n, t0, ct);
+            if (!t0.IsCompletedSuccessfully) return _FinishPublish_From0(n, t0, ct);
             var t1 = _handler4.Handle(n, ct);
-            if (t1.IsCompletedSuccessfully) return Task.CompletedTask;
+            if (t1.IsCompletedSuccessfully) return default;
             return t1;
         }
         throw new InvalidOperationException(...);
