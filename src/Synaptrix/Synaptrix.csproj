@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- Metapackage: no DLL output, only dependencies -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+
+    <!-- NuGet Metadata -->
+    <PackageId>Synaptrix</PackageId>
+    <Version>3.0.0</Version>
+    <Authors>Luca Fabbri</Authors>
+    <Description>A lightweight and powerful .NET Mediator library with compile-time source generation. Install this single package to get Synaptrix.Core and Synaptrix.Generator.</Description>
+    <RepositoryUrl>https://github.com/mrdevrobot/Synaptrix</RepositoryUrl>
+    <PackageTags>mediator;cqrs;messaging;pipeline;source-generator;Synaptrix;lucafabbri</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Synaptrix.Core\Synaptrix.Core.csproj" />
+    <ProjectReference Include="..\Synaptrix.Generator\Synaptrix.Generator.csproj" PrivateAssets="none" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

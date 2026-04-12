@@ -1,0 +1,5 @@
+﻿<Project>
+  <ItemGroup Condition="'$(DisableSynaptrixAutoDiscovery)' == ''">
+    <AssemblyAttribute Include="Synaptrix.Attributes.DiscoverSynaptrixHandlersAttribute" />
+  </ItemGroup>
+</Project>

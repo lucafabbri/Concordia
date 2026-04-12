@@ -16,11 +16,11 @@ This document provides a comprehensive overview of the projects and their depend
 - [Projects Relationship Graph](#projects-relationship-graph)
 - [Project Details](#project-details)
 
-  - [Concordia.Core\Concordia.Core.csproj](#concordiacoreconcordiacorecsproj)
-  - [Concordia.Generator\Concordia.Generator.csproj](#concordiageneratorconcordiageneratorcsproj)
-  - [Concordia.MediatR\Concordia.MediatR.csproj](#concordiamediatrconcordiamediatrcsproj)
-  - [examples\Concordia.Examples.Web\Concordia.Examples.Web.csproj](#examplesconcordiaexampleswebconcordiaexampleswebcsproj)
-  - [tests\Concordia.Core.Tests\Concordia.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj)
+  - [Synaptrix.Core\Synaptrix.Core.csproj](#concordiacoreconcordiacorecsproj)
+  - [Synaptrix.Generator\Synaptrix.Generator.csproj](#concordiageneratorconcordiageneratorcsproj)
+  - [Synaptrix.MediatR\Synaptrix.MediatR.csproj](#concordiamediatrconcordiamediatrcsproj)
+  - [examples\Synaptrix.Examples.Web\Synaptrix.Examples.Web.csproj](#examplesconcordiaexampleswebconcordiaexampleswebcsproj)
+  - [tests\Synaptrix.Core.Tests\Synaptrix.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj)
 
 
 ## Executive Summary
@@ -41,11 +41,11 @@ This document provides a comprehensive overview of the projects and their depend
 
 | Project | Target Framework | Difficulty | Package Issues | API Issues | Est. LOC Impact | Description |
 | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| [Concordia.Core\Concordia.Core.csproj](#concordiacoreconcordiacorecsproj) | net9.0;net8.0;netstandard2.0 | 🟢 Low | 2 | 0 |  | ClassLibrary, Sdk Style = True |
-| [Concordia.Generator\Concordia.Generator.csproj](#concordiageneratorconcordiageneratorcsproj) | netstandard2.0 | ✅ None | 0 | 0 |  | ClassLibrary, Sdk Style = True |
-| [Concordia.MediatR\Concordia.MediatR.csproj](#concordiamediatrconcordiamediatrcsproj) | net9.0;net8.0;netstandard2.0 | 🟢 Low | 1 | 0 |  | ClassLibrary, Sdk Style = True |
-| [examples\Concordia.Examples.Web\Concordia.Examples.Web.csproj](#examplesconcordiaexampleswebconcordiaexampleswebcsproj) | net9.0 | 🟢 Low | 1 | 3 | 3+ | AspNetCore, Sdk Style = True |
-| [tests\Concordia.Core.Tests\Concordia.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | net9.0 | 🟢 Low | 1 | 0 |  | DotNetCoreApp, Sdk Style = True |
+| [Synaptrix.Core\Synaptrix.Core.csproj](#concordiacoreconcordiacorecsproj) | net9.0;net8.0;netstandard2.0 | 🟢 Low | 2 | 0 |  | ClassLibrary, Sdk Style = True |
+| [Synaptrix.Generator\Synaptrix.Generator.csproj](#concordiageneratorconcordiageneratorcsproj) | netstandard2.0 | ✅ None | 0 | 0 |  | ClassLibrary, Sdk Style = True |
+| [Synaptrix.MediatR\Synaptrix.MediatR.csproj](#concordiamediatrconcordiamediatrcsproj) | net9.0;net8.0;netstandard2.0 | 🟢 Low | 1 | 0 |  | ClassLibrary, Sdk Style = True |
+| [examples\Synaptrix.Examples.Web\Synaptrix.Examples.Web.csproj](#examplesconcordiaexampleswebconcordiaexampleswebcsproj) | net9.0 | 🟢 Low | 1 | 3 | 3+ | AspNetCore, Sdk Style = True |
+| [tests\Synaptrix.Core.Tests\Synaptrix.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | net9.0 | 🟢 Low | 1 | 0 |  | DotNetCoreApp, Sdk Style = True |
 
 ### Package Compatibility
 
@@ -70,18 +70,18 @@ This document provides a comprehensive overview of the projects and their depend
 
 | Package | Current Version | Suggested Version | Projects | Description |
 | :--- | :---: | :---: | :--- | :--- |
-| coverlet.collector | 6.0.4 |  | [Concordia.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | ✅Compatible |
-| Microsoft.AspNetCore.OpenApi | 9.0.8 | 10.0.1 | [Concordia.Examples.Web.csproj](#examplesconcordiaexampleswebconcordiaexampleswebcsproj) | È consigliabile eseguire l'aggiornamento del pacchetto NuGet |
-| Microsoft.CodeAnalysis.Analyzers | 3.3.4 |  | [Concordia.Generator.csproj](#concordiageneratorconcordiageneratorcsproj) | ✅Compatible |
-| Microsoft.CodeAnalysis.CSharp | 4.9.2 |  | [Concordia.Generator.csproj](#concordiageneratorconcordiageneratorcsproj) | ✅Compatible |
-| Microsoft.Extensions.DependencyInjection | 9.0.8 | 10.0.1 | [Concordia.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | È consigliabile eseguire l'aggiornamento del pacchetto NuGet |
-| Microsoft.Extensions.DependencyInjection.Abstractions | 9.0.8 | 10.0.1 | [Concordia.Core.csproj](#concordiacoreconcordiacorecsproj)<br/>[Concordia.MediatR.csproj](#concordiamediatrconcordiamediatrcsproj) | È consigliabile eseguire l'aggiornamento del pacchetto NuGet |
-| Microsoft.Extensions.Logging.Abstractions | 9.0.8 | 10.0.1 | [Concordia.Core.csproj](#concordiacoreconcordiacorecsproj) | È consigliabile eseguire l'aggiornamento del pacchetto NuGet |
-| Microsoft.NET.Test.Sdk | 17.14.1 |  | [Concordia.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | ✅Compatible |
-| NETStandard.Library | 2.0.3 |  | [Concordia.Generator.csproj](#concordiageneratorconcordiageneratorcsproj) | ✅Compatible |
-| Swashbuckle.AspNetCore | 9.0.4 |  | [Concordia.Examples.Web.csproj](#examplesconcordiaexampleswebconcordiaexampleswebcsproj) | ✅Compatible |
-| xunit | 2.9.3 |  | [Concordia.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | ✅Compatible |
-| xunit.runner.visualstudio | 3.1.4 |  | [Concordia.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | ✅Compatible |
+| coverlet.collector | 6.0.4 |  | [Synaptrix.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | ✅Compatible |
+| Microsoft.AspNetCore.OpenApi | 9.0.8 | 10.0.1 | [Synaptrix.Examples.Web.csproj](#examplesconcordiaexampleswebconcordiaexampleswebcsproj) | È consigliabile eseguire l'aggiornamento del pacchetto NuGet |
+| Microsoft.CodeAnalysis.Analyzers | 3.3.4 |  | [Synaptrix.Generator.csproj](#concordiageneratorconcordiageneratorcsproj) | ✅Compatible |
+| Microsoft.CodeAnalysis.CSharp | 4.9.2 |  | [Synaptrix.Generator.csproj](#concordiageneratorconcordiageneratorcsproj) | ✅Compatible |
+| Microsoft.Extensions.DependencyInjection | 9.0.8 | 10.0.1 | [Synaptrix.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | È consigliabile eseguire l'aggiornamento del pacchetto NuGet |
+| Microsoft.Extensions.DependencyInjection.Abstractions | 9.0.8 | 10.0.1 | [Synaptrix.Core.csproj](#concordiacoreconcordiacorecsproj)<br/>[Synaptrix.MediatR.csproj](#concordiamediatrconcordiamediatrcsproj) | È consigliabile eseguire l'aggiornamento del pacchetto NuGet |
+| Microsoft.Extensions.Logging.Abstractions | 9.0.8 | 10.0.1 | [Synaptrix.Core.csproj](#concordiacoreconcordiacorecsproj) | È consigliabile eseguire l'aggiornamento del pacchetto NuGet |
+| Microsoft.NET.Test.Sdk | 17.14.1 |  | [Synaptrix.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | ✅Compatible |
+| NETStandard.Library | 2.0.3 |  | [Synaptrix.Generator.csproj](#concordiageneratorconcordiageneratorcsproj) | ✅Compatible |
+| Swashbuckle.AspNetCore | 9.0.4 |  | [Synaptrix.Examples.Web.csproj](#examplesconcordiaexampleswebconcordiaexampleswebcsproj) | ✅Compatible |
+| xunit | 2.9.3 |  | [Synaptrix.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | ✅Compatible |
+| xunit.runner.visualstudio | 3.1.4 |  | [Synaptrix.Core.Tests.csproj](#testsconcordiacoretestsconcordiacoretestscsproj) | ✅Compatible |
 
 ## Top API Migration Challenges
 
@@ -105,11 +105,11 @@ Legend:
 
 ```mermaid
 flowchart LR
-    P1["<b>📦&nbsp;Concordia.Core.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
-    P2["<b>📦&nbsp;Concordia.Generator.csproj</b><br/><small>netstandard2.0</small>"]
-    P3["<b>📦&nbsp;Concordia.MediatR.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
-    P4["<b>📦&nbsp;Concordia.Examples.Web.csproj</b><br/><small>net9.0</small>"]
-    P5["<b>📦&nbsp;Concordia.Core.Tests.csproj</b><br/><small>net9.0</small>"]
+    P1["<b>📦&nbsp;Synaptrix.Core.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
+    P2["<b>📦&nbsp;Synaptrix.Generator.csproj</b><br/><small>netstandard2.0</small>"]
+    P3["<b>📦&nbsp;Synaptrix.MediatR.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
+    P4["<b>📦&nbsp;Synaptrix.Examples.Web.csproj</b><br/><small>net9.0</small>"]
+    P5["<b>📦&nbsp;Synaptrix.Core.Tests.csproj</b><br/><small>net9.0</small>"]
     P2 --> P1
     P3 --> P1
     P4 --> P3
@@ -127,7 +127,7 @@ flowchart LR
 ## Project Details
 
 <a id="concordiacoreconcordiacorecsproj"></a>
-### Concordia.Core\Concordia.Core.csproj
+### Synaptrix.Core\Synaptrix.Core.csproj
 
 #### Project Info
 
@@ -151,15 +151,15 @@ Legend:
 ```mermaid
 flowchart TB
     subgraph upstream["Dependants (3)"]
-        P2["<b>📦&nbsp;Concordia.Generator.csproj</b><br/><small>netstandard2.0</small>"]
-        P3["<b>📦&nbsp;Concordia.MediatR.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
-        P5["<b>📦&nbsp;Concordia.Core.Tests.csproj</b><br/><small>net9.0</small>"]
+        P2["<b>📦&nbsp;Synaptrix.Generator.csproj</b><br/><small>netstandard2.0</small>"]
+        P3["<b>📦&nbsp;Synaptrix.MediatR.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
+        P5["<b>📦&nbsp;Synaptrix.Core.Tests.csproj</b><br/><small>net9.0</small>"]
         click P2 "#concordiageneratorconcordiageneratorcsproj"
         click P3 "#concordiamediatrconcordiamediatrcsproj"
         click P5 "#testsconcordiacoretestsconcordiacoretestscsproj"
     end
-    subgraph current["Concordia.Core.csproj"]
-        MAIN["<b>📦&nbsp;Concordia.Core.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
+    subgraph current["Synaptrix.Core.csproj"]
+        MAIN["<b>📦&nbsp;Synaptrix.Core.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
         click MAIN "#concordiacoreconcordiacorecsproj"
     end
     P2 --> MAIN
@@ -179,7 +179,7 @@ flowchart TB
 | ***Total APIs Analyzed*** | ***558*** |  |
 
 <a id="concordiageneratorconcordiageneratorcsproj"></a>
-### Concordia.Generator\Concordia.Generator.csproj
+### Synaptrix.Generator\Synaptrix.Generator.csproj
 
 #### Project Info
 
@@ -201,15 +201,15 @@ Legend:
 ```mermaid
 flowchart TB
     subgraph upstream["Dependants (1)"]
-        P4["<b>📦&nbsp;Concordia.Examples.Web.csproj</b><br/><small>net9.0</small>"]
+        P4["<b>📦&nbsp;Synaptrix.Examples.Web.csproj</b><br/><small>net9.0</small>"]
         click P4 "#examplesconcordiaexampleswebconcordiaexampleswebcsproj"
     end
-    subgraph current["Concordia.Generator.csproj"]
-        MAIN["<b>📦&nbsp;Concordia.Generator.csproj</b><br/><small>netstandard2.0</small>"]
+    subgraph current["Synaptrix.Generator.csproj"]
+        MAIN["<b>📦&nbsp;Synaptrix.Generator.csproj</b><br/><small>netstandard2.0</small>"]
         click MAIN "#concordiageneratorconcordiageneratorcsproj"
     end
     subgraph downstream["Dependencies (1"]
-        P1["<b>📦&nbsp;Concordia.Core.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
+        P1["<b>📦&nbsp;Synaptrix.Core.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
         click P1 "#concordiacoreconcordiacorecsproj"
     end
     P4 --> MAIN
@@ -228,7 +228,7 @@ flowchart TB
 | ***Total APIs Analyzed*** | ***254*** |  |
 
 <a id="concordiamediatrconcordiamediatrcsproj"></a>
-### Concordia.MediatR\Concordia.MediatR.csproj
+### Synaptrix.MediatR\Synaptrix.MediatR.csproj
 
 #### Project Info
 
@@ -252,17 +252,17 @@ Legend:
 ```mermaid
 flowchart TB
     subgraph upstream["Dependants (2)"]
-        P4["<b>📦&nbsp;Concordia.Examples.Web.csproj</b><br/><small>net9.0</small>"]
-        P5["<b>📦&nbsp;Concordia.Core.Tests.csproj</b><br/><small>net9.0</small>"]
+        P4["<b>📦&nbsp;Synaptrix.Examples.Web.csproj</b><br/><small>net9.0</small>"]
+        P5["<b>📦&nbsp;Synaptrix.Core.Tests.csproj</b><br/><small>net9.0</small>"]
         click P4 "#examplesconcordiaexampleswebconcordiaexampleswebcsproj"
         click P5 "#testsconcordiacoretestsconcordiacoretestscsproj"
     end
-    subgraph current["Concordia.MediatR.csproj"]
-        MAIN["<b>📦&nbsp;Concordia.MediatR.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
+    subgraph current["Synaptrix.MediatR.csproj"]
+        MAIN["<b>📦&nbsp;Synaptrix.MediatR.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
         click MAIN "#concordiamediatrconcordiamediatrcsproj"
     end
     subgraph downstream["Dependencies (1"]
-        P1["<b>📦&nbsp;Concordia.Core.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
+        P1["<b>📦&nbsp;Synaptrix.Core.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
         click P1 "#concordiacoreconcordiacorecsproj"
     end
     P4 --> MAIN
@@ -282,7 +282,7 @@ flowchart TB
 | ***Total APIs Analyzed*** | ***777*** |  |
 
 <a id="examplesconcordiaexampleswebconcordiaexampleswebcsproj"></a>
-### examples\Concordia.Examples.Web\Concordia.Examples.Web.csproj
+### examples\Synaptrix.Examples.Web\Synaptrix.Examples.Web.csproj
 
 #### Project Info
 
@@ -305,13 +305,13 @@ Legend:
 
 ```mermaid
 flowchart TB
-    subgraph current["Concordia.Examples.Web.csproj"]
-        MAIN["<b>📦&nbsp;Concordia.Examples.Web.csproj</b><br/><small>net9.0</small>"]
+    subgraph current["Synaptrix.Examples.Web.csproj"]
+        MAIN["<b>📦&nbsp;Synaptrix.Examples.Web.csproj</b><br/><small>net9.0</small>"]
         click MAIN "#examplesconcordiaexampleswebconcordiaexampleswebcsproj"
     end
     subgraph downstream["Dependencies (2"]
-        P3["<b>📦&nbsp;Concordia.MediatR.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
-        P2["<b>📦&nbsp;Concordia.Generator.csproj</b><br/><small>netstandard2.0</small>"]
+        P3["<b>📦&nbsp;Synaptrix.MediatR.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
+        P2["<b>📦&nbsp;Synaptrix.Generator.csproj</b><br/><small>netstandard2.0</small>"]
         click P3 "#concordiamediatrconcordiamediatrcsproj"
         click P2 "#concordiageneratorconcordiageneratorcsproj"
     end
@@ -331,7 +331,7 @@ flowchart TB
 | ***Total APIs Analyzed*** | ***257*** |  |
 
 <a id="testsconcordiacoretestsconcordiacoretestscsproj"></a>
-### tests\Concordia.Core.Tests\Concordia.Core.Tests.csproj
+### tests\Synaptrix.Core.Tests\Synaptrix.Core.Tests.csproj
 
 #### Project Info
 
@@ -354,13 +354,13 @@ Legend:
 
 ```mermaid
 flowchart TB
-    subgraph current["Concordia.Core.Tests.csproj"]
-        MAIN["<b>📦&nbsp;Concordia.Core.Tests.csproj</b><br/><small>net9.0</small>"]
+    subgraph current["Synaptrix.Core.Tests.csproj"]
+        MAIN["<b>📦&nbsp;Synaptrix.Core.Tests.csproj</b><br/><small>net9.0</small>"]
         click MAIN "#testsconcordiacoretestsconcordiacoretestscsproj"
     end
     subgraph downstream["Dependencies (2"]
-        P3["<b>📦&nbsp;Concordia.MediatR.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
-        P1["<b>📦&nbsp;Concordia.Core.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
+        P3["<b>📦&nbsp;Synaptrix.MediatR.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
+        P1["<b>📦&nbsp;Synaptrix.Core.csproj</b><br/><small>net9.0;net8.0;netstandard2.0</small>"]
         click P3 "#concordiamediatrconcordiamediatrcsproj"
         click P1 "#concordiacoreconcordiacorecsproj"
     end

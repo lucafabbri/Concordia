@@ -21,7 +21,7 @@ Our project is governed by the Code of Conduct. By participating, you are expect
 ### Submitting a Pull Request
 
 1.  **Fork** this repository to your GitHub account.
-2.  Clone your fork locally: `git clone https://github.com/lucafabbri/Concordia.git`
+2.  Clone your fork locally: `git clone https://github.com/lucafabbri/Synaptrix.git`
 3.  Create a new branch for your work: `git checkout -b feature/your-feature` or `git checkout -b fix/your-bug`.
 4.  Make your changes and ensure the code adheres to the project's style and conventions.
 5.  Write appropriate tests for your changes. Your PR will not be merged if it does not include adequate tests that show the code works as intended and doesn't introduce regressions.

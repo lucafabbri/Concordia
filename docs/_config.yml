@@ -22,5 +22,3 @@ sidebar:
         url: /mediator/pipelines.html
   - title: Generators
     url: /generators.html
-  - title: MediatR Compat
-    url: /mediatr-compat.html

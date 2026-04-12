@@ -9,7 +9,7 @@ Concordia distinguishes itself from many other .NET Mediator implementations by 
 
 ## How it Works
 
-1. **Analysis**: The `Concordia.Generator` analyzer runs continuously in the background (within Visual Studio/Rider) or during the build process (`dotnet build`).
+1. **Analysis**: The `Synaptrix.Generator` analyzer runs continuously in the background (within Visual Studio/Rider) or during the build process (`dotnet build`).
 2. **Discovery**: It scans your project for classes implementing `IRequestHandler<>`, `INotificationHandler<>`, `IPipelineBehavior<>`, etc.
 3. **Synthesis**: It generates **two C# files** compiled directly into your assembly:
    - `ConcordiaGeneratedHandlersRegistrations.g.cs` — the DI extension method.
@@ -126,13 +126,13 @@ By default, the generator creates a method named `AddConcordiaHandlers`. You can
 
 ### Inspecting Generated Code
 
-To see exactly what Concordia is generating for you:
+To see exactly what Synaptrix is generating for you:
 1. Open **Dependencies** in Solution Explorer.
-2. Go to **Analyzers** → **Concordia.Generator**.
-3. Expand **Concordia.Generator.ConcordiaGenerator**.
+2. Go to **Analyzers** → **Synaptrix.Generator**.
+3. Expand **Synaptrix.Generator.SynaptrixGenerator**.
 4. Double-click either generated file:
-   - `ConcordiaGeneratedHandlersRegistrations.g.cs`
-   - `ConcordiaGeneratedMediator.g.cs`
+   - `SynaptrixGeneratedHandlersRegistrations.g.cs`
+   - `SynaptrixGeneratedMediator.g.cs`
 
 You will see standard, readable C# code that you can inspect, understand, and debug.
 
@@ -148,4 +148,3 @@ var mediator = new ConcordiaGenerated.Generated.GeneratedMediator(
 
 var result = await mediator.Send(new GetFooQuery { Id = 1 });
 ```
-

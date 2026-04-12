@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- NuGet Metadata -->
+    <PackageId>Synaptrix.Core</PackageId>
+    <Version>3.0.0</Version>
+    <Authors>Luca Fabbri</Authors>
+    <Description>A lightweight and powerful .NET Mediator library implementing the Mediator pattern.</Description>
+    <RepositoryUrl>https://github.com/mrdevrobot/Synaptrix</RepositoryUrl>
+    <PackageTags>mediator;cqrs;messaging;pipeline;Synaptrix;lucafabbri</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Include README.md in the package -->
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
