@@ -33,12 +33,12 @@
   },
   "projects": [
     {
-      "path": "Concordia.Core\\Concordia.Core.csproj",
+      "path": "Synaptrix.Core\\Synaptrix.Core.csproj",
       "startingProject": true,
       "issues": 2,
       "storyPoints": 3,
       "properties": {
-        "appName": "Concordia.Core",
+        "appName": "Synaptrix.Core",
         "projectKind": "ClassLibrary",
         "frameworks": [
           "net9.0",
@@ -64,7 +64,7 @@
         {
           "incidentId": "badc1fdc-70c8-4532-8804-6556a78e3398",
           "ruleId": "NuGet.0002",
-          "projectPath": "Concordia.Core\\Concordia.Core.csproj",
+          "projectPath": "Synaptrix.Core\\Synaptrix.Core.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
@@ -72,7 +72,7 @@
               "protected": "Microsoft.Extensions.DependencyInjection.Abstractions, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1"
             },
             "kind": "File",
-            "path": "Concordia.Core\\Concordia.Core.csproj",
+            "path": "Synaptrix.Core\\Synaptrix.Core.csproj",
             "snippet": "Microsoft.Extensions.DependencyInjection.Abstractions, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1",
             "protectedSnippet": "Microsoft.Extensions.DependencyInjection.Abstractions, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1",
             "label": "Microsoft.Extensions.DependencyInjection.Abstractions 9.0.8",
@@ -87,7 +87,7 @@
         {
           "incidentId": "505f9933-314e-4546-a869-94a8982433bd",
           "ruleId": "NuGet.0002",
-          "projectPath": "Concordia.Core\\Concordia.Core.csproj",
+          "projectPath": "Synaptrix.Core\\Synaptrix.Core.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
@@ -95,7 +95,7 @@
               "protected": "Microsoft.Extensions.Logging.Abstractions, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.Logging.Abstractions, and replace with new package Microsoft.Extensions.Logging.Abstractions 10.0.1"
             },
             "kind": "File",
-            "path": "Concordia.Core\\Concordia.Core.csproj",
+            "path": "Synaptrix.Core\\Synaptrix.Core.csproj",
             "snippet": "Microsoft.Extensions.Logging.Abstractions, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.Logging.Abstractions, and replace with new package Microsoft.Extensions.Logging.Abstractions 10.0.1",
             "protectedSnippet": "Microsoft.Extensions.Logging.Abstractions, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.Logging.Abstractions, and replace with new package Microsoft.Extensions.Logging.Abstractions 10.0.1",
             "label": "Microsoft.Extensions.Logging.Abstractions 9.0.8",
@@ -110,7 +110,7 @@
         {
           "incidentId": "357688b0-8952-4823-8c08-1c59ac1dbe8f",
           "ruleId": "Project.0002",
-          "projectPath": "Concordia.Core\\Concordia.Core.csproj",
+          "projectPath": "Synaptrix.Core\\Synaptrix.Core.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
@@ -118,7 +118,7 @@
               "protected": "Framework di destinazione corrente: net9.0;net8.0;netstandard2.0\nFramework di destinazione consigliato: net9.0;net8.0;netstandard2.0;net10.0"
             },
             "kind": "File",
-            "path": "Concordia.Core\\Concordia.Core.csproj",
+            "path": "Synaptrix.Core\\Synaptrix.Core.csproj",
             "snippet": "Framework di destinazione corrente: net9.0;net8.0;netstandard2.0\nFramework di destinazione consigliato: net9.0;net8.0;netstandard2.0;net10.0",
             "protectedSnippet": "Framework di destinazione corrente: net9.0;net8.0;netstandard2.0\nFramework di destinazione consigliato: net9.0;net8.0;netstandard2.0;net10.0",
             "properties": {
@@ -131,12 +131,12 @@
       "features": []
     },
     {
-      "path": "tests\\Concordia.Core.Tests\\Concordia.Core.Tests.csproj",
+      "path": "tests\\Synaptrix.Core.Tests\\Synaptrix.Core.Tests.csproj",
       "startingProject": true,
       "issues": 2,
       "storyPoints": 2,
       "properties": {
-        "appName": "Concordia.Core.Tests",
+        "appName": "Synaptrix.Core.Tests",
         "projectKind": "DotNetCoreApp",
         "frameworks": [
           "net9.0"
@@ -160,7 +160,7 @@
         {
           "incidentId": "14bb5a94-4b1f-468f-8bec-6fd0238fb917",
           "ruleId": "NuGet.0002",
-          "projectPath": "tests\\Concordia.Core.Tests\\Concordia.Core.Tests.csproj",
+          "projectPath": "tests\\Synaptrix.Core.Tests\\Synaptrix.Core.Tests.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
@@ -168,7 +168,7 @@
               "protected": "Microsoft.Extensions.DependencyInjection, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.DependencyInjection, and replace with new package Microsoft.Extensions.DependencyInjection 10.0.1"
             },
             "kind": "File",
-            "path": "tests\\Concordia.Core.Tests\\Concordia.Core.Tests.csproj",
+            "path": "tests\\Synaptrix.Core.Tests\\Synaptrix.Core.Tests.csproj",
             "snippet": "Microsoft.Extensions.DependencyInjection, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.DependencyInjection, and replace with new package Microsoft.Extensions.DependencyInjection 10.0.1",
             "protectedSnippet": "Microsoft.Extensions.DependencyInjection, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.DependencyInjection, and replace with new package Microsoft.Extensions.DependencyInjection 10.0.1",
             "label": "Microsoft.Extensions.DependencyInjection 9.0.8",
@@ -183,7 +183,7 @@
         {
           "incidentId": "e4876d51-0ca8-4cb7-8fb8-f0ec2ddd335b",
           "ruleId": "Project.0002",
-          "projectPath": "tests\\Concordia.Core.Tests\\Concordia.Core.Tests.csproj",
+          "projectPath": "tests\\Synaptrix.Core.Tests\\Synaptrix.Core.Tests.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
@@ -191,7 +191,7 @@
               "protected": "Framework di destinazione corrente: net9.0\nFramework di destinazione consigliato: net10.0"
             },
             "kind": "File",
-            "path": "tests\\Concordia.Core.Tests\\Concordia.Core.Tests.csproj",
+            "path": "tests\\Synaptrix.Core.Tests\\Synaptrix.Core.Tests.csproj",
             "snippet": "Framework di destinazione corrente: net9.0\nFramework di destinazione consigliato: net10.0",
             "protectedSnippet": "Framework di destinazione corrente: net9.0\nFramework di destinazione consigliato: net10.0",
             "properties": {
@@ -204,12 +204,12 @@
       "features": []
     },
     {
-      "path": "examples\\Concordia.Examples.Web\\Concordia.Examples.Web.csproj",
+      "path": "examples\\Synaptrix.Examples.Web\\Synaptrix.Examples.Web.csproj",
       "startingProject": true,
       "issues": 3,
       "storyPoints": 5,
       "properties": {
-        "appName": "Concordia.Examples.Web",
+        "appName": "Synaptrix.Examples.Web",
         "projectKind": "AspNetCore",
         "frameworks": [
           "net9.0"
@@ -233,7 +233,7 @@
         {
           "incidentId": "0b64f5fd-9f31-4c8f-9cf1-850a988c0204",
           "ruleId": "NuGet.0002",
-          "projectPath": "examples\\Concordia.Examples.Web\\Concordia.Examples.Web.csproj",
+          "projectPath": "examples\\Synaptrix.Examples.Web\\Synaptrix.Examples.Web.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
@@ -241,7 +241,7 @@
               "protected": "Microsoft.AspNetCore.OpenApi, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.1"
             },
             "kind": "File",
-            "path": "examples\\Concordia.Examples.Web\\Concordia.Examples.Web.csproj",
+            "path": "examples\\Synaptrix.Examples.Web\\Synaptrix.Examples.Web.csproj",
             "snippet": "Microsoft.AspNetCore.OpenApi, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.1",
             "protectedSnippet": "Microsoft.AspNetCore.OpenApi, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.1",
             "label": "Microsoft.AspNetCore.OpenApi 9.0.8",
@@ -256,7 +256,7 @@
         {
           "incidentId": "5d4b2b50-5952-4f1c-aaf6-462b2fa8b60f",
           "ruleId": "Project.0002",
-          "projectPath": "examples\\Concordia.Examples.Web\\Concordia.Examples.Web.csproj",
+          "projectPath": "examples\\Synaptrix.Examples.Web\\Synaptrix.Examples.Web.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
@@ -264,7 +264,7 @@
               "protected": "Framework di destinazione corrente: net9.0\nFramework di destinazione consigliato: net10.0"
             },
             "kind": "File",
-            "path": "examples\\Concordia.Examples.Web\\Concordia.Examples.Web.csproj",
+            "path": "examples\\Synaptrix.Examples.Web\\Synaptrix.Examples.Web.csproj",
             "snippet": "Framework di destinazione corrente: net9.0\nFramework di destinazione consigliato: net10.0",
             "protectedSnippet": "Framework di destinazione corrente: net9.0\nFramework di destinazione consigliato: net10.0",
             "properties": {
@@ -277,16 +277,16 @@
           "incidentId": "d9df3049-fa38-4b1c-b11c-8eb1295ea9cc",
           "ruleId": "Api.0003",
           "description": "Breaking change: URI length limits removed ",
-          "projectPath": "examples\\Concordia.Examples.Web\\Concordia.Examples.Web.csproj",
+          "projectPath": "examples\\Synaptrix.Examples.Web\\Synaptrix.Examples.Web.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
-              "unrestricted": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Concordia.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
+              "unrestricted": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Synaptrix.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
               "protected": "T:System.Uri"
             },
             "kind": "File",
-            "path": "examples\\Concordia.Examples.Web\\Program.cs",
-            "snippet": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Concordia.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
+            "path": "examples\\Synaptrix.Examples.Web\\Program.cs",
+            "snippet": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Synaptrix.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
             "protectedSnippet": "T:System.Uri",
             "label": "T:System.Uri",
             "links": [
@@ -304,16 +304,16 @@
           "incidentId": "58845cc9-eacf-4c23-b6ee-5877ffc05c07",
           "ruleId": "Api.0003",
           "description": "Breaking change: URI length limits removed ",
-          "projectPath": "examples\\Concordia.Examples.Web\\Concordia.Examples.Web.csproj",
+          "projectPath": "examples\\Synaptrix.Examples.Web\\Synaptrix.Examples.Web.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
-              "unrestricted": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Concordia.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
+              "unrestricted": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Synaptrix.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
               "protected": "M:System.Uri.#ctor(System.String)"
             },
             "kind": "File",
-            "path": "examples\\Concordia.Examples.Web\\Program.cs",
-            "snippet": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Concordia.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
+            "path": "examples\\Synaptrix.Examples.Web\\Program.cs",
+            "snippet": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Synaptrix.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
             "protectedSnippet": "M:System.Uri.#ctor(System.String)",
             "label": "M:System.Uri.#ctor(System.String)",
             "links": [
@@ -331,16 +331,16 @@
           "incidentId": "f84a1133-ff1b-499e-9609-4df62886ac05",
           "ruleId": "Api.0003",
           "description": "Breaking change: URI length limits removed ",
-          "projectPath": "examples\\Concordia.Examples.Web\\Concordia.Examples.Web.csproj",
+          "projectPath": "examples\\Synaptrix.Examples.Web\\Synaptrix.Examples.Web.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
-              "unrestricted": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Concordia.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
+              "unrestricted": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Synaptrix.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
               "protected": "T:System.Uri"
             },
             "kind": "File",
-            "path": "examples\\Concordia.Examples.Web\\Program.cs",
-            "snippet": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Concordia.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
+            "path": "examples\\Synaptrix.Examples.Web\\Program.cs",
+            "snippet": "options.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n    {\r\n        Version = \u0022v1\u0022,\r\n        Title = \u0022Concordia API\u0022, // You can change your API title here\r\n        Description = \u0022An example API using Synaptrix.MediatR\u0022,\r\n        Contact = new OpenApiContact\r\n        {\r\n            Name = \u0022Your Name/Company\u0022,\r\n            Url = new Uri(\u0022https://example.com/contact\u0022) // Replace with your URL\r\n        }\r\n    });",
             "protectedSnippet": "T:System.Uri",
             "label": "T:System.Uri",
             "links": [
@@ -358,12 +358,12 @@
       "features": []
     },
     {
-      "path": "Concordia.Generator\\Concordia.Generator.csproj",
+      "path": "Synaptrix.Generator\\Synaptrix.Generator.csproj",
       "startingProject": true,
       "issues": 0,
       "storyPoints": 0,
       "properties": {
-        "appName": "Concordia.Generator",
+        "appName": "Synaptrix.Generator",
         "projectKind": "ClassLibrary",
         "frameworks": [
           "netstandard2.0"
@@ -387,12 +387,12 @@
       "features": []
     },
     {
-      "path": "Concordia.MediatR\\Concordia.MediatR.csproj",
+      "path": "Synaptrix.MediatR\\Synaptrix.MediatR.csproj",
       "startingProject": true,
       "issues": 2,
       "storyPoints": 2,
       "properties": {
-        "appName": "Concordia.MediatR",
+        "appName": "Synaptrix.MediatR",
         "projectKind": "ClassLibrary",
         "frameworks": [
           "net9.0",
@@ -418,7 +418,7 @@
         {
           "incidentId": "be7b0e1c-3eed-47e8-b5b8-43dc9c709c66",
           "ruleId": "NuGet.0002",
-          "projectPath": "Concordia.MediatR\\Concordia.MediatR.csproj",
+          "projectPath": "Synaptrix.MediatR\\Synaptrix.MediatR.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
@@ -426,7 +426,7 @@
               "protected": "Microsoft.Extensions.DependencyInjection.Abstractions, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1"
             },
             "kind": "File",
-            "path": "Concordia.MediatR\\Concordia.MediatR.csproj",
+            "path": "Synaptrix.MediatR\\Synaptrix.MediatR.csproj",
             "snippet": "Microsoft.Extensions.DependencyInjection.Abstractions, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1",
             "protectedSnippet": "Microsoft.Extensions.DependencyInjection.Abstractions, 9.0.8\n\nRaccomandazione:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1",
             "label": "Microsoft.Extensions.DependencyInjection.Abstractions 9.0.8",
@@ -441,7 +441,7 @@
         {
           "incidentId": "820f5269-e647-4e60-b2d2-37bf28984341",
           "ruleId": "Project.0002",
-          "projectPath": "Concordia.MediatR\\Concordia.MediatR.csproj",
+          "projectPath": "Synaptrix.MediatR\\Synaptrix.MediatR.csproj",
           "state": "Active",
           "location": {
             "snippetModel": {
@@ -449,7 +449,7 @@
               "protected": "Framework di destinazione corrente: net9.0;net8.0;netstandard2.0\nFramework di destinazione consigliato: net9.0;net8.0;netstandard2.0;net10.0"
             },
             "kind": "File",
-            "path": "Concordia.MediatR\\Concordia.MediatR.csproj",
+            "path": "Synaptrix.MediatR\\Synaptrix.MediatR.csproj",
             "snippet": "Framework di destinazione corrente: net9.0;net8.0;netstandard2.0\nFramework di destinazione consigliato: net9.0;net8.0;netstandard2.0;net10.0",
             "protectedSnippet": "Framework di destinazione corrente: net9.0;net8.0;netstandard2.0\nFramework di destinazione consigliato: net9.0;net8.0;netstandard2.0;net10.0",
             "properties": {

@@ -2,9 +2,9 @@
 // ***** BenchmarkRunner: Start   *****
 // ***** Found 9 benchmark(s) in total *****
 // ***** Building 1 exe(s) in Parallel: Start   *****
-// start dotnet  restore --nodeReuse:false /p:UseSharedCompilation=false /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1/" /p:OutDir="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0/" /p:OutputPath="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0/" /p:PublishDir="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\publish/" in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1
+// start dotnet  restore --nodeReuse:false /p:UseSharedCompilation=false /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1/" /p:OutDir="C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0/" /p:OutputPath="C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0/" /p:PublishDir="C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\publish/" in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1
 // command took 4.7 sec and exited with 0
-// start dotnet  build -c Release --no-restore --nodeReuse:false /p:UseSharedCompilation=false /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1/" /p:OutDir="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0/" /p:OutputPath="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0/" /p:PublishDir="C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\publish/" --output "C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0/" in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1
+// start dotnet  build -c Release --no-restore --nodeReuse:false /p:UseSharedCompilation=false /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1/" /p:OutDir="C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0/" /p:OutputPath="C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0/" /p:PublishDir="C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\publish/" --output "C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0/" in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1
 // command took 10.05 sec and exited with 0
 // ***** Done, took 00:00:14 (14.84 sec)   *****
 // Found 3 benchmarks:
@@ -17,7 +17,7 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 // Benchmark: PublishNotificationBenchmark.MediatR_PublishNotification: DefaultJob
 // *** Execute ***
 // Launch: 1 / 1
-// Execute: dotnet Concordia.Benchmarks-DefaultJob-1.dll --anonymousPipes 2008 2656 --benchmarkName Concordia.Benchmarks.PublishNotificationBenchmark.MediatR_PublishNotification --job Default --benchmarkId 0 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0
+// Execute: dotnet Synaptrix.Benchmarks-DefaultJob-1.dll --anonymousPipes 2008 2656 --benchmarkName Synaptrix.Benchmarks.PublishNotificationBenchmark.MediatR_PublishNotification --job Default --benchmarkId 0 in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0
 // BeforeAnythingElse
 
 // Benchmark Process Environment Information:
@@ -267,7 +267,7 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 // Benchmark: PublishNotificationBenchmark.Concordia_PublishNotification: DefaultJob
 // *** Execute ***
 // Launch: 1 / 1
-// Execute: dotnet Concordia.Benchmarks-DefaultJob-1.dll --anonymousPipes 2200 1444 --benchmarkName Concordia.Benchmarks.PublishNotificationBenchmark.Concordia_PublishNotification --job Default --benchmarkId 1 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0
+// Execute: dotnet Synaptrix.Benchmarks-DefaultJob-1.dll --anonymousPipes 2200 1444 --benchmarkName Synaptrix.Benchmarks.PublishNotificationBenchmark.Concordia_PublishNotification --job Default --benchmarkId 1 in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0
 // BeforeAnythingElse
 
 // Benchmark Process Environment Information:
@@ -384,7 +384,7 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 // Benchmark: PublishNotificationBenchmark.Martin_PublishNotification: DefaultJob
 // *** Execute ***
 // Launch: 1 / 1
-// Execute: dotnet Concordia.Benchmarks-DefaultJob-1.dll --anonymousPipes 2664 2660 --benchmarkName Concordia.Benchmarks.PublishNotificationBenchmark.Martin_PublishNotification --job Default --benchmarkId 2 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0
+// Execute: dotnet Synaptrix.Benchmarks-DefaultJob-1.dll --anonymousPipes 2664 2660 --benchmarkName Synaptrix.Benchmarks.PublishNotificationBenchmark.Martin_PublishNotification --job Default --benchmarkId 2 in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0
 // BeforeAnythingElse
 
 // Benchmark Process Environment Information:
@@ -397,18 +397,18 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 OverheadJitting  1: 1 op, 117900.00 ns, 117.9000 us/op
 
 System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
- ---> Mediator.InvalidMessageException: Tried to send/publish invalid message type to Mediator: Concordia.Benchmarks.Requests.MartinNotification
-   at Mediator.Mediator.ThrowInvalidMessage[T](T msg) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1149
-   at Mediator.Mediator.ThrowInvalidNotification[T](T argument, String paramName) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1162
-   at Mediator.Mediator.Publish(Object notification, CancellationToken cancellationToken) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1006
-   at Concordia.Benchmarks.PublishNotificationBenchmark.Martin_PublishNotification() in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\Benchmarks\PublishNotificationBenchmark.cs:line 55
-   at BenchmarkDotNet.Autogenerated.Runnable_2.<.ctor>b__3_3() in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 581
-   at BenchmarkDotNet.Autogenerated.Runnable_2.WorkloadActionNoUnroll(Int64 invokeCount) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 695
+ ---> Mediator.InvalidMessageException: Tried to send/publish invalid message type to Mediator: Synaptrix.Benchmarks.Requests.MartinNotification
+   at Mediator.Mediator.ThrowInvalidMessage[T](T msg) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\obj\Synaptrix.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1149
+   at Mediator.Mediator.ThrowInvalidNotification[T](T argument, String paramName) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\obj\Synaptrix.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1162
+   at Mediator.Mediator.Publish(Object notification, CancellationToken cancellationToken) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\obj\Synaptrix.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1006
+   at Synaptrix.Benchmarks.PublishNotificationBenchmark.Martin_PublishNotification() in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\Benchmarks\PublishNotificationBenchmark.cs:line 55
+   at BenchmarkDotNet.Autogenerated.Runnable_2.<.ctor>b__3_3() in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 581
+   at BenchmarkDotNet.Autogenerated.Runnable_2.WorkloadActionNoUnroll(Int64 invokeCount) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 695
    at BenchmarkDotNet.Engines.Engine.Measure(Action`1 action, Int64 invokeCount)
    at BenchmarkDotNet.Engines.Engine.RunIteration(IterationData data)
    at BenchmarkDotNet.Engines.EngineFactory.Jit(Engine engine, Int32 jitIndex, Int32 invokeCount, Int32 unrollFactor)
    at BenchmarkDotNet.Engines.EngineFactory.CreateReadyToRun(EngineParameters engineParameters)
-   at BenchmarkDotNet.Autogenerated.Runnable_2.Run(IHost host, String benchmarkName) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 560
+   at BenchmarkDotNet.Autogenerated.Runnable_2.Run(IHost host, String benchmarkName) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 560
    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
    at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
    --- End of inner exception stack trace ---
@@ -416,7 +416,7 @@ System.Reflection.TargetInvocationException: Exception has been thrown by the ta
    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
    at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
    at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
-   at BenchmarkDotNet.Autogenerated.UniqueProgramName.AfterAssemblyLoadingAttached(String[] args) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 57
+   at BenchmarkDotNet.Autogenerated.UniqueProgramName.AfterAssemblyLoadingAttached(String[] args) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 57
 // AfterAll
 No Workload Results were obtained from the run.
 // Benchmark Process 260260 has exited with code -1.
@@ -426,9 +426,9 @@ Successfully reverted power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c Fri
 // ***** BenchmarkRunner: Finish  *****
 
 // * Export *
-  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.PublishNotificationBenchmark-report.csv
-  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.PublishNotificationBenchmark-report-github.md
-  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.PublishNotificationBenchmark-report.html
+  BenchmarkDotNet.Artifacts\results\Synaptrix.Benchmarks.PublishNotificationBenchmark-report.csv
+  BenchmarkDotNet.Artifacts\results\Synaptrix.Benchmarks.PublishNotificationBenchmark-report-github.md
+  BenchmarkDotNet.Artifacts\results\Synaptrix.Benchmarks.PublishNotificationBenchmark-report.html
 
 // * Detailed results *
 PublishNotificationBenchmark.MediatR_PublishNotification: DefaultJob
@@ -522,7 +522,7 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 // Benchmark: SendCommandBenchmark.MediatR_SendCommand: DefaultJob
 // *** Execute ***
 // Launch: 1 / 1
-// Execute: dotnet Concordia.Benchmarks-DefaultJob-1.dll --anonymousPipes 2656 2220 --benchmarkName Concordia.Benchmarks.SendCommandBenchmark.MediatR_SendCommand --job Default --benchmarkId 3 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0
+// Execute: dotnet Synaptrix.Benchmarks-DefaultJob-1.dll --anonymousPipes 2656 2220 --benchmarkName Synaptrix.Benchmarks.SendCommandBenchmark.MediatR_SendCommand --job Default --benchmarkId 3 in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0
 // BeforeAnythingElse
 
 // Benchmark Process Environment Information:
@@ -725,7 +725,7 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 // Benchmark: SendCommandBenchmark.Concordia_SendCommand: DefaultJob
 // *** Execute ***
 // Launch: 1 / 1
-// Execute: dotnet Concordia.Benchmarks-DefaultJob-1.dll --anonymousPipes 2748 2744 --benchmarkName Concordia.Benchmarks.SendCommandBenchmark.Concordia_SendCommand --job Default --benchmarkId 4 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0
+// Execute: dotnet Synaptrix.Benchmarks-DefaultJob-1.dll --anonymousPipes 2748 2744 --benchmarkName Synaptrix.Benchmarks.SendCommandBenchmark.Concordia_SendCommand --job Default --benchmarkId 4 in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0
 // BeforeAnythingElse
 
 // Benchmark Process Environment Information:
@@ -846,7 +846,7 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 // Benchmark: SendCommandBenchmark.Martin_SendCommand: DefaultJob
 // *** Execute ***
 // Launch: 1 / 1
-// Execute: dotnet Concordia.Benchmarks-DefaultJob-1.dll --anonymousPipes 2776 2028 --benchmarkName Concordia.Benchmarks.SendCommandBenchmark.Martin_SendCommand --job Default --benchmarkId 5 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0
+// Execute: dotnet Synaptrix.Benchmarks-DefaultJob-1.dll --anonymousPipes 2776 2028 --benchmarkName Synaptrix.Benchmarks.SendCommandBenchmark.Martin_SendCommand --job Default --benchmarkId 5 in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0
 // BeforeAnythingElse
 
 // Benchmark Process Environment Information:
@@ -859,18 +859,18 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 OverheadJitting  1: 1 op, 135000.00 ns, 135.0000 us/op
 
 System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
- ---> Mediator.InvalidMessageException: Tried to send/publish invalid message type to Mediator: Concordia.Benchmarks.Requests.MartinCommand
-   at Mediator.Mediator.ThrowInvalidMessage[T](T msg) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1149
-   at Mediator.Mediator.ThrowInvalidMessage[T](T msg, String paramName) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1043
-   at Mediator.Mediator.Send(Object message, CancellationToken cancellationToken) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 969
-   at Concordia.Benchmarks.SendCommandBenchmark.Martin_SendCommand() in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\Benchmarks\SendCommandBenchmark.cs:line 54
-   at BenchmarkDotNet.Autogenerated.Runnable_5.<.ctor>b__3_3() in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 1157
-   at BenchmarkDotNet.Autogenerated.Runnable_5.WorkloadActionNoUnroll(Int64 invokeCount) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 1273
+ ---> Mediator.InvalidMessageException: Tried to send/publish invalid message type to Mediator: Synaptrix.Benchmarks.Requests.MartinCommand
+   at Mediator.Mediator.ThrowInvalidMessage[T](T msg) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\obj\Synaptrix.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1149
+   at Mediator.Mediator.ThrowInvalidMessage[T](T msg, String paramName) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\obj\Synaptrix.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1043
+   at Mediator.Mediator.Send(Object message, CancellationToken cancellationToken) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\obj\Synaptrix.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 969
+   at Synaptrix.Benchmarks.SendCommandBenchmark.Martin_SendCommand() in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\Benchmarks\SendCommandBenchmark.cs:line 54
+   at BenchmarkDotNet.Autogenerated.Runnable_5.<.ctor>b__3_3() in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 1157
+   at BenchmarkDotNet.Autogenerated.Runnable_5.WorkloadActionNoUnroll(Int64 invokeCount) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 1273
    at BenchmarkDotNet.Engines.Engine.Measure(Action`1 action, Int64 invokeCount)
    at BenchmarkDotNet.Engines.Engine.RunIteration(IterationData data)
    at BenchmarkDotNet.Engines.EngineFactory.Jit(Engine engine, Int32 jitIndex, Int32 invokeCount, Int32 unrollFactor)
    at BenchmarkDotNet.Engines.EngineFactory.CreateReadyToRun(EngineParameters engineParameters)
-   at BenchmarkDotNet.Autogenerated.Runnable_5.Run(IHost host, String benchmarkName) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 1136
+   at BenchmarkDotNet.Autogenerated.Runnable_5.Run(IHost host, String benchmarkName) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 1136
    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
    at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
    --- End of inner exception stack trace ---
@@ -878,7 +878,7 @@ System.Reflection.TargetInvocationException: Exception has been thrown by the ta
    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
    at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
    at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
-   at BenchmarkDotNet.Autogenerated.UniqueProgramName.AfterAssemblyLoadingAttached(String[] args) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 57
+   at BenchmarkDotNet.Autogenerated.UniqueProgramName.AfterAssemblyLoadingAttached(String[] args) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 57
 // AfterAll
 No Workload Results were obtained from the run.
 // Benchmark Process 330032 has exited with code -1.
@@ -888,9 +888,9 @@ Successfully reverted power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c Fri
 // ***** BenchmarkRunner: Finish  *****
 
 // * Export *
-  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.SendCommandBenchmark-report.csv
-  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.SendCommandBenchmark-report-github.md
-  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.SendCommandBenchmark-report.html
+  BenchmarkDotNet.Artifacts\results\Synaptrix.Benchmarks.SendCommandBenchmark-report.csv
+  BenchmarkDotNet.Artifacts\results\Synaptrix.Benchmarks.SendCommandBenchmark-report-github.md
+  BenchmarkDotNet.Artifacts\results\Synaptrix.Benchmarks.SendCommandBenchmark-report.html
 
 // * Detailed results *
 SendCommandBenchmark.MediatR_SendCommand: DefaultJob
@@ -980,7 +980,7 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 // Benchmark: SendQueryBenchmark.MediatR_SendQuery: DefaultJob
 // *** Execute ***
 // Launch: 1 / 1
-// Execute: dotnet Concordia.Benchmarks-DefaultJob-1.dll --anonymousPipes 2024 2008 --benchmarkName Concordia.Benchmarks.SendQueryBenchmark.MediatR_SendQuery --job Default --benchmarkId 6 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0
+// Execute: dotnet Synaptrix.Benchmarks-DefaultJob-1.dll --anonymousPipes 2024 2008 --benchmarkName Synaptrix.Benchmarks.SendQueryBenchmark.MediatR_SendQuery --job Default --benchmarkId 6 in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0
 // BeforeAnythingElse
 
 // Benchmark Process Environment Information:
@@ -1271,7 +1271,7 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 // Benchmark: SendQueryBenchmark.Concordia_SendQuery: DefaultJob
 // *** Execute ***
 // Launch: 1 / 1
-// Execute: dotnet Concordia.Benchmarks-DefaultJob-1.dll --anonymousPipes 2124 2016 --benchmarkName Concordia.Benchmarks.SendQueryBenchmark.Concordia_SendQuery --job Default --benchmarkId 7 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0
+// Execute: dotnet Synaptrix.Benchmarks-DefaultJob-1.dll --anonymousPipes 2124 2016 --benchmarkName Synaptrix.Benchmarks.SendQueryBenchmark.Concordia_SendQuery --job Default --benchmarkId 7 in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0
 // BeforeAnythingElse
 
 // Benchmark Process Environment Information:
@@ -1436,7 +1436,7 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 // Benchmark: SendQueryBenchmark.Martin_SendQuery: DefaultJob
 // *** Execute ***
 // Launch: 1 / 1
-// Execute: dotnet Concordia.Benchmarks-DefaultJob-1.dll --anonymousPipes 2728 2112 --benchmarkName Concordia.Benchmarks.SendQueryBenchmark.Martin_SendQuery --job Default --benchmarkId 8 in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\bin\Release\net10.0
+// Execute: dotnet Synaptrix.Benchmarks-DefaultJob-1.dll --anonymousPipes 2728 2112 --benchmarkName Synaptrix.Benchmarks.SendQueryBenchmark.Martin_SendQuery --job Default --benchmarkId 8 in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\bin\Release\net10.0
 // BeforeAnythingElse
 
 // Benchmark Process Environment Information:
@@ -1449,18 +1449,18 @@ Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: Prest
 OverheadJitting  1: 1 op, 136300.00 ns, 136.3000 us/op
 
 System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
- ---> Mediator.InvalidMessageException: Tried to send/publish invalid message type to Mediator: Concordia.Benchmarks.Requests.MartinQuery
-   at Mediator.Mediator.ThrowInvalidMessage[T](T msg) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1149
-   at Mediator.Mediator.ThrowInvalidMessage[T](T msg, String paramName) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1043
-   at Mediator.Mediator.Send(Object message, CancellationToken cancellationToken) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\obj\Concordia.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 969
-   at Concordia.Benchmarks.SendQueryBenchmark.Martin_SendQuery() in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\Benchmarks\SendQueryBenchmark.cs:line 54
-   at BenchmarkDotNet.Autogenerated.Runnable_8.<.ctor>b__3_3() in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 1748
-   at BenchmarkDotNet.Autogenerated.Runnable_8.WorkloadActionNoUnroll(Int64 invokeCount) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 1864
+ ---> Mediator.InvalidMessageException: Tried to send/publish invalid message type to Mediator: Synaptrix.Benchmarks.Requests.MartinQuery
+   at Mediator.Mediator.ThrowInvalidMessage[T](T msg) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\obj\Synaptrix.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1149
+   at Mediator.Mediator.ThrowInvalidMessage[T](T msg, String paramName) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\obj\Synaptrix.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 1043
+   at Mediator.Mediator.Send(Object message, CancellationToken cancellationToken) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\obj\Synaptrix.Benchmarks\release\Mediator.SourceGenerator\Mediator.SourceGenerator.IncrementalMediatorGenerator\Mediator.g.cs:line 969
+   at Synaptrix.Benchmarks.SendQueryBenchmark.Martin_SendQuery() in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\Benchmarks\SendQueryBenchmark.cs:line 54
+   at BenchmarkDotNet.Autogenerated.Runnable_8.<.ctor>b__3_3() in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 1748
+   at BenchmarkDotNet.Autogenerated.Runnable_8.WorkloadActionNoUnroll(Int64 invokeCount) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 1864
    at BenchmarkDotNet.Engines.Engine.Measure(Action`1 action, Int64 invokeCount)
    at BenchmarkDotNet.Engines.Engine.RunIteration(IterationData data)
    at BenchmarkDotNet.Engines.EngineFactory.Jit(Engine engine, Int32 jitIndex, Int32 invokeCount, Int32 unrollFactor)
    at BenchmarkDotNet.Engines.EngineFactory.CreateReadyToRun(EngineParameters engineParameters)
-   at BenchmarkDotNet.Autogenerated.Runnable_8.Run(IHost host, String benchmarkName) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 1727
+   at BenchmarkDotNet.Autogenerated.Runnable_8.Run(IHost host, String benchmarkName) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 1727
    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
    at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
    --- End of inner exception stack trace ---
@@ -1468,7 +1468,7 @@ System.Reflection.TargetInvocationException: Exception has been thrown by the ta
    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
    at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
    at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
-   at BenchmarkDotNet.Autogenerated.UniqueProgramName.AfterAssemblyLoadingAttached(String[] args) in C:\github\Concordia\Concordia\benchmarks\Concordia.Benchmarks\bin\Release\net10.0\Concordia.Benchmarks-DefaultJob-1\Concordia.Benchmarks-DefaultJob-1.notcs:line 57
+   at BenchmarkDotNet.Autogenerated.UniqueProgramName.AfterAssemblyLoadingAttached(String[] args) in C:\github\Concordia\Concordia\benchmarks\Synaptrix.Benchmarks\bin\Release\net10.0\Synaptrix.Benchmarks-DefaultJob-1\Synaptrix.Benchmarks-DefaultJob-1.notcs:line 57
 // AfterAll
 No Workload Results were obtained from the run.
 // Benchmark Process 35824 has exited with code -1.
@@ -1478,9 +1478,9 @@ Successfully reverted power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c Fri
 // ***** BenchmarkRunner: Finish  *****
 
 // * Export *
-  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.SendQueryBenchmark-report.csv
-  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.SendQueryBenchmark-report-github.md
-  BenchmarkDotNet.Artifacts\results\Concordia.Benchmarks.SendQueryBenchmark-report.html
+  BenchmarkDotNet.Artifacts\results\Synaptrix.Benchmarks.SendQueryBenchmark-report.csv
+  BenchmarkDotNet.Artifacts\results\Synaptrix.Benchmarks.SendQueryBenchmark-report-github.md
+  BenchmarkDotNet.Artifacts\results\Synaptrix.Benchmarks.SendQueryBenchmark-report.html
 
 // * Detailed results *
 SendQueryBenchmark.MediatR_SendQuery: DefaultJob

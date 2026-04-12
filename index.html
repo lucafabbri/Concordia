@@ -138,24 +138,24 @@
                     <strong>Concordia</strong> is distributed via three NuGet packages, all currently at <strong>version <code>1.0.1</code></strong>:
                 </p>
                 <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed mb-4">
-                    <li><strong><code>Concordia.Core</code></strong>: Contains the interfaces (<code>IMediator</code>, <code>ISender</code>, <code>IRequest</code>, etc.), the <code>Mediator</code> implementation, and core DI extension methods.</li>
-                    <li><strong><code>Concordia.Generator</code></strong>: Contains the C# Source Generator for compile-time handler registration.</li>
-                    <li><strong><code>Concordia.MediatR</code></strong>: Provides a compatibility layer with MediatR's <code>AddMediator</code> extension method for runtime reflection-based handler registration, now using its own <code>ConcordiaMediatRServiceConfiguration</code>.</li>
+                    <li><strong><code>Synaptrix.Core</code></strong>: Contains the interfaces (<code>IMediator</code>, <code>ISender</code>, <code>IRequest</code>, etc.), the <code>Mediator</code> implementation, and core DI extension methods.</li>
+                    <li><strong><code>Synaptrix.Generator</code></strong>: Contains the C# Source Generator for compile-time handler registration.</li>
+                    <li><strong><code>Synaptrix.MediatR</code></strong>: Provides a compatibility layer with MediatR's <code>AddMediator</code> extension method for runtime reflection-based handler registration, now using its own <code>ConcordiaMediatRServiceConfiguration</code>.</li>
                 </ul>
                 <p class="text-lg leading-relaxed mb-4">
-                    To get started with <strong>Concordia</strong>, install the necessary packages in your application project (e.g., an ASP.NET Core project) using the .NET CLI. You will typically choose <strong>either <code>Concordia.Generator</code> OR <code>Concordia.MediatR</code></strong> based on your preference for handler registration.
+                    To get started with <strong>Concordia</strong>, install the necessary packages in your application project (e.g., an ASP.NET Core project) using the .NET CLI. You will typically choose <strong>either <code>Synaptrix.Generator</code> OR <code>Synaptrix.MediatR</code></strong> based on your preference for handler registration.
                 </p>
 
                 <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 1: Using the Source Generator (Recommended for New Projects)</h3>
                 <div class="code-block mb-6">
-                    <pre><code class="language-bash">dotnet add package Concordia.Core --version 1.0.1
-dotnet add package Concordia.Generator --version 1.0.1</code></pre>
+                    <pre><code class="language-bash">dotnet add package Synaptrix.Core --version 1.0.1
+dotnet add package Synaptrix.Generator --version 1.0.1</code></pre>
                 </div>
 
                 <h3 class="text-2xl font-semibold mb-4 text-slate-700">Option 2: Using the MediatR Compatibility Layer (For Migration or Reflection Preference)</h3>
                 <div class="code-block mb-6">
-                    <pre><code class="language-bash">dotnet add package Concordia.Core --version 1.0.1
-dotnet add package Concordia.MediatR --version 1.0.1</code></pre>
+                    <pre><code class="language-bash">dotnet add package Synaptrix.Core --version 1.0.1
+dotnet add package Synaptrix.MediatR --version 1.0.1</code></pre>
                 </div>
                 <p class="text-lg leading-relaxed">
                     Alternatively, you can install them via the NuGet Package Manager in Visual Studio.
@@ -170,11 +170,11 @@ dotnet add package Concordia.MediatR --version 1.0.1</code></pre>
 
                 <h3 class="text-2xl font-semibold mb-4 text-slate-700">1. Define Requests, Commands, and Notifications</h3>
                 <p class="text-lg leading-relaxed mb-4">
-                    Your requests, commands, and notifications must implement the <code>Concordia.Contracts</code> interfaces.
+                    Your requests, commands, and notifications must implement the <code>Synaptrix.Contracts</code> interfaces.
                 </p>
                 <div class="code-block mb-6">
                     <pre><code class="language-csharp">// Request with response
-using Concordia.Contracts;
+using Synaptrix.Contracts;
 
 namespace MyProject.Requests
 {
@@ -192,7 +192,7 @@ namespace MyProject.Requests
 }
 
 // Fire-and-forget command
-using Concordia.Contracts;
+using Synaptrix.Contracts;
 
 namespace MyProject.Commands
 {
@@ -204,7 +204,7 @@ namespace MyProject.Commands
 }
 
 // Notification
-using Concordia.Contracts;
+using Synaptrix.Contracts;
 
 namespace MyProject.Notifications
 {
@@ -222,7 +222,7 @@ namespace MyProject.Notifications
                 </p>
                 <div class="code-block mb-6">
                     <pre><code class="language-csharp">// Handler for a request with response
-using Concordia.Contracts;
+using Synaptrix.Contracts;
 using MyProject.Requests;
 using System.Threading;
 using System.Threading.Tasks;
@@ -241,7 +241,7 @@ namespace MyProject.Handlers
 }
 
 // Handler for a fire-and-forget command
-using Concordia.Contracts;
+using Synaptrix.Contracts;
 using MyProject.Commands;
 using System.Threading;
 using System.Threading.Tasks;
@@ -259,7 +259,7 @@ namespace MyProject.Handlers
 }
 
 // Notification Handler
-using Concordia.Contracts;
+using Synaptrix.Contracts;
 using MyProject.Notifications;
 using System.Threading;
 using System.Threading.Tasks;
@@ -286,7 +286,7 @@ namespace MyProject.Handlers
 }
 
 // Example Request Pre-Processor
-using Concordia.Contracts;
+using Synaptrix.Contracts;
 using MyProject.Requests; // Assuming your requests are here
 using System.Threading;
 using System.Threading.Tasks;
@@ -304,7 +304,7 @@ namespace MyProject.Processors
 }
 
 // Example Request Post-Processor
-using Concordia.Contracts;
+using Synaptrix.Contracts;
 using MyProject.Requests; // Assuming your requests are here
 using System.Threading;
 using System.Threading.Tasks;
@@ -322,7 +322,7 @@ namespace MyProject.Processors
 }
 
 // Example Pipeline Behavior
-using Concordia.Contracts;
+using Synaptrix.Contracts;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -356,7 +356,7 @@ namespace MyProject.Behaviors
                 </p>
                 <h5 class="text-lg font-semibold mb-2 text-slate-700">i. Configure your <code>.csproj</code></h5>
                 <p class="text-lg leading-relaxed mb-4">
-                    Add the <code>Concordia.Generator</code> as a <code>ProjectReference</code> to your application project's <code>.csproj</code> file. Ensure the <code>OutputItemType="Analyzer"</code> and <code>ReferenceOutputAssembly="false"</code> attributes are set. You can also customize the generated extension method's name using the <code>ConcordiaGeneratedMethodName</code> property.
+                    Add the <code>Synaptrix.Generator</code> as a <code>ProjectReference</code> to your application project's <code>.csproj</code> file. Ensure the <code>OutputItemType="Analyzer"</code> and <code>ReferenceOutputAssembly="false"</code> attributes are set. You can also customize the generated extension method's name using the <code>ConcordiaGeneratedMethodName</code> property.
                 </p>
                 <div class="code-block mb-6">
                     <pre><code class="language-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk.Web&quot;&gt;
@@ -371,8 +371,8 @@ namespace MyProject.Behaviors
   &lt;/PropertyGroup&gt;
 
   &lt;ItemGroup&gt;
-    &lt;ProjectReference Include=&quot;PathToYour\Concordia.Core\Concordia.Core.csproj&quot; /&gt;
-    &lt;ProjectReference Include=&quot;PathToYour\Concordia.Generator\Concordia.Generator.csproj&quot;
+    &lt;ProjectReference Include=&quot;PathToYour\Synaptrix.Core\Synaptrix.Core.csproj&quot; /&gt;
+    &lt;ProjectReference Include=&quot;PathToYour\Synaptrix.Generator\Synaptrix.Generator.csproj&quot;
                       OutputItemType=&quot;Analyzer&quot; ReferenceOutputAssembly=&quot;false&quot; /&gt;
   &lt;/ItemGroup&gt;
 
@@ -393,7 +393,7 @@ namespace MyProject.Behaviors
                 </p>
                 <div class="code-block mb-6">
                     <pre><code class="language-csharp">using Concordia; // Required for IMediator, ISender
-using Concordia.DependencyInjection; // For AddConcordiaCoreServices
+using Synaptrix.DependencyInjection; // For AddConcordiaCoreServices
 using Microsoft.AspNetCore.Mvc;
 using MyProject.Web; // Example: Namespace where ConcordiaGeneratedRegistrations is generated
 
@@ -401,7 +401,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Register Concordia's core services (IMediator, ISender).
 // You can use the parameterless method for the default publisher, or:
-builder.Services.AddConcordiaCoreServices&lt;Concordia.ForeachAwaitPublisher&gt;(); // Example: Explicitly register the default publisher
+builder.Services.AddConcordiaCoreServices&lt;Synaptrix.ForeachAwaitPublisher&gt;(); // Example: Explicitly register the default publisher
 // Or, if you have a custom publisher:
 // builder.Services.AddConcordiaCoreServices&lt;MyCustomNotificationPublisher&gt;(); // Example: Register your custom publisher
 
@@ -418,7 +418,7 @@ app.MapControllers();
 app.Run();
 
 // Example Controller for usage (remains unchanged)
-namespace Concordia.Examples.Web.Controllers
+namespace Synaptrix.Examples.Web.Controllers
 {
     [ApiController]
     [Route(&quot;[controller]&quot;)]
@@ -526,7 +526,7 @@ namespace Concordia.Examples.Web.Controllers
                 </p>
                 <div class="code-block mb-6">
                     <pre><code class="language-csharp">using Concordia; // Required for IMediator, ISender
-using Concordia.MediatR; // NEW: Namespace for the AddMediator extension method
+using Synaptrix.MediatR; // NEW: Namespace for the AddMediator extension method
 using System.Reflection; // Required for Assembly.GetExecutingAssembly()
 using Microsoft.Extensions.DependencyInjection; // Required for ServiceLifetime
 
@@ -564,7 +564,7 @@ app.MapControllers();
 app.Run();
 
 // Example Controller for usage (remains unchanged)
-namespace Concordia.Examples.Web.Controllers
+namespace Synaptrix.Examples.Web.Controllers
 {
     [ApiController]
     [Route(&quot;[controller]&quot;)]
@@ -678,34 +678,34 @@ namespace Concordia.Examples.Web.Controllers
                 <div class="code-block mb-6">
                     <pre><code class="language-bash">dotnet remove package MediatR
 dotnet remove package MediatR.Extensions.Microsoft.DependencyInjection # If present
-dotnet add package Concordia.Core --version 1.0.1
-dotnet add package Concordia.MediatR --version 1.0.1</code></pre>
+dotnet add package Synaptrix.Core --version 1.0.1
+dotnet add package Synaptrix.MediatR --version 1.0.1</code></pre>
                 </div>
 
                 <h3 class="text-2xl font-semibold mb-4 text-slate-700">2. Update Namespaces</h3>
                 <p class="text-lg leading-relaxed mb-4">
-                    Change namespaces from <code>MediatR</code> to <code>Concordia</code> and <code>Concordia.Contracts</code> where necessary.
+                    Change namespaces from <code>MediatR</code> to <code>Concordia</code> and <code>Synaptrix.Contracts</code> where necessary.
                 </p>
                 <ul class="list-disc list-inside space-y-2 text-lg leading-relaxed mb-4">
                     <li><strong>Interfaces</strong>:
                         <ul class="list-circle list-inside ml-4">
-                            <li><code>MediatR.IRequest&lt;TResponse&gt;</code> becomes <code>Concordia.Contracts.IRequest&lt;TResponse&gt;</code></li>
-                            <li><code>MediatR.IRequest</code> becomes <code>Concordia.Contracts.IRequest</code></li>
-                            <li><code>MediatR.IRequestHandler&lt;TRequest, TResponse&gt;</code> becomes <code>Concordia.Contracts.IRequestHandler&lt;TRequest, TResponse&gt;</code></li>
-                            <li><code>MediatR.IRequestHandler&lt;TRequest&gt;</code> becomes <code>Concordia.Contracts.IRequestHandler&lt;TRequest&gt;</code></li>
-                            <li><code>MediatR.INotification</code> becomes <code>Concordia.Contracts.INotification</code></li>
-                            <li><code>MediatR.INotificationHandler&lt;TNotification&gt;</code> becomes <code>Concordia.Contracts.INotificationHandler&lt;TNotification&gt;</code></li>
-                            <li><code>MediatR.IPipelineBehavior&lt;TRequest, TResponse&gt;</code> becomes <code>Concordia.Contracts.IPipelineBehavior&lt;TRequest, TResponse&gt;</code></li>
-                            <li><code>MediatR.IRequestPreProcessor&lt;TRequest&gt;</code> becomes <code>Concordia.Contracts.IRequestPreProcessor&lt;TRequest&gt;</code></li>
-                            <li><code>MediatR.IRequestPostProcessor&lt;TRequest, TResponse&gt;</code> becomes <code>Concordia.Contracts.IRequestPostProcessor&lt;TRequest, TResponse&gt;</code></li>
-                            <li><code>MediatR.INotificationPublisher</code> becomes <code>Concordia.Contracts.INotificationPublisher</code></li>
+                            <li><code>MediatR.IRequest&lt;TResponse&gt;</code> becomes <code>Synaptrix.Contracts.IRequest&lt;TResponse&gt;</code></li>
+                            <li><code>MediatR.IRequest</code> becomes <code>Synaptrix.Contracts.IRequest</code></li>
+                            <li><code>MediatR.IRequestHandler&lt;TRequest, TResponse&gt;</code> becomes <code>Synaptrix.Contracts.IRequestHandler&lt;TRequest, TResponse&gt;</code></li>
+                            <li><code>MediatR.IRequestHandler&lt;TRequest&gt;</code> becomes <code>Synaptrix.Contracts.IRequestHandler&lt;TRequest&gt;</code></li>
+                            <li><code>MediatR.INotification</code> becomes <code>Synaptrix.Contracts.INotification</code></li>
+                            <li><code>MediatR.INotificationHandler&lt;TNotification&gt;</code> becomes <code>Synaptrix.Contracts.INotificationHandler&lt;TNotification&gt;</code></li>
+                            <li><code>MediatR.IPipelineBehavior&lt;TRequest, TResponse&gt;</code> becomes <code>Synaptrix.Contracts.IPipelineBehavior&lt;TRequest, TResponse&gt;</code></li>
+                            <li><code>MediatR.IRequestPreProcessor&lt;TRequest&gt;</code> becomes <code>Synaptrix.Contracts.IRequestPreProcessor&lt;TRequest&gt;</code></li>
+                            <li><code>MediatR.IRequestPostProcessor&lt;TRequest, TResponse&gt;</code> becomes <code>Synaptrix.Contracts.IRequestPostProcessor&lt;TRequest, TResponse&gt;</code></li>
+                            <li><code>MediatR.INotificationPublisher</code> becomes <code>Synaptrix.Contracts.INotificationPublisher</code></li>
                         </ul>
                     </li>
                     <li><strong>Mediator Implementation</strong>:
                         <ul class="list-circle list-inside ml-4">
-                            <li><code>MediatR.IMediator</code> becomes <code>Concordia.IMediator</code></li>
-                            <li><code>MediatR.ISender</code> becomes <code>Concordia.ISender</code></li>
-                            <li><code>MediatR.Mediator</code> becomes <code>Concordia.Mediator</code></li>
+                            <li><code>MediatR.IMediator</code> becomes <code>Synaptrix.IMediator</code></li>
+                            <li><code>MediatR.ISender</code> becomes <code>Synaptrix.ISender</code></li>
+                            <li><code>MediatR.Mediator</code> becomes <code>Synaptrix.Mediator</code></li>
                         </ul>
                     </li>
                 </ul>
@@ -728,10 +728,10 @@ builder.Services.AddMediatR(cfg =>
     // Other MediatR configurations
 });</code></pre>
                 </div>
-                <h4 class="text-xl font-semibold mb-3 text-slate-700">After (Concordia.MediatR):</h4>
+                <h4 class="text-xl font-semibold mb-3 text-slate-700">After (Synaptrix.MediatR):</h4>
                 <div class="code-block mb-6">
                     <pre><code class="language-csharp">using Concordia; // For IMediator, ISender
-using Concordia.MediatR; // For the AddMediator extension method
+using Synaptrix.MediatR; // For the AddMediator extension method
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection; // For ServiceLifetime
 
@@ -781,7 +781,7 @@ builder.Services.AddMediator(cfg =>
                     before getting started.
                 </p>
                 <p class="text-lg leading-relaxed">
-                    Your contributions help us improve and grow Concordia. Thank you for your support!
+                    Your contributions help us improve and grow Synaptrix. Thank you for your support!
                 </p>
             </section>
 

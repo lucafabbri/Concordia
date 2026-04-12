@@ -1,0 +1,99 @@
+name: "Bump Version"
+
+# Eseguito manualmente dalla UI di GitHub (Actions → Bump Version → Run workflow)
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: "Tipo di bump (lascia 'auto' per lasciar decidere versionize dai commit)"
+        required: true
+        default: "auto"
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+      dry_run:
+        description: "Dry-run: mostra la versione calcolata senza committare né taggare"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout con storia completa (necessario per versionize) ──────────
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # ── 2. Configura Git ─────────────────────────────────────────────────────
+      - name: Configure Git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # ── 3. Installa .NET ─────────────────────────────────────────────────────
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.x"
+
+      # ── 4. Installa Versionize ──────────────────────────────────────────────
+      - name: Install versionize
+        run: |
+          dotnet tool install --global Versionize
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+      # ── 5. Esegui versionize ─────────────────────────────────────────────────
+      - name: Run versionize
+        id: versionize
+        run: |
+          EXTRA_FLAGS=""
+          if [[ "${{ inputs.increment }}" != "auto" ]]; then
+            EXTRA_FLAGS="--${{ inputs.increment }}"
+          fi
+
+          if [[ "${{ inputs.dry_run }}" == "true" ]]; then
+            EXTRA_FLAGS="$EXTRA_FLAGS --dry-run"
+          fi
+
+          versionize --skip-dirty $EXTRA_FLAGS
+
+          # Legge il tag appena creato da versionize (es. v1.2.3)
+          VTAG=$(git describe --tags --abbrev=0)
+          VERSION="${VTAG#v}"
+          echo "tag=$VTAG"            >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION"     >> "$GITHUB_OUTPUT"
+          echo "Versione rilevata: $VERSION"
+
+      # ── 6. Push commit + tag ─────────────────────────────────────────────────
+      - name: Push changes
+        if: inputs.dry_run == false
+        run: git push --follow-tags origin HEAD
+
+      # ── 7. Riepilogo ─────────────────────────────────────────────────────────
+      - name: Summary
+        run: |
+          if [[ "${{ inputs.dry_run }}" == "true" ]]; then
+            echo "### Dry-run completato" >> "$GITHUB_STEP_SUMMARY"
+            echo "Nessuna modifica applicata." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Versione aggiornata a ${{ steps.versionize.outputs.version }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Tag creato: \`${{ steps.versionize.outputs.tag }}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Il tag attiverà automaticamente il workflow **Publish to NuGet**." >> "$GITHUB_STEP_SUMMARY"
+          fi

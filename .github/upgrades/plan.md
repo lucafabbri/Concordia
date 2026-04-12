@@ -171,7 +171,7 @@ All projects in the solution will be upgraded simultaneously in a single coordin
 
 ### Multi-Targeting Strategy
 
-**For Class Libraries** (Concordia.Core, Concordia.MediatR):
+**For Class Libraries** (Synaptrix.Core, Synaptrix.MediatR):
 - **Approach**: Append net10.0 to existing targets
 - **Current**: `<TargetFrameworks>net9.0;net8.0;netstandard2.0</TargetFrameworks>`
 - **Updated**: `<TargetFrameworks>net9.0;net8.0;netstandard2.0;net10.0</TargetFrameworks>`
@@ -183,7 +183,7 @@ All projects in the solution will be upgraded simultaneously in a single coordin
 - **Updated**: `<TargetFramework>net10.0</TargetFramework>`
 - **Rationale**: Applications should target single framework for simplicity
 
-**For Source Generators** (Concordia.Generator):
+**For Source Generators** (Synaptrix.Generator):
 - **Approach**: No change
 - **Current & Target**: `<TargetFramework>netstandard2.0</TargetFramework>`
 - **Rationale**: Source generators must remain netstandard2.0 for maximum compatibility with all SDK versions
@@ -198,24 +198,24 @@ The Concordia solution has a clean, two-level dependency structure:
 
 ```
 Level 0 (Foundation):
-  ?? Concordia.Core (net9.0;net8.0;netstandard2.0)
+  ?? Synaptrix.Core (net9.0;net8.0;netstandard2.0)
      - No project dependencies
      - Depended upon by: Generator, MediatR, Tests
 
 Level 1 (Integration Layer):
-  ?? Concordia.Generator (netstandard2.0)
+  ?? Synaptrix.Generator (netstandard2.0)
   ?  ?? Depends on: Core
   ?  ?? Depended upon by: Examples.Web
   ?
-  ?? Concordia.MediatR (net9.0;net8.0;netstandard2.0)
+  ?? Synaptrix.MediatR (net9.0;net8.0;netstandard2.0)
      ?? Depends on: Core
      ?? Depended upon by: Examples.Web, Tests
 
 Level 2 (Consumers):
-  ?? Concordia.Examples.Web (net9.0)
+  ?? Synaptrix.Examples.Web (net9.0)
   ?  ?? Depends on: MediatR, Generator
   ?
-  ?? Concordia.Core.Tests (net9.0)
+  ?? Synaptrix.Core.Tests (net9.0)
      ?? Depends on: Core, MediatR
 ```
 
@@ -224,13 +224,13 @@ Level 2 (Consumers):
 **All-At-Once Strategy**: All projects upgraded simultaneously in single atomic operation.
 
 **Atomic Upgrade Group** (All 4 projects):
-1. **Concordia.Core** - Foundation library (add net10.0 to multi-target)
-2. **Concordia.MediatR** - Integration library (add net10.0 to multi-target)
-3. **Concordia.Examples.Web** - ASP.NET Core example (net9.0 ? net10.0)
-4. **Concordia.Core.Tests** - Test project (net9.0 ? net10.0)
+1. **Synaptrix.Core** - Foundation library (add net10.0 to multi-target)
+2. **Synaptrix.MediatR** - Integration library (add net10.0 to multi-target)
+3. **Synaptrix.Examples.Web** - ASP.NET Core example (net9.0 ? net10.0)
+4. **Synaptrix.Core.Tests** - Test project (net9.0 ? net10.0)
 
 **Unchanged**:
-- **Concordia.Generator** - Source generator remains netstandard2.0 (compatible with all .NET versions)
+- **Synaptrix.Generator** - Source generator remains netstandard2.0 (compatible with all .NET versions)
 
 ### Critical Path Identification
 
@@ -250,15 +250,15 @@ Since we're using multi-targeting for libraries (adding net10.0 alongside existi
 **Strategy**: Append net10.0 to existing multi-target frameworks
 
 **Projects with multi-targeting**:
-- **Concordia.Core**: `net9.0;net8.0;netstandard2.0` ? `net9.0;net8.0;netstandard2.0;net10.0`
-- **Concordia.MediatR**: `net9.0;net8.0;netstandard2.0` ? `net9.0;net8.0;netstandard2.0;net10.0`
+- **Synaptrix.Core**: `net9.0;net8.0;netstandard2.0` ? `net9.0;net8.0;netstandard2.0;net10.0`
+- **Synaptrix.MediatR**: `net9.0;net8.0;netstandard2.0` ? `net9.0;net8.0;netstandard2.0;net10.0`
 
 **Projects with single target upgrade**:
-- **Concordia.Examples.Web**: `net9.0` ? `net10.0`
-- **Concordia.Core.Tests**: `net9.0` ? `net10.0`
+- **Synaptrix.Examples.Web**: `net9.0` ? `net10.0`
+- **Synaptrix.Core.Tests**: `net9.0` ? `net10.0`
 
 **Generator stays unchanged**:
-- **Concordia.Generator**: `netstandard2.0` (no change - source generators should remain netstandard2.0)
+- **Synaptrix.Generator**: `netstandard2.0` (no change - source generators should remain netstandard2.0)
 
 This approach ensures backward compatibility while enabling .NET 10 consumers to use the latest optimizations.
 
@@ -272,7 +272,7 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
 
 ---
 
-### Project: Concordia.Core
+### Project: Synaptrix.Core
 
 **Current State**:
 - Target Framework: `net9.0;net8.0;netstandard2.0`
@@ -295,7 +295,7 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
    - ? Project is SDK-style (no conversion needed)
 
 2. **TargetFramework Update**
-   - **File**: `Concordia.Core\Concordia.Core.csproj`
+   - **File**: `Synaptrix.Core\Synaptrix.Core.csproj`
    - **Change**: Append `net10.0` to existing targets
    - **Before**: `<TargetFrameworks>net9.0;net8.0;netstandard2.0</TargetFrameworks>`
    - **After**: `<TargetFrameworks>net9.0;net8.0;netstandard2.0;net10.0</TargetFrameworks>`
@@ -324,18 +324,18 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
 6. **Testing Strategy**
    - **Build verification**: Project builds for all 4 target frameworks (net9.0, net8.0, netstandard2.0, net10.0)
    - **Dependency validation**: Dependant projects (Generator, MediatR, Tests) can reference updated Core
-   - **Unit tests**: Validated through Concordia.Core.Tests project
+   - **Unit tests**: Validated through Synaptrix.Core.Tests project
 
 7. **Validation Checklist**
    - [ ] Project builds without errors for all target frameworks
    - [ ] Project builds without warnings
    - [ ] No package dependency conflicts
    - [ ] Dependant projects can build successfully
-   - [ ] Unit tests pass (validated in Concordia.Core.Tests)
+   - [ ] Unit tests pass (validated in Synaptrix.Core.Tests)
 
 ---
 
-### Project: Concordia.MediatR
+### Project: Synaptrix.MediatR
 
 **Current State**:
 - Target Framework: `net9.0;net8.0;netstandard2.0`
@@ -353,12 +353,12 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
 **Migration Steps**:
 
 1. **Prerequisites**
-   - ? Depends on Concordia.Core (upgraded in same atomic operation)
+   - ? Depends on Synaptrix.Core (upgraded in same atomic operation)
    - ? .NET 10 SDK installed
    - ? Project is SDK-style (no conversion needed)
 
 2. **TargetFramework Update**
-   - **File**: `Concordia.MediatR\Concordia.MediatR.csproj`
+   - **File**: `Synaptrix.MediatR\Synaptrix.MediatR.csproj`
    - **Change**: Append `net10.0` to existing targets
    - **Before**: `<TargetFrameworks>net9.0;net8.0;netstandard2.0</TargetFrameworks>`
    - **After**: `<TargetFrameworks>net9.0;net8.0;netstandard2.0;net10.0</TargetFrameworks>`
@@ -386,7 +386,7 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
 6. **Testing Strategy**
    - **Build verification**: Project builds for all 4 target frameworks
    - **Dependency validation**: References updated Core library, consumed by Examples.Web and Tests
-   - **Unit tests**: Validated through Concordia.Core.Tests project
+   - **Unit tests**: Validated through Synaptrix.Core.Tests project
 
 7. **Validation Checklist**
    - [ ] Project builds without errors for all target frameworks
@@ -394,11 +394,11 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
    - [ ] No package dependency conflicts
    - [ ] ProjectReference to Core resolves correctly
    - [ ] Dependant projects (Examples.Web, Tests) can build successfully
-   - [ ] Unit tests pass (validated in Concordia.Core.Tests)
+   - [ ] Unit tests pass (validated in Synaptrix.Core.Tests)
 
 ---
 
-### Project: Concordia.Examples.Web
+### Project: Synaptrix.Examples.Web
 
 **Current State**:
 - Target Framework: `net9.0`
@@ -417,13 +417,13 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
 **Migration Steps**:
 
 1. **Prerequisites**
-   - ? Depends on Concordia.MediatR (upgraded in same atomic operation)
-   - ? Depends on Concordia.Generator (no changes, netstandard2.0 compatible)
+   - ? Depends on Synaptrix.MediatR (upgraded in same atomic operation)
+   - ? Depends on Synaptrix.Generator (no changes, netstandard2.0 compatible)
    - ? .NET 10 SDK installed
    - ? Project is SDK-style (no conversion needed)
 
 2. **TargetFramework Update**
-   - **File**: `examples\Concordia.Examples.Web\Concordia.Examples.Web.csproj`
+   - **File**: `examples\Synaptrix.Examples.Web\Synaptrix.Examples.Web.csproj`
    - **Change**: Replace net9.0 with net10.0
    - **Before**: `<TargetFramework>net9.0</TargetFramework>`
    - **After**: `<TargetFramework>net10.0</TargetFramework>`
@@ -488,7 +488,7 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
 
 ---
 
-### Project: Concordia.Core.Tests
+### Project: Synaptrix.Core.Tests
 
 **Current State**:
 - Target Framework: `net9.0`
@@ -506,13 +506,13 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
 **Migration Steps**:
 
 1. **Prerequisites**
-   - ? Depends on Concordia.Core (upgraded in same atomic operation)
-   - ? Depends on Concordia.MediatR (upgraded in same atomic operation)
+   - ? Depends on Synaptrix.Core (upgraded in same atomic operation)
+   - ? Depends on Synaptrix.MediatR (upgraded in same atomic operation)
    - ? .NET 10 SDK installed
    - ? Project is SDK-style (no conversion needed)
 
 2. **TargetFramework Update**
-   - **File**: `tests\Concordia.Core.Tests\Concordia.Core.Tests.csproj`
+   - **File**: `tests\Synaptrix.Core.Tests\Synaptrix.Core.Tests.csproj`
    - **Change**: Replace net9.0 with net10.0
    - **Before**: `<TargetFramework>net9.0</TargetFramework>`
    - **After**: `<TargetFramework>net10.0</TargetFramework>`
@@ -569,8 +569,8 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
 | 9.0.8 | 10.0.1 | 2 projects | Framework alignment with .NET 10, compatibility |
 
 **Affected Projects**:
-- Concordia.Core
-- Concordia.MediatR
+- Synaptrix.Core
+- Synaptrix.MediatR
 
 **Breaking Changes**: None reported
 **Migration Notes**: Straightforward version bump, abstraction package with stable API
@@ -579,26 +579,26 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
 
 ### Project-Specific Package Updates
 
-**Concordia.Core**
+**Synaptrix.Core**
 
 | Package | Current Version | Target Version | Update Reason |
 |---------|----------------|----------------|---------------|
 | Microsoft.Extensions.DependencyInjection.Abstractions | 9.0.8 | 10.0.1 | Framework alignment |
 | Microsoft.Extensions.Logging.Abstractions | 9.0.8 | 10.0.1 | Framework alignment |
 
-**Concordia.MediatR**
+**Synaptrix.MediatR**
 
 | Package | Current Version | Target Version | Update Reason |
 |---------|----------------|----------------|---------------|
 | Microsoft.Extensions.DependencyInjection.Abstractions | 9.0.8 | 10.0.1 | Framework alignment |
 
-**Concordia.Examples.Web**
+**Synaptrix.Examples.Web**
 
 | Package | Current Version | Target Version | Update Reason |
 |---------|----------------|----------------|---------------|
 | Microsoft.AspNetCore.OpenApi | 9.0.8 | 10.0.1 | Framework alignment, ASP.NET Core 10 compatibility |
 
-**Concordia.Core.Tests**
+**Synaptrix.Core.Tests**
 
 | Package | Current Version | Target Version | Update Reason |
 |---------|----------------|----------------|---------------|
@@ -610,15 +610,15 @@ All 4 projects requiring upgrade will be updated simultaneously in a single atom
 
 The following packages are already compatible with .NET 10 and do not require updates:
 
-**Concordia.Generator**:
+**Synaptrix.Generator**:
 - Microsoft.CodeAnalysis.Analyzers 3.3.4 ?
 - Microsoft.CodeAnalysis.CSharp 4.9.2 ?
 - NETStandard.Library 2.0.3 ?
 
-**Concordia.Examples.Web**:
+**Synaptrix.Examples.Web**:
 - Swashbuckle.AspNetCore 9.0.4 ?
 
-**Concordia.Core.Tests**:
+**Synaptrix.Core.Tests**:
 - xunit 2.9.3 ?
 - xunit.runner.visualstudio 3.1.4 ?
 - Microsoft.NET.Test.Sdk 17.14.1 ?
@@ -685,7 +685,7 @@ All 4 package updates performed simultaneously as part of the atomic upgrade ope
 
 #### System.Uri - Behavioral Changes in .NET 10
 
-**Affected Project**: Concordia.Examples.Web
+**Affected Project**: Synaptrix.Examples.Web
 
 **Affected APIs**:
 1. `System.Uri` (type) - 2 occurrences
@@ -762,11 +762,11 @@ All package updates (Microsoft.Extensions.* and Microsoft.AspNetCore.OpenApi) ha
 
 | Project | Binary Incompatible | Source Incompatible | Behavioral Changes | Total Issues |
 |---------|---------------------|---------------------|-------------------|--------------|
-| Concordia.Core | 0 | 0 | 0 | 0 ? |
-| Concordia.Generator | 0 | 0 | 0 | 0 ? |
-| Concordia.MediatR | 0 | 0 | 0 | 0 ? |
-| Concordia.Examples.Web | 0 | 0 | 3 | 3 ?? |
-| Concordia.Core.Tests | 0 | 0 | 0 | 0 ? |
+| Synaptrix.Core | 0 | 0 | 0 | 0 ? |
+| Synaptrix.Generator | 0 | 0 | 0 | 0 ? |
+| Synaptrix.MediatR | 0 | 0 | 0 | 0 ? |
+| Synaptrix.Examples.Web | 0 | 0 | 3 | 3 ?? |
+| Synaptrix.Core.Tests | 0 | 0 | 0 | 0 ? |
 
 ---
 
@@ -792,7 +792,7 @@ All package updates (Microsoft.Extensions.* and Microsoft.AspNetCore.OpenApi) ha
 
 1. **Detection Phase**:
    - Build solution (should succeed)
-   - Run Concordia.Core.Tests (validate core functionality)
+   - Run Synaptrix.Core.Tests (validate core functionality)
    - Run Examples.Web (check for runtime exceptions)
    - Manual testing of URI-dependent features
 
@@ -842,7 +842,7 @@ This upgrade requires validation at three levels: per-project (atomic operation)
 
 **Validation Steps**:
 
-#### Concordia.Core
+#### Synaptrix.Core
 - [ ] **Build Verification**:
   - Builds successfully for net9.0
   - Builds successfully for net8.0
@@ -856,22 +856,22 @@ This upgrade requires validation at three levels: per-project (atomic operation)
   - 0 compilation errors
   - 0 warnings (or warnings reviewed and acceptable)
 
-#### Concordia.MediatR
+#### Synaptrix.MediatR
 - [ ] **Build Verification**:
   - Builds successfully for all 4 target frameworks (net9.0, net8.0, netstandard2.0, net10.0)
 - [ ] **Dependency Verification**:
-  - ProjectReference to Concordia.Core resolves correctly for all frameworks
+  - ProjectReference to Synaptrix.Core resolves correctly for all frameworks
   - Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1 resolves correctly
 - [ ] **Build Quality**:
   - 0 compilation errors
   - 0 warnings (or warnings reviewed and acceptable)
 
-#### Concordia.Examples.Web
+#### Synaptrix.Examples.Web
 - [ ] **Build Verification**:
   - Builds successfully for net10.0
 - [ ] **Dependency Verification**:
-  - ProjectReference to Concordia.MediatR resolves correctly
-  - ProjectReference to Concordia.Generator resolves correctly
+  - ProjectReference to Synaptrix.MediatR resolves correctly
+  - ProjectReference to Synaptrix.Generator resolves correctly
   - Microsoft.AspNetCore.OpenApi 10.0.1 resolves correctly
 - [ ] **Application Startup**:
   - Application starts without errors
@@ -880,12 +880,12 @@ This upgrade requires validation at three levels: per-project (atomic operation)
   - 0 compilation errors
   - 0 warnings (or warnings reviewed and acceptable)
 
-#### Concordia.Core.Tests
+#### Synaptrix.Core.Tests
 - [ ] **Build Verification**:
   - Builds successfully for net10.0
 - [ ] **Dependency Verification**:
-  - ProjectReference to Concordia.Core resolves correctly
-  - ProjectReference to Concordia.MediatR resolves correctly
+  - ProjectReference to Synaptrix.Core resolves correctly
+  - ProjectReference to Synaptrix.MediatR resolves correctly
   - Microsoft.Extensions.DependencyInjection 10.0.1 resolves correctly
   - All test framework packages resolve correctly
 - [ ] **Build Quality**:
@@ -899,7 +899,7 @@ This upgrade requires validation at three levels: per-project (atomic operation)
 **Timing**: After atomic upgrade completes, before moving to test execution
 
 **Full Solution Build**:
-- [ ] `dotnet build Concordia.sln` succeeds
+- [ ] `dotnet build Synaptrix.sln` succeeds
 - [ ] All projects build without errors
 - [ ] No package dependency conflicts
 - [ ] Multi-targeting projects build for all frameworks
@@ -922,9 +922,9 @@ This upgrade requires validation at three levels: per-project (atomic operation)
 
 #### Unit Tests Execution
 
-**Concordia.Core.Tests**:
+**Synaptrix.Core.Tests**:
 ```bash
-dotnet test tests\Concordia.Core.Tests\Concordia.Core.Tests.csproj
+dotnet test tests\Synaptrix.Core.Tests\Synaptrix.Core.Tests.csproj
 ```
 
 **Success Criteria**:
@@ -941,11 +941,11 @@ dotnet test tests\Concordia.Core.Tests\Concordia.Core.Tests.csproj
 
 #### Application Testing
 
-**Concordia.Examples.Web**:
+**Synaptrix.Examples.Web**:
 
 **Startup Validation**:
 ```bash
-dotnet run --project examples\Concordia.Examples.Web\Concordia.Examples.Web.csproj
+dotnet run --project examples\Synaptrix.Examples.Web\Synaptrix.Examples.Web.csproj
 ```
 
 **Success Criteria**:
@@ -1007,17 +1007,17 @@ dotnet run --project examples\Concordia.Examples.Web\Concordia.Examples.Web.cspr
 **Before Declaring Upgrade Complete**:
 
 ? **Build Phase**:
-- [ ] `dotnet restore Concordia.sln` succeeds
-- [ ] `dotnet build Concordia.sln --configuration Release` succeeds with 0 errors
+- [ ] `dotnet restore Synaptrix.sln` succeeds
+- [ ] `dotnet build Synaptrix.sln --configuration Release` succeeds with 0 errors
 - [ ] All warnings reviewed (0 warnings or all acceptable)
 
 ? **Tests**:
-- [ ] `dotnet test Concordia.sln` passes with 0 failures
+- [ ] `dotnet test Synaptrix.sln` passes with 0 failures
 - [ ] All tests discovered and executed
 - [ ] No test infrastructure errors
 
 ? **Application**:
-- [ ] `dotnet run --project examples\Concordia.Examples.Web\Concordia.Examples.Web.csproj` starts successfully
+- [ ] `dotnet run --project examples\Synaptrix.Examples.Web\Synaptrix.Examples.Web.csproj` starts successfully
 - [ ] Swagger UI accessible and functional
 - [ ] API endpoints respond correctly
 - [ ] No console errors or warnings
@@ -1028,11 +1028,11 @@ dotnet run --project examples\Concordia.Examples.Web\Concordia.Examples.Web.cspr
 - [ ] Transitive dependencies compatible
 
 ? **Projects**:
-- [ ] Concordia.Core targets net10.0 (multi-target)
-- [ ] Concordia.MediatR targets net10.0 (multi-target)
-- [ ] Concordia.Examples.Web targets net10.0 (single)
-- [ ] Concordia.Core.Tests targets net10.0 (single)
-- [ ] Concordia.Generator remains netstandard2.0
+- [ ] Synaptrix.Core targets net10.0 (multi-target)
+- [ ] Synaptrix.MediatR targets net10.0 (multi-target)
+- [ ] Synaptrix.Examples.Web targets net10.0 (single)
+- [ ] Synaptrix.Core.Tests targets net10.0 (single)
+- [ ] Synaptrix.Generator remains netstandard2.0
 
 ? **Breaking Changes**:
 - [ ] System.Uri behavioral changes validated

@@ -1,6 +1,6 @@
-using Concordia.Benchmarks.Requests;
+using Synaptrix.Benchmarks.Requests;
 
-namespace Concordia.Benchmarks.Handlers;
+namespace Synaptrix.Benchmarks.Handlers;
 
 public class MediatRQueryHandler : MediatR.IRequestHandler<MediatRQuery, string>
 {

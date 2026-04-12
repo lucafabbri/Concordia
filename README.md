@@ -1,38 +1,55 @@
-# Concordia: A Lightweight and Powerful .NET Mediator
+# Synaptrix: A Lightweight and Powerful .NET Mediator
 
-Concordia is a .NET library implementing the **Mediator pattern**, designed to be lightweight, performant, and easily integrated with the .NET Dependency Injection system. It leverages **C# Source Generators** for automatic handler registration at compile-time, eliminating the need for runtime reflection and improving application startup performance.
+> **Synaptrix** is the new name for **Concordia**, starting from version **3.0.0**.
+> All NuGet packages have been renamed from `Concordia.*` / `Synaptrix.*` (v2.x) to the unified `Synaptrix` family.
+> See [Migrating from Concordia](#migrating-from-concordia) for details.
+
+Synaptrix is a .NET library implementing the **Mediator pattern**, designed to be lightweight, performant, and easily integrated with the .NET Dependency Injection system. It leverages **C# Source Generators** for automatic handler registration at compile-time, eliminating the need for runtime reflection and improving application startup performance.
 
 |Project|NuGet Downloads|NuGet Version|
 |---|---|---|
-| Concordia.Core | ![NuGet Downloads](https://img.shields.io/nuget/dt/Concordia.Core?cacheSeconds=600) | ![NuGet Version](https://img.shields.io/nuget/v/Concordia.Core) |
-| Concordia.Generator | ![NuGet Downloads](https://img.shields.io/nuget/dt/Concordia.Generator?cacheSeconds=600) | ![NuGet Version](https://img.shields.io/nuget/v/Concordia.Generator) |
-| Concordia.MediatR | ![NuGet Downloads](https://img.shields.io/nuget/dt/Concordia.MediatR?cacheSeconds=600) | ![NuGet Version](https://img.shields.io/nuget/v/Concordia.MediatR) |
+| Synaptrix | ![NuGet Downloads](https://img.shields.io/nuget/dt/Synaptrix?cacheSeconds=600) | ![NuGet Version](https://img.shields.io/nuget/v/Synaptrix) |
+| Synaptrix.Core | ![NuGet Downloads](https://img.shields.io/nuget/dt/Synaptrix.Core?cacheSeconds=600) | ![NuGet Version](https://img.shields.io/nuget/v/Synaptrix.Core) |
+| Synaptrix.Generator | ![NuGet Downloads](https://img.shields.io/nuget/dt/Synaptrix.Generator?cacheSeconds=600) | ![NuGet Version](https://img.shields.io/nuget/v/Synaptrix.Generator) |
 
 
 ## Table of Contents
-- [Why Concordia?](#why-concordia)
-- [Performance Benchmarks](#performance-benchmarks)
-- [Key Features](#key-features)
-- [Installation](#installation)
-- [Usage](#usage)
+- [Synaptrix: A Lightweight and Powerful .NET Mediator](#synaptrix-a-lightweight-and-powerful-net-mediator)
+  - [Table of Contents](#table-of-contents)
+  - [Performance Benchmarks](#performance-benchmarks)
+    - [Send Command (fire-and-forget, no pipeline)](#send-command-fire-and-forget-no-pipeline)
+    - [Send Query (returns response, no pipeline)](#send-query-returns-response-no-pipeline)
+    - [Publish Notification (2 handlers, no pipeline)](#publish-notification-2-handlers-no-pipeline)
+  - [Why Synaptrix?](#why-synaptrix)
+  - [Key Features](#key-features)
+  - [Installation](#installation)
+  - [Usage](#usage)
     - [1. Define Requests, Commands, and Notifications](#1-define-requests-commands-and-notifications)
     - [2. Define Handlers, Processors, and Behaviors](#2-define-handlers-processors-and-behaviors)
-    - [3. Choose Your Registration Method in `Program.cs`](#3-choose-your-registration-method-in-programcs)
-        - [Option A: Using the Source Generator (Recommended)](#option-a-using-the-source-generator-recommended)
-        - [Option B: Using the MediatR Compatibility Layer](#option-b-using-the-mediatr-compatibility-layer)
-- [Migration Guide from MediatR](#migration-guide-from-mediatr)
-- [Contributing](#contributing)
-- [License](#license)
-- [NuGet Packages](#nuget-packages)
-- [Contact](#contact)
-- [Support](#support)
+    - [3. Register Services in `Program.cs`](#3-register-services-in-programcs)
+      - [Configure your `.csproj`](#configure-your-csproj)
+      - [Register in `Program.cs`](#register-in-programcs)
+      - [What the generator produces (for reference)](#what-the-generator-produces-for-reference)
+  - [Migrating from Concordia](#migrating-from-concordia)
+    - [What changed in v3.0.0](#what-changed-in-v300)
+    - [How to migrate](#how-to-migrate)
+    - [MediatR Compatibility (`Concordia.MediatR`)](#mediatr-compatibility-concordiamediatr)
+  - [Migration Guide from MediatR](#migration-guide-from-mediatr)
+    - [1. Update NuGet Packages](#1-update-nuget-packages)
+    - [2. Update Namespaces](#2-update-namespaces)
+    - [3. Update Service Registration in `Program.cs`](#3-update-service-registration-in-programcs)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [NuGet Packages](#nuget-packages)
+  - [Contact](#contact)
+  - [Support](#support)
 
 
 -----
 
 ## Performance Benchmarks
 
-The following benchmarks compare Concordia (reflection-based `Mediator`), **ConcordiaGen** (`GeneratedMediator` produced by the Source Generator), [MediatR](https://github.com/jbogard/MediatR) and [Martin](https://github.com/martinothamar/Mediator) — measured with [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet) on .NET 10, Intel Core i7-13800H.
+The following benchmarks compare Synaptrix (reflection-based `Mediator`), **SynaptrixGen** (`GeneratedMediator` produced by the Source Generator), [MediatR](https://github.com/jbogard/MediatR) and [Martin](https://github.com/martinothamar/Mediator) — measured with [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet) on .NET 10, Intel Core i7-13800H.
 
 > **Smaller is better.** Ratio is relative to MediatR (1.00). `0 B` allocated means no heap allocation on the hot path.
 
@@ -41,8 +58,8 @@ The following benchmarks compare Concordia (reflection-based `Mediator`), **Conc
 | Method | Mean | Ratio | Allocated | Alloc Ratio |
 |---|---:|---:|---:|---:|
 | MediatR | 50.5 ns | 1.00 | 128 B | 1.00 |
-| Concordia | 22.2 ns | 0.44 | 0 B | 0.00 |
-| **ConcordiaGen** | **1.7 ns** | **0.03** | **0 B** | **0.00** |
+| Synaptrix | 22.2 ns | 0.44 | 0 B | 0.00 |
+| **SynaptrixGen** | **1.7 ns** | **0.03** | **0 B** | **0.00** |
 | Martin | 5.8 ns | 0.11 | 0 B | 0.00 |
 
 ### Send Query (returns response, no pipeline)
@@ -50,8 +67,8 @@ The following benchmarks compare Concordia (reflection-based `Mediator`), **Conc
 | Method | Mean | Ratio | Allocated | Alloc Ratio |
 |---|---:|---:|---:|---:|
 | MediatR | 66.8 ns | 1.00 | 240 B | 1.00 |
-| Concordia | 64.1 ns | 0.96 | 112 B | 0.47 |
-| **ConcordiaGen** | **32.8 ns** | **0.49** | **112 B** | **0.47** |
+| Synaptrix | 64.1 ns | 0.96 | 112 B | 0.47 |
+| **SynaptrixGen** | **32.8 ns** | **0.49** | **112 B** | **0.47** |
 | Martin | 27.7 ns | 0.42 | 40 B | 0.17 |
 
 > The 112 B allocation in queries is inherent to returning a heap-allocated `Task<TResponse>` from the handler itself — the mediator dispatch overhead is zero.
@@ -61,17 +78,17 @@ The following benchmarks compare Concordia (reflection-based `Mediator`), **Conc
 | Method | Mean | Ratio | Allocated | Alloc Ratio |
 |---|---:|---:|---:|---:|
 | MediatR | 87.2 ns | 1.00 | 440 B | 1.00 |
-| Concordia | 74.0 ns | 0.85 | 224 B | 0.51 |
-| **ConcordiaGen** | **1.6 ns** | **0.02** | **0 B** | **0.00** |
+| Synaptrix | 74.0 ns | 0.85 | 224 B | 0.51 |
+| **SynaptrixGen** | **1.6 ns** | **0.02** | **0 B** | **0.00** |
 | Martin | 7.9 ns | 0.09 | 0 B | 0.00 |
 
-`ConcordiaGen` achieves near-zero cost by generating inline sequential dispatch with an `IsCompletedSuccessfully` fast-path — no DI resolution, no delegate allocations, no virtual dispatch through a publisher interface on the hot path.
+`SynaptrixGen` achieves near-zero cost by generating inline sequential dispatch with an `IsCompletedSuccessfully` fast-path — no DI resolution, no delegate allocations, no virtual dispatch through a publisher interface on the hot path.
 
 -----
 
-## Why Concordia?
+## Why Synaptrix?
 
-* **An Open-Source Alternative**: Concordia was created as an open-source alternative in response to other popular mediator libraries (like MediatR) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.
+* **An Open-Source Alternative**: Synaptrix was created as an open-source alternative in response to other popular mediator libraries (like MediatR) transitioning to a paid licensing model. We believe core architectural patterns should remain freely accessible to the developer community.
 
 * **Lightweight and Minimal**: Provides only the essential Mediator pattern functionalities, without unnecessary overhead.
 
@@ -79,7 +96,7 @@ The following benchmarks compare Concordia (reflection-based `Mediator`), **Conc
 
 * **Easy DI Integration**: Integrates seamlessly with `Microsoft.Extensions.DependencyInjection`.
 
-* **Same MediatR Interfaces**: Uses interfaces with identical signatures to MediatR, making migration or parallel adoption extremely straightforward.
+* **Same MediatR Interfaces**: Uses interfaces with identical signatures to MediatR, making migration extremely straightforward.
 
 * **CQRS and Pub/Sub Patterns**: Facilitates the implementation of Command Query Responsibility Segregation (CQRS) and Publisher/Subscriber principles, enhancing separation of concerns and code maintainability.
 
@@ -107,45 +124,36 @@ The following benchmarks compare Concordia (reflection-based `Mediator`), **Conc
 
 * **Custom Notification Publishers (`INotificationPublisher`)**: Define how notifications are dispatched to multiple handlers (e.g., parallel, sequential).
 
-* **Automatic Handler Registration**: Concordia offers two approaches for handler registration:
+* **Automatic Handler Registration**: Synaptrix uses **compile-time Source Generation** for handler registration. It requires **Zero Configuration**: just install the package, and handlers are automatically discovered (even in referenced projects). The generator produces two files:
+    * `SynaptrixGeneratedHandlersRegistrations.g.cs` — the `AddSynaptrixHandlers()` DI extension method registering all handlers.
+    * `SynaptrixGeneratedMediator.g.cs` — the `GeneratedMediator` class: a concrete `IMediator`/`ISender` implementation with constructor-injected handler singletons and branch-free type-switch dispatch, eliminating all DI lookups on the hot path.
 
-    * **Compile-time (Source Generator)**: The recommended approach for new projects. It requires **Zero Configuration**: just install the package, and handlers are automatically discovered (even in referenced projects). The generator produces two files:
-        * `ConcordiaGeneratedHandlersRegistrations.g.cs` — the `AddConcordiaHandlers()` DI extension method registering all handlers.
-        * `ConcordiaGeneratedMediator.g.cs` — the `GeneratedMediator` class: a concrete `IMediator`/`ISender` implementation with constructor-injected handler singletons and branch-free type-switch dispatch, eliminating all DI lookups on the hot path.
-
-    * **Runtime Reflection**: A compatibility layer for easier migration from existing MediatR setups, now using its own `ConcordiaMediatRServiceConfiguration` class, offering flexible configuration options including service lifetimes, pre/post-processors, and custom notification publishers.
-
-* **Configurable Namespace and Method Names**: Control the generated class's namespace and the DI extension method's name via MSBuild properties (for Source Generator).
+* **Configurable Namespace and Method Names**: Control the generated class's namespace and the DI extension method's name via MSBuild properties.
 
 -----
 
 ## Installation
 
-Concordia is distributed via three NuGet packages, all currently at **version 2.3.0**:
+Synaptrix is distributed via three NuGet packages:
 
-1.  **`Concordia.Core`**: Contains the interfaces (`IMediator`, `ISender`, `IRequest`, etc.), the `Mediator` implementation, and core DI extension methods.
+1.  **`Synaptrix`**: The recommended meta-package — installs both `Synaptrix.Core` and `Synaptrix.Generator` in one step.
 
-2.  **`Concordia.Generator`**: Contains the C# Source Generator for compile-time handler registration.
+2.  **`Synaptrix.Core`**: Contains the interfaces (`IMediator`, `ISender`, `IRequest`, etc.), the `Mediator` implementation, and core DI extension methods.
 
-3.  **`Concordia.MediatR`**: Provides a compatibility layer with MediatR's `AddMediator` extension method for runtime reflection-based handler registration, now using its own `ConcordiaMediatRServiceConfiguration`.
+3.  **`Synaptrix.Generator`**: Contains the C# Source Generator for compile-time handler registration.
 
-To get started with Concordia, install the necessary packages in your application project (e.g., an ASP.NET Core project) using the .NET CLI. You will typically choose **either `Concordia.Generator` OR `Concordia.MediatR`** based on your preference for handler registration.
-
-**Option 1: Using the Source Generator (Recommended for New Projects)**
+**Quick start (recommended):**
 
 ```bash
-dotnet add package Concordia.Core --version 2.3.0
-dotnet add package Concordia.Generator --version 2.3.0
+dotnet add package Synaptrix
 ```
 
-**Option 2: Using the MediatR Compatibility Layer (For Migration or Reflection Preference)**
+This single command installs everything you need. Alternatively, if you need finer control:
 
 ```bash
-dotnet add package Concordia.Core --version 2.3.0
-dotnet add package Concordia.MediatR --version 2.3.0
+dotnet add package Synaptrix.Core
+dotnet add package Synaptrix.Generator
 ```
-
-Alternatively, you can install them via the NuGet Package Manager in Visual Studio.
 
 -----
 
@@ -153,11 +161,11 @@ Alternatively, you can install them via the NuGet Package Manager in Visual Stud
 
 ### 1. Define Requests, Commands, and Notifications
 
-Your requests, commands, and notifications must implement the `Concordia` interfaces.
+Your requests, commands, and notifications must implement the `Synaptrix` interfaces.
 
 ```csharp
 // Request with response
-using Concordia;
+using Synaptrix;
 
 namespace MyProject.Requests
 {
@@ -175,7 +183,7 @@ namespace MyProject.Requests
 }
 
 // Fire-and-forget command
-using Concordia;
+using Synaptrix;
 
 namespace MyProject.Commands
 {
@@ -187,7 +195,7 @@ namespace MyProject.Commands
 }
 
 // Notification
-using Concordia;
+using Synaptrix;
 
 namespace MyProject.Notifications
 {
@@ -205,10 +213,8 @@ Your handlers must implement `IRequestHandler` or `INotificationHandler`. Pre-pr
 
 ```csharp
 // Handler for a request with response
-using Concordia;
+using Synaptrix;
 using MyProject.Requests;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MyProject.Handlers
 {
@@ -224,10 +230,8 @@ namespace MyProject.Handlers
 }
 
 // Handler for a fire-and-forget command
-using Concordia;
+using Synaptrix;
 using MyProject.Commands;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MyProject.Handlers
 {
@@ -242,10 +246,8 @@ namespace MyProject.Handlers
 }
 
 // Notification Handler
-using Concordia;
+using Synaptrix;
 using MyProject.Notifications;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MyProject.Handlers
 {
@@ -269,10 +271,8 @@ namespace MyProject.Handlers
 }
 
 // Example Request Pre-Processor
-using Concordia;
-using MyProject.Requests; // Assuming your requests are here
-using System.Threading;
-using System.Threading.Tasks;
+using Synaptrix;
+using MyProject.Requests;
 
 namespace MyProject.Processors
 {
@@ -287,10 +287,8 @@ namespace MyProject.Processors
 }
 
 // Example Request Post-Processor
-using Concordia;
-using MyProject.Requests; // Assuming your requests are here
-using System.Threading;
-using System.Threading.Tasks;
+using Synaptrix;
+using MyProject.Requests;
 
 namespace MyProject.Processors
 {
@@ -303,88 +301,64 @@ namespace MyProject.Processors
         }
     }
 }
-
-// Example Pipeline Behavior
-// using Concordia;
-// using System.Collections.Generic;
-// using System.Threading;
-// using System.Threading.Tasks;
-
-// namespace MyProject.Behaviors
-// {
-//     public class TestLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-//         where TRequest : IRequest<TResponse>
-//     {
-//         private readonly List<string> _logs;
-//         public TestLoggingBehavior(List<string> logs) { _logs = logs; }
-//         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-//         {
-//             _logs.Add($"Before {typeof(TRequest).Name}");
-//             var response = await next(cancellationToken);
-//             _logs.Add($"After {typeof(TRequest).Name}");
-//             return response;
-//         }
-//     }
-// }
 ```
 
-### 3. Choose Your Registration Method in `Program.cs`
+### 3. Register Services in `Program.cs`
 
-You will use either the **Source Generator method** (recommended for new projects) or the **MediatR Compatibility method** (for easier migration).
-
-#### Option A: Using the Source Generator (Recommended)
-
-This method provides maximum performance. The generator runs at **compile-time** and produces two C# files:
+The Source Generator runs at **compile-time** and produces two C# files:
 
 | Generated file | What it contains |
 |---|---|
-| `ConcordiaGeneratedHandlersRegistrations.g.cs` | An `AddConcordiaHandlers()` DI extension method that registers all handlers, processors, and behaviors discovered in your project and any referenced assemblies. |
-| `ConcordiaGeneratedMediator.g.cs` | A `GeneratedMediator` sealed class — a concrete `IMediator`/`ISender` with constructor-injected handler singletons and a direct `is`-type-switch dispatch, achieving **zero DI lookups and zero allocations** on the hot path. |
+| `SynaptrixGeneratedHandlersRegistrations.g.cs` | An `AddSynaptrixHandlers()` DI extension method that registers all handlers, processors, and behaviors discovered in your project and any referenced assemblies. |
+| `SynaptrixGeneratedMediator.g.cs` | A `GeneratedMediator` sealed class — a concrete `IMediator`/`ISender` with constructor-injected handler singletons and a direct `is`-type-switch dispatch, achieving **zero DI lookups and zero allocations** on the hot path. |
 
-The `[assembly: DiscoverConcordiaHandlers]` attribute that triggers the generator is **injected automatically** by the NuGet package via a `.targets` file — no manual setup required.
+The `[assembly: DiscoverSynaptrixHandlers]` attribute that triggers the generator is **injected automatically** by the NuGet package via a `.targets` file — no manual setup required.
 
-##### i. Configure your `.csproj`
+#### Configure your `.csproj`
 
-Install both packages. The generator is consumed as a Roslyn Analyzer, so use `PrivateAssets="all"` to avoid exposing it as a transitive dependency:
+Install the packages. If using the individual packages instead of the meta-package, the generator is consumed as a Roslyn Analyzer:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <!-- Optional: rename the generated DI extension method (default: AddConcordiaHandlers) -->
-    <ConcordiaGeneratedMethodName>AddMyAppHandlers</ConcordiaGeneratedMethodName>
+    <!-- Optional: rename the generated DI extension method (default: AddSynaptrixHandlers) -->
+    <SynaptrixGeneratedMethodName>AddMyAppHandlers</SynaptrixGeneratedMethodName>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- Informs that the above property is compiler-visible to the generator -->
-    <CompilerVisibleProperty Include="ConcordiaGeneratedMethodName" />
+    <CompilerVisibleProperty Include="SynaptrixGeneratedMethodName" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Concordia.Core" Version="2.3.0" />
-    <PackageReference Include="Concordia.Generator" Version="2.3.0" PrivateAssets="all" />
+    <!-- Option 1: meta-package (recommended) -->
+    <PackageReference Include="Synaptrix" Version="3.0.0" />
+
+    <!-- Option 2: individual packages
+    <PackageReference Include="Synaptrix.Core" Version="3.0.0" />
+    <PackageReference Include="Synaptrix.Generator" Version="3.0.0" PrivateAssets="all" />
+    -->
   </ItemGroup>
 </Project>
 ```
 
-##### ii. Register services in `Program.cs`
+#### Register in `Program.cs`
 
-Calling `AddConcordiaHandlers()` (or your custom name) does everything in one step: it registers handlers as Singletons and wires up the `GeneratedMediator` as both `IMediator` and `ISender`.
+Calling `AddSynaptrixHandlers()` (or your custom name) does everything in one step: it registers handlers as Singletons and wires up the `GeneratedMediator` as both `IMediator` and `ISender`.
 
 ```csharp
-using Concordia;
+using Synaptrix;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Single call registers all handlers + wires GeneratedMediator as IMediator/ISender.
-// Uses the method name from ConcordiaGeneratedMethodName (default: AddConcordiaHandlers).
-builder.Services.AddConcordiaHandlers();
+builder.Services.AddSynaptrixHandlers();
 
-// If you also need a notification publisher for Concordia.Mediator (non-generated path),
-// you can register the default one:
-builder.Services.AddConcordiaCoreServices();
+// If you also need a notification publisher for the reflection-based Mediator (non-generated path):
+builder.Services.AddSynaptrixCoreServices();
 
 builder.Services.AddControllers();
 
@@ -395,15 +369,15 @@ app.MapControllers();
 app.Run();
 ```
 
-##### iii. What the generator produces (for reference)
+#### What the generator produces (for reference)
 
-Look inside **Dependencies → Analyzers → Concordia.Generator** in Solution Explorer to inspect the generated files:
+Look inside **Dependencies → Analyzers → Synaptrix.Generator** in Solution Explorer to inspect the generated files:
 
-`ConcordiaGeneratedHandlersRegistrations.g.cs` — the DI extension method:
+`SynaptrixGeneratedHandlersRegistrations.g.cs` — the DI extension method:
 
 ```csharp
 // Auto-generated — do not edit
-public static IServiceCollection AddConcordiaHandlers(this IServiceCollection services)
+public static IServiceCollection AddSynaptrixHandlers(this IServiceCollection services)
 {
     // Singleton registrations for GeneratedMediator constructor injection
     services.AddSingleton<IRequestHandler<GetProductByIdQuery, ProductDto>, GetProductByIdQueryHandler>();
@@ -419,7 +393,7 @@ public static IServiceCollection AddConcordiaHandlers(this IServiceCollection se
 }
 ```
 
-`ConcordiaGeneratedMediator.g.cs` — the zero-overhead mediator:
+`SynaptrixGeneratedMediator.g.cs` — the zero-overhead mediator:
 
 ```csharp
 // Auto-generated — do not edit
@@ -462,52 +436,38 @@ public sealed partial class GeneratedMediator : IMediator, ISender
 
 > **Note**: The example above is simplified for clarity. The real generated code uses fully-qualified type names and handles all edge cases.
 
-#### Option B: Using the MediatR Compatibility Layer
+-----
 
-This method uses runtime reflection to register handlers, offering a familiar setup for those migrating from MediatR.
+## Migrating from Concordia
 
-```csharp
-using Concordia; // Required for IMediator, ISender
-using Concordia.MediatR; // NEW: Namespace for the AddMediator extension method
-using Microsoft.AspNetCore.Mvc;
-using System.Reflection; // Required for Assembly.GetExecutingAssembly()
-using Microsoft.Extensions.DependencyInjection; // Required for ServiceLifetime
+**Synaptrix v3.0.0** is the direct successor of **Concordia** (v2.x). The library was renamed to better reflect its scope and evolution. The interfaces and APIs remain the same — the only change is the package and namespace naming.
 
-var builder = WebApplication.CreateBuilder(args);
+### What changed in v3.0.0
 
-// Register Concordia and all handlers using the reflection-based AddMediator method.
-// This will scan the specified assemblies (e.g., the current executing assembly)
-// to find and register all handlers and pipeline behaviors.
-builder.Services.AddMediator(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    
-    // Example: Register all services as Scoped
-    cfg.Lifetime = ServiceLifetime.Scoped;
+| Before (Concordia v2.x) | After (Synaptrix v3.0.0) |
+|---|---|
+| `Concordia` namespace | `Synaptrix` namespace |
+| `Concordia.Core` package | `Synaptrix.Core` |
+| `Concordia.Generator` package | `Synaptrix.Generator` |
+| `Concordia.MediatR` package | **Discontinued** — see below |
+| — | `Synaptrix` meta-package (new) |
 
-    // Example: Register a custom notification publisher
-    // cfg.NotificationPublisherType = typeof(MyCustomNotificationPublisher);
+### How to migrate
 
-    // Example: Explicitly add a pre-processor
-    // cfg.AddRequestPreProcessor<MyCustomPreProcessor>();
+1. Update your package references to v3.0.0.
+2. If you were using the older `using Concordia;` namespace, replace it with `using Synaptrix;`.
 
-    // Example: Explicitly add a post-processor
-    // cfg.AddRequestPostProcessor<MyCustomPostProcessor>();
+### MediatR Compatibility (`Concordia.MediatR`)
 
-    // Example: Explicitly add a stream behavior
-    // cfg.AddStreamBehavior<MyCustomStreamBehavior>();
-});
+The `Concordia.MediatR` compatibility package provided a runtime reflection-based `AddMediator()` extension method for projects migrating from MediatR. **Starting with v3.0.0, this package is no longer maintained or published.**
 
-builder.Services.AddControllers();
+If you still need the MediatR compatibility layer, install the **last published Concordia-era version**:
 
-var app = builder.Build();
-
-app.MapControllers();
-
-app.Run();
+```bash
+dotnet add package Concordia.MediatR --version 2.4.1
 ```
 
-For a complete controller example, see the [Option A section](#option-a-using-the-source-generator-recommended) above — the injected `IMediator` / `ISender` API is identical regardless of the registration method.
+This version remains available on NuGet and will continue to work, but it will not receive further updates. We strongly recommend completing your migration to the Source Generator approach, which offers significantly better performance and zero-configuration setup.
 
 -----
 
@@ -547,9 +507,9 @@ Change namespaces from `MediatR` to `Concordia` and `Concordia` where necessary.
     * `MediatR.ISender` becomes `Concordia.ISender`
     * `MediatR.Mediator` becomes `Concordia.Mediator`
 
-### 3. Update Service Registration in `Program.cs` (or `Startup.cs`)
+### 3. Update Service Registration in `Program.cs`
 
-Replace the `AddMediatR` extension method with Concordia's `AddMediator`.
+Replace the `AddMediatR` extension method with Concordia's Source Generator approach:
 
 **Before (MediatR):**
 
@@ -589,14 +549,10 @@ builder.Services.AddMediator(cfg =>
 });
 ```
 
-### 4. Verify and Test
-
-Rebuild your project and run your tests. Given the interface parity, most of your existing code should function without significant changes.
-
-
 -----
+
 ## Contributing
-Concordia is an open-source project, and contributions are welcome! If you find a bug, have a feature request, or want to contribute code, please open an issue or pull request on GitHub.
+Synaptrix is an open-source project, and contributions are welcome! If you find a bug, have a feature request, or want to contribute code, please open an issue or pull request on GitHub.
 Please ensure your contributions adhere to the project's coding standards and include appropriate tests. For larger changes, consider discussing your ideas in an issue first.
 
 We also have a [Code of Conduct](CODE_OF_CONDUCT.md) that we expect all contributors to adhere to.
@@ -605,18 +561,19 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 
 ## License
-Concordia is licensed under the [MIT License](LICENSE).
+Synaptrix is licensed under the [MIT License](LICENSE).
 
 ## NuGet Packages
-- [Concordia.Core](https://www.nuget.org/packages/Concordia.Core)
-- [Concordia.Generator](https://www.nuget.org/packages/Concordia.Generator)
-- [Concordia.MediatR](https://www.nuget.org/packages/Concordia.MediatR)
+- [Synaptrix](https://www.nuget.org/packages/Synaptrix) — meta-package (recommended)
+- [Synaptrix.Core](https://www.nuget.org/packages/Synaptrix.Core)
+- [Synaptrix.Generator](https://www.nuget.org/packages/Synaptrix.Generator)
+- [Concordia.MediatR](https://www.nuget.org/packages/Concordia.MediatR) — legacy, frozen at v2.4.1
 
 ## Contact
 For questions, feedback, or support, please reach out via the project's GitHub repository or contact the maintainers directly.
-For more information, visit the [Concordia GitHub repository](https://github.com/Concordia).
+For more information, visit the [Synaptrix GitHub repository](https://github.com/mrdevrobot/Concordia).
 
 ## Support
-If you find Concordia useful, consider supporting the project by starring it on GitHub or sharing it with your developer community. Your support helps keep the project active and encourages further development.  
+If you find Synaptrix useful, consider supporting the project by starring it on GitHub or sharing it with your developer community. Your support helps keep the project active and encourages further development.
 
 

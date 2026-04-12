@@ -1,6 +1,6 @@
-using Concordia.Benchmarks.Requests;
+using Synaptrix.Benchmarks.Requests;
 
-namespace Concordia.Benchmarks.Handlers;
+namespace Synaptrix.Benchmarks.Handlers;
 
 public class MartinQueryHandler : global::Mediator.IRequestHandler<MartinQuery, string>
 {

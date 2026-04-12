@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Synaptrix.Benchmarks.SendQueryBenchmark-20260412-062115</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.22631.6783/23H2/2023Update/SunValley3)
+13th Gen Intel Core i7-13800H 2.50GHz, 1 CPU, 20 logical and 14 physical cores
+.NET SDK 10.0.201
+  [Host]     : .NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3
+  DefaultJob : .NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method          </th><th>Mean</th><th>Ratio</th><th>Gen0</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>Synaptrix_SendQuery</td><td>50.74 ns</td><td>1.00</td><td>0.0032</td><td>40 B</td><td>1.00</td>
+</tr><tr><td>SynaptrixGen_SendQuery</td><td>26.77 ns</td><td>0.53</td><td>0.0032</td><td>40 B</td><td>1.00</td>
+</tr><tr><td>Martin_SendQuery</td><td>16.88 ns</td><td>0.33</td><td>0.0032</td><td>40 B</td><td>1.00</td>
+</tr></tbody></table>
+</body>
+</html>

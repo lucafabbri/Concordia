@@ -1,4 +1,4 @@
-namespace Concordia.Benchmarks.Requests;
+﻿namespace Synaptrix.Benchmarks.Requests;
 
 // --- Query with response ---
 public class MartinQuery : global::Mediator.IRequest<string>

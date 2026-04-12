@@ -1,0 +1,6 @@
+@Synaptrix.Examples.Web_HostAddress = http://localhost:5267
+
+GET {{Synaptrix.Examples.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

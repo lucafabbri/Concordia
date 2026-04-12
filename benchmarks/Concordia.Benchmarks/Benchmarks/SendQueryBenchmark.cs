@@ -1,42 +1,42 @@
 using BenchmarkDotNet.Attributes;
-using Concordia.Benchmarks.Generated;
-using Concordia.Benchmarks.Handlers;
-using Concordia.Benchmarks.Requests;
+using Synaptrix.Benchmarks.Generated;
+using Synaptrix.Benchmarks.Handlers;
+using Synaptrix.Benchmarks.Requests;
 using MediatR;
 using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 using MartinIMediator = Mediator.IMediator;
 
-namespace Concordia.Benchmarks;
+namespace Synaptrix.Benchmarks;
 
 [MemoryDiagnoser]
 [HideColumns("Error", "StdDev", "Median", "RatioSD")]
 public class SendQueryBenchmark
 {
-    private Concordia.IMediator _concordiaMediator = null!;
-    private Concordia.IMediator _concordiaGenMediator = null!;
+    private Synaptrix.IMediator _synaptrixMediator = null!;
+    private Synaptrix.IMediator _synaptrixGenMediator = null!;
     private MediatR.IMediator _mediatRMediator = null!;
     private MartinIMediator _martinMediator = null!;
 
-    private readonly ConcordiaQuery _concordiaQuery = new() { Id = 1 };
+    private readonly SynaptrixQuery _synaptrixQuery = new() { Id = 1 };
     private readonly MediatRQuery _mediatRQuery = new() { Id = 1 };
     private readonly MartinQuery _martinQuery = new() { Id = 1 };
 
     [GlobalSetup]
     public void Setup()
     {
-        // --- Concordia (wrapper-caching) setup ---
-        var concordiaServices = new ServiceCollection();
-        concordiaServices.AddSingleton<IMediator, Concordia.Mediator>();
-        concordiaServices.AddSingleton<ISender, Concordia.Mediator>();
-        concordiaServices.AddSingleton<INotificationPublisher, ForeachAwaitPublisher>();
-        concordiaServices.AddSingleton<IRequestHandler<ConcordiaQuery, string>, ConcordiaQueryHandler>();
-        _concordiaMediator = concordiaServices.BuildServiceProvider().GetRequiredService<Concordia.IMediator>();
+        // --- Synaptrix (wrapper-caching) setup ---
+        var synaptrixServices = new ServiceCollection();
+        synaptrixServices.AddSingleton<IMediator, Synaptrix.Mediator>();
+        synaptrixServices.AddSingleton<ISender, Synaptrix.Mediator>();
+        synaptrixServices.AddSingleton<INotificationPublisher, ForeachAwaitPublisher>();
+        synaptrixServices.AddSingleton<IRequestHandler<SynaptrixQuery, string>, SynaptrixQueryHandler>();
+        _synaptrixMediator = synaptrixServices.BuildServiceProvider().GetRequiredService<Synaptrix.IMediator>();
 
-        // --- Concordia (source-generated) setup ---
+        // --- Synaptrix (source-generated) setup ---
         var genServices = new ServiceCollection();
-        genServices.AddConcordiaHandlers();
-        _concordiaGenMediator = genServices.BuildServiceProvider().GetRequiredService<Concordia.IMediator>();
+        genServices.AddSynaptrixHandlers();
+        _synaptrixGenMediator = genServices.BuildServiceProvider().GetRequiredService<Synaptrix.IMediator>();
 
         // --- MediatR setup ---
         var mediatRServices = new ServiceCollection();
@@ -55,12 +55,12 @@ public class SendQueryBenchmark
         => _mediatRMediator.Send(_mediatRQuery);
 
     [Benchmark]
-    public Task<string> Concordia_SendQuery()
-        => _concordiaMediator.Send(_concordiaQuery);
+    public ValueTask<string> Synaptrix_SendQuery()
+        => _synaptrixMediator.Send(_synaptrixQuery);
 
     [Benchmark]
-    public Task<string> ConcordiaGen_SendQuery()
-        => _concordiaGenMediator.Send(_concordiaQuery);
+    public ValueTask<string> SynaptrixGen_SendQuery()
+        => _synaptrixGenMediator.Send(_synaptrixQuery);
 
     [Benchmark]
     public ValueTask<string> Martin_SendQuery()
