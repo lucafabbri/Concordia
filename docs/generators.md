@@ -126,13 +126,13 @@ By default, the generator creates a method named `AddConcordiaHandlers`. You can
 
 ### Inspecting Generated Code
 
-To see exactly what Concordia is generating for you:
+To see exactly what Synaptrix is generating for you:
 1. Open **Dependencies** in Solution Explorer.
 2. Go to **Analyzers** → **Synaptrix.Generator**.
-3. Expand **Synaptrix.Generator.ConcordiaGenerator**.
+3. Expand **Synaptrix.Generator.SynaptrixGenerator**.
 4. Double-click either generated file:
-   - `ConcordiaGeneratedHandlersRegistrations.g.cs`
-   - `ConcordiaGeneratedMediator.g.cs`
+   - `SynaptrixGeneratedHandlersRegistrations.g.cs`
+   - `SynaptrixGeneratedMediator.g.cs`
 
 You will see standard, readable C# code that you can inspect, understand, and debug.
 
@@ -148,4 +148,3 @@ var mediator = new ConcordiaGenerated.Generated.GeneratedMediator(
 
 var result = await mediator.Send(new GetFooQuery { Id = 1 });
 ```
-

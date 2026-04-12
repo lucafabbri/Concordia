@@ -5,7 +5,7 @@ title: Installation
 
 # Installation & Setup
 
-Concordia is modular by design. Install the packages that match your project's needs.
+Synaptrix is modular by design. Install the packages that match your project's needs.
 
 ## Package Ecosystem
 
@@ -25,8 +25,8 @@ This approach leverages the Roslyn compiler to inject registration code directly
 Add the Core library and the Generator to your project using the .NET CLI:
 
 ```bash
-dotnet add package Synaptrix.Core --version 2.3.0
-dotnet add package Synaptrix.Generator --version 2.3.0
+dotnet add package Synaptrix.Core --version 3.0.0
+dotnet add package Synaptrix.Generator --version 3.0.0
 ```
 
 ### 2. Verify csproj Configuration
@@ -34,8 +34,8 @@ Ensure that the `Synaptrix.Generator` is properly referenced (usually handled au
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="Concordia" Version="2.3.0" />
-    <PackageReference Include="Synaptrix.Generator" Version="2.3.0" PrivateAssets="all" />
+    <PackageReference Include="Synaptrix.Core" Version="3.0.0" />
+    <PackageReference Include="Synaptrix.Generator" Version="3.0.0" PrivateAssets="all" />
 </ItemGroup>
 ```
 
@@ -43,18 +43,18 @@ Ensure that the `Synaptrix.Generator` is properly referenced (usually handled au
 The generator creates an extension method based on your project's content. By default, it follows naming conventions, but you can look for it in your startup code.
 
 ```csharp
-using Concordia;
+using Synaptrix;
 using Synaptrix.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Add Core Services (IMediator, ISender, IPublisher)
-builder.Services.AddConcordiaCoreServices();
+builder.Services.AddSynaptrixCoreServices();
 
 // 2. Add Generated Handlers
 // The name 'AddMyProjectHandlers' is an example. 
 // You can customize this via MSBuild properties if needed.
-builder.Services.AddConcordiaHandlers(); 
+builder.Services.AddSynaptrixHandlers(); 
 ```
 
 > [!TIP]
@@ -62,8 +62,7 @@ builder.Services.AddConcordiaHandlers();
 > You can control the name of the generated extension method by adding a property to your `.csproj` file:
 > ```xml
 > <PropertyGroup>
->    <ConcordiaGeneratedMethodName>AddMyCustomHandlers</ConcordiaGeneratedMethodName>
+>    <SynaptrixGeneratedMethodName>AddMyCustomHandlers</SynaptrixGeneratedMethodName>
 > </PropertyGroup>
 > ```
-
 
