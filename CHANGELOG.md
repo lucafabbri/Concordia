@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="3.0.0"></a>
+## [3.0.0](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.0.0) (2026-04-12)
+
+### Features
+
+* Rebrand Concordia to Synaptrix across repo ([11b46ef](https://www.github.com/mrdevrobot/Concordia/commit/11b46ef5fa44d478581ab375d58fdaa1211ae9ba))
+
+### Breaking Changes
+
+* Rebrand Concordia to Synaptrix across repo ([11b46ef](https://www.github.com/mrdevrobot/Concordia/commit/11b46ef5fa44d478581ab375d58fdaa1211ae9ba))
+
 <a name="2.4.1"></a>
 ## [2.4.1](https://www.github.com/mrdevrobot/Concordia/releases/tag/v2.4.1) (2026-04-08)
 
