@@ -287,11 +287,13 @@ public class SynaptrixGenerator : IIncrementalGenerator
         // Collect unique concrete handler types.
         var uniqueHandlers = handlers.Select(h => h.ImplementationTypeName).Distinct().ToList();
 
-        // Register each concrete handler type as Singleton (for GeneratedMediator constructor injection).
-        sb.AppendLine("            // Singleton registrations for GeneratedMediator constructor injection.");
+        // Register each concrete handler type as Transient.
+        // Handlers are resolved lazily by GeneratedMediator via IServiceProvider,
+        // breaking circular dependencies (e.g. Handler → Datasource → IMediator → Handler).
+        sb.AppendLine("            // Transient registrations for handler types.");
         foreach (var handlerType in uniqueHandlers)
         {
-            sb.AppendLine($"            services.AddSingleton<{handlerType}>();");
+            sb.AppendLine($"            services.AddTransient<{handlerType}>();");
         }
 
         sb.AppendLine();
@@ -315,7 +317,9 @@ public class SynaptrixGenerator : IIncrementalGenerator
         }
         else
         {
-            sb.AppendLine("            // Register the source-generated mediator as Singleton.");
+            // Register GeneratedMediator as Singleton. It takes only IServiceProvider
+            // and resolves handlers lazily to break circular dependency chains.
+            sb.AppendLine("            // Register the source-generated mediator as Singleton (lazy handler resolution).");
             sb.AppendLine($"            services.AddSingleton<global::{generatedNamespace}.Generated.GeneratedMediator>();");
             sb.AppendLine($"            services.AddSingleton<global::Synaptrix.IMediator>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
             sb.AppendLine($"            services.AddSingleton<global::Synaptrix.ISender>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
@@ -334,32 +338,14 @@ public class SynaptrixGenerator : IIncrementalGenerator
 
     private static string GenerateConcreteMediatorCode(string generatedNamespace, ImmutableArray<HandlerInfo> handlers)
     {
-        // ── Build field/param name maps ────────────────────────────────────────
-        var handlerFields = new Dictionary<string, string>();   // implType → fieldName
-        var ctorParams    = new Dictionary<string, string>();   // implType → ctorParamName
-        var seenNames     = new HashSet<string>();
-
-        foreach (var h in handlers)
-        {
-            var simple    = GetSimpleName(h.ImplementationTypeName);
-            var fieldBase = "_" + Uncapitalize(simple);
-            var fieldName = fieldBase;
-            int idx = 0;
-            while (!seenNames.Add(fieldName))
-                fieldName = fieldBase + (++idx);
-            handlerFields[h.ImplementationTypeName] = fieldName;
-            ctorParams[h.ImplementationTypeName]    = Uncapitalize(simple) + (idx > 0 ? idx.ToString() : "");
-        }
-
         // ── Build request/notification mappings ───────────────────────────────
-        var responseHandlers     = new List<(string ReqType, string RespType, string Field)>();
-        var voidHandlers         = new List<(string ReqType, string Field)>();
-        var notifHandlersByType  = new Dictionary<string, List<string>>();  // notifType → fields
-        var streamHandlers       = new List<(string ReqType, string RespType, string Field)>();
+        var responseHandlers     = new List<(string ReqType, string RespType, string ImplType)>();
+        var voidHandlers         = new List<(string ReqType, string ImplType)>();
+        var notifHandlersByType  = new Dictionary<string, List<string>>();  // notifType → implTypes
+        var streamHandlers       = new List<(string ReqType, string RespType, string ImplType)>();
 
         foreach (var h in handlers)
         {
-            var field = handlerFields[h.ImplementationTypeName];
             foreach (var iface in h.ImplementedInterfaceTypeNames)
             {
                 if (iface.StartsWith("global::Synaptrix.IRequestHandler<"))
@@ -367,23 +353,23 @@ public class SynaptrixGenerator : IIncrementalGenerator
                     var inner    = iface.Substring("global::Synaptrix.IRequestHandler<".Length, iface.Length - "global::Synaptrix.IRequestHandler<".Length - 1);
                     var commaIdx = FindTopLevelComma(inner);
                     if (commaIdx >= 0)
-                        responseHandlers.Add((inner.Substring(0, commaIdx).Trim(), inner.Substring(commaIdx + 1).Trim(), field));
+                        responseHandlers.Add((inner.Substring(0, commaIdx).Trim(), inner.Substring(commaIdx + 1).Trim(), h.ImplementationTypeName));
                     else
-                        voidHandlers.Add((inner.Trim(), field));
+                        voidHandlers.Add((inner.Trim(), h.ImplementationTypeName));
                 }
                 else if (iface.StartsWith("global::Synaptrix.INotificationHandler<"))
                 {
                     var notifType = iface.Substring("global::Synaptrix.INotificationHandler<".Length, iface.Length - "global::Synaptrix.INotificationHandler<".Length - 1).Trim();
                     if (!notifHandlersByType.ContainsKey(notifType))
                         notifHandlersByType[notifType] = new List<string>();
-                    notifHandlersByType[notifType].Add(field);
+                    notifHandlersByType[notifType].Add(h.ImplementationTypeName);
                 }
                 else if (iface.StartsWith("global::Synaptrix.IStreamRequestHandler<"))
                 {
                     var inner    = iface.Substring("global::Synaptrix.IStreamRequestHandler<".Length, iface.Length - "global::Synaptrix.IStreamRequestHandler<".Length - 1);
                     var commaIdx = FindTopLevelComma(inner);
                     if (commaIdx >= 0)
-                        streamHandlers.Add((inner.Substring(0, commaIdx).Trim(), inner.Substring(commaIdx + 1).Trim(), field));
+                        streamHandlers.Add((inner.Substring(0, commaIdx).Trim(), inner.Substring(commaIdx + 1).Trim(), h.ImplementationTypeName));
                 }
             }
         }
@@ -396,23 +382,22 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine($"namespace {generatedNamespace}.Generated");
         sb.AppendLine("{");
-        sb.AppendLine("    /// <summary>Source-generated mediator with direct handler dispatch (zero DI lookup on hot path).</summary>");
+        sb.AppendLine("    /// <summary>");
+        sb.AppendLine("    /// Source-generated mediator with direct handler dispatch.");
+        sb.AppendLine("    /// Handlers are resolved lazily from IServiceProvider to break circular dependency chains");
+        sb.AppendLine("    /// (e.g. Handler → Datasource → IMediator → Handler).");
+        sb.AppendLine("    /// </summary>");
         sb.AppendLine("    public sealed partial class GeneratedMediator : global::Synaptrix.IMediator, global::Synaptrix.ISender");
         sb.AppendLine("    {");
 
-        // ── Fields ─────────────────────────────────────────────────────────────
-        foreach (var h in handlers)
-            sb.AppendLine($"        private readonly {h.ImplementationTypeName} {handlerFields[h.ImplementationTypeName]};");
+        // ── Field ──────────────────────────────────────────────────────────────
+        sb.AppendLine("        private readonly global::System.IServiceProvider _sp;");
         sb.AppendLine();
 
         // ── Constructor ────────────────────────────────────────────────────────
-        var ctorArgList = string.Join(",\n            ",
-            handlers.Select(h => $"{h.ImplementationTypeName} {ctorParams[h.ImplementationTypeName]}"));
-        sb.AppendLine($"        public GeneratedMediator(");
-        sb.AppendLine($"            {ctorArgList})");
+        sb.AppendLine("        public GeneratedMediator(global::System.IServiceProvider sp)");
         sb.AppendLine("        {");
-        foreach (var h in handlers)
-            sb.AppendLine($"            {handlerFields[h.ImplementationTypeName]} = {ctorParams[h.ImplementationTypeName]};");
+        sb.AppendLine("            _sp = sp;");
         sb.AppendLine("        }");
         sb.AppendLine();
 
@@ -421,9 +406,9 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         for (int i = 0; i < responseHandlers.Count; i++)
         {
-            var (reqType, respType, field) = responseHandlers[i];
+            var (reqType, respType, implType) = responseHandlers[i];
             sb.AppendLine($"            if (request is {reqType} r{i})");
-            sb.AppendLine($"                return (TResponse)(object)await {field}.Handle(r{i}, cancellationToken).ConfigureAwait(false);");
+            sb.AppendLine($"                return (TResponse)(object)await global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{implType}>(_sp).Handle(r{i}, cancellationToken).ConfigureAwait(false);");
         }
         sb.AppendLine("            throw new global::System.InvalidOperationException($\"No handler registered for {request.GetType().FullName}\");");
         sb.AppendLine("        }");
@@ -434,14 +419,13 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         for (int i = 0; i < voidHandlers.Count; i++)
         {
-            var (reqType, field) = voidHandlers[i];
-            sb.AppendLine($"            if (request is {reqType} v{i}) {{ await {field}.Handle(v{i}, cancellationToken).ConfigureAwait(false); return; }}");
+            var (reqType, implType) = voidHandlers[i];
+            sb.AppendLine($"            if (request is {reqType} v{i}) {{ await global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{implType}>(_sp).Handle(v{i}, cancellationToken).ConfigureAwait(false); return; }}");
         }
-        // Response requests also implement IRequest — handle them here too (discards response).
         for (int i = 0; i < responseHandlers.Count; i++)
         {
-            var (reqType, respType, field) = responseHandlers[i];
-            sb.AppendLine($"            if (request is {reqType} rv{i}) {{ await {field}.Handle(rv{i}, cancellationToken).ConfigureAwait(false); return; }}");
+            var (reqType, respType, implType) = responseHandlers[i];
+            sb.AppendLine($"            if (request is {reqType} rv{i}) {{ await global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{implType}>(_sp).Handle(rv{i}, cancellationToken).ConfigureAwait(false); return; }}");
         }
         sb.AppendLine("            throw new global::System.InvalidOperationException($\"No handler registered for {request.GetType().FullName}\");");
         sb.AppendLine("        }");
@@ -452,40 +436,37 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         for (int i = 0; i < responseHandlers.Count; i++)
         {
-            var (reqType, respType, field) = responseHandlers[i];
+            var (reqType, respType, implType) = responseHandlers[i];
             sb.AppendLine($"            if (request is {reqType} o{i})");
-            sb.AppendLine($"                return (object?)await {field}.Handle(o{i}, cancellationToken).ConfigureAwait(false);");
+            sb.AppendLine($"                return (object?)await global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{implType}>(_sp).Handle(o{i}, cancellationToken).ConfigureAwait(false);");
         }
         for (int i = 0; i < voidHandlers.Count; i++)
         {
-            var (reqType, field) = voidHandlers[i];
-            sb.AppendLine($"            if (request is {reqType} ov{i}) {{ await {field}.Handle(ov{i}, cancellationToken).ConfigureAwait(false); return null; }}");
+            var (reqType, implType) = voidHandlers[i];
+            sb.AppendLine($"            if (request is {reqType} ov{i}) {{ await global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{implType}>(_sp).Handle(ov{i}, cancellationToken).ConfigureAwait(false); return null; }}");
         }
         sb.AppendLine("            throw new global::System.InvalidOperationException($\"No handler registered for {request.GetType().FullName}\");");
         sb.AppendLine("        }");
         sb.AppendLine();
 
-        // ── Publish(INotification) — inline sequential dispatch with sync fast-path ──
-        // No allocation when all handlers complete synchronously (IsCompletedSuccessfully).
+        // ── Publish(INotification) — lazy resolve, sequential dispatch with sync fast-path ──
         sb.AppendLine("        public global::System.Threading.Tasks.ValueTask Publish(global::Synaptrix.INotification notification, global::System.Threading.CancellationToken cancellationToken = default)");
         sb.AppendLine("        {");
         foreach (var kvp in notifHandlersByType)
         {
-            var safe      = GetSafeIdentifier(kvp.Key);
-            var hList     = kvp.Value;  // ordered list of field names
+            var safe  = GetSafeIdentifier(kvp.Key);
+            var hList = kvp.Value;
             sb.AppendLine($"            if (notification is {kvp.Key} _n_{safe})");
             sb.AppendLine("            {");
             for (int i = 0; i < hList.Count; i++)
             {
-                sb.AppendLine($"                var _t{i}_{safe} = {hList[i]}.Handle(_n_{safe}, cancellationToken);");
+                sb.AppendLine($"                var _t{i}_{safe} = global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{hList[i]}>(_sp).Handle(_n_{safe}, cancellationToken);");
                 if (i < hList.Count - 1)
                 {
-                    // Not the last handler — bail out to async slow-path if not already done.
                     sb.AppendLine($"                if (!_t{i}_{safe}.IsCompletedSuccessfully) return _FinishPublish_{safe}_From{i}(_n_{safe}, _t{i}_{safe}, cancellationToken);");
                 }
                 else
                 {
-                    // Last handler — return default (completed ValueTask) or the ValueTask itself (avoid state machine).
                     sb.AppendLine($"                if (_t{i}_{safe}.IsCompletedSuccessfully) return default;");
                     sb.AppendLine($"                return _t{i}_{safe};");
                 }
@@ -498,20 +479,18 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine("        }");
         sb.AppendLine();
 
-        // ── Async slow-path helpers for Publish (only entered when a handler is truly async) ─
+        // ── Async slow-path helpers for Publish ────────────────────────────────
         foreach (var kvp in notifHandlersByType)
         {
             var safe  = GetSafeIdentifier(kvp.Key);
             var hList = kvp.Value;
-            // Generate one helper per "starting index" 0..(n-2). Index n-1 (last) is never the
-            // starting point because we return its Task directly in the fast-path above.
             for (int fromIdx = 0; fromIdx < hList.Count - 1; fromIdx++)
             {
                 sb.AppendLine($"        private async global::System.Threading.Tasks.ValueTask _FinishPublish_{safe}_From{fromIdx}({kvp.Key} notification, global::System.Threading.Tasks.ValueTask pending, global::System.Threading.CancellationToken cancellationToken)");
                 sb.AppendLine("        {");
                 sb.AppendLine("            await pending.ConfigureAwait(false);");
                 for (int j = fromIdx + 1; j < hList.Count; j++)
-                    sb.AppendLine($"            await {hList[j]}.Handle(notification, cancellationToken).ConfigureAwait(false);");
+                    sb.AppendLine($"            await global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{hList[j]}>(_sp).Handle(notification, cancellationToken).ConfigureAwait(false);");
                 sb.AppendLine("        }");
                 sb.AppendLine();
             }
@@ -522,9 +501,9 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         for (int i = 0; i < streamHandlers.Count; i++)
         {
-            var (reqType, respType, field) = streamHandlers[i];
+            var (reqType, respType, implType) = streamHandlers[i];
             sb.AppendLine($"            if (request is {reqType} s{i})");
-            sb.AppendLine($"                return (global::System.Collections.Generic.IAsyncEnumerable<TResponse>){field}.Handle(s{i}, cancellationToken);");
+            sb.AppendLine($"                return (global::System.Collections.Generic.IAsyncEnumerable<TResponse>)global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{implType}>(_sp).Handle(s{i}, cancellationToken);");
         }
         sb.AppendLine("            throw new global::System.InvalidOperationException($\"No stream handler registered for {request.GetType().FullName}\");");
         sb.AppendLine("        }");
