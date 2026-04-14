@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="3.0.1"></a>
+## [3.0.1](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.0.1) (2026-04-14)
+
+### Bug Fixes
+
+* Resolve handlers lazily via IServiceProvider ([d458227](https://www.github.com/mrdevrobot/Concordia/commit/d4582270368d262921e5c4b877cef677c0223db2))
+
 <a name="3.0.0"></a>
 ## [3.0.0](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.0.0) (2026-04-12)
 
