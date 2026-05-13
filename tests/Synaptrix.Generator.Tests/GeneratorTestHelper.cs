@@ -58,6 +58,46 @@ public static class GeneratorTestHelper
 
         return (diagnostics, generatedSource);
     }
+
+    /// <summary>
+    /// Runs the generator and returns ALL generated source files plus the diagnostics
+    /// emitted when compiling the user source together with the generator output. Use this
+    /// when the assertion needs to verify that the generated code itself compiles.
+    /// </summary>
+    public static (ImmutableArray<Diagnostic> CompilationDiagnostics, string[] GeneratedSources) RunGeneratorAndCompile(string source)
+    {
+        var syntaxTree = CSharpSyntaxTree.ParseText(source);
+
+        var references = new List<MetadataReference>
+        {
+            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(IRequestHandler<,>).Assembly.Location),
+            MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
+            MetadataReference.CreateFromFile(Assembly.Load("netstandard").Location),
+            MetadataReference.CreateFromFile(Assembly.Load("System.ComponentModel").Location),
+            MetadataReference.CreateFromFile(Assembly.Load("System.Linq").Location),
+            MetadataReference.CreateFromFile(Assembly.Load("Microsoft.Extensions.DependencyInjection.Abstractions").Location),
+        };
+
+        var compilation = CSharpCompilation.Create(
+            "Tests",
+            new[] { syntaxTree },
+            references,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+        var generator = new SynaptrixGenerator();
+        CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
+        driver = (CSharpGeneratorDriver)driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out _);
+
+        var runResult = driver.GetRunResult();
+        var sources = runResult.Results.Length == 0
+            ? Array.Empty<string>()
+            : runResult.Results[0].GeneratedSources.Select(s => s.SourceText.ToString()).ToArray();
+
+        var compileDiagnostics = outputCompilation.GetDiagnostics();
+        return (compileDiagnostics, sources);
+    }
 }
 
 public class TestAnalyzerConfigOptionsProvider : AnalyzerConfigOptionsProvider
