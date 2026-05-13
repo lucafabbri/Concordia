@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="3.0.2"></a>
+## [3.0.2](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.0.2) (2026-05-13)
+
+### Bug Fixes
+
+* Support open-generic handlers and pipeline dispatch ([b93e7ab](https://www.github.com/mrdevrobot/Concordia/commit/b93e7ab65b2fa913829436b1ac91d66bd181c214))
+
 <a name="3.0.1"></a>
 ## [3.0.1](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.0.1) (2026-04-14)
 
