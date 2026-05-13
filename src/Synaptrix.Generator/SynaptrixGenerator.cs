@@ -345,7 +345,15 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine();
 
         // Collect unique concrete handler types.
-        var uniqueHandlers = handlers.Select(h => h.ImplementationTypeName).Distinct().ToList();
+        // Open-generic implementations (e.g. pipeline behaviors) are registered above
+        // via `AddTransient(typeof(...), typeof(...))` against their interfaces; they
+        // cannot be registered standalone with the generic `AddTransient<T>()` overload
+        // because their type arguments are unbound.
+        var uniqueHandlers = handlers
+            .Where(h => !h.IsOpenGeneric)
+            .Select(h => h.ImplementationTypeName)
+            .Distinct()
+            .ToList();
 
         // Register each concrete handler type as Transient.
         // Handlers are resolved lazily by GeneratedMediator via IServiceProvider,
