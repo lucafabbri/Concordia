@@ -138,6 +138,12 @@ public class SynaptrixGenerator : IIncrementalGenerator
 
         var implementedInterfaces = new List<string>();
 
+        // An open-generic class such as `Foo<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>`
+        // cannot be registered with the generic `AddTransient<TInterface, TImpl>()` overload because
+        // TRequest/TResponse are not in scope at the call site. We emit the unbound form
+        // `typeof(Foo<,>)` and `typeof(IPipelineBehavior<,>)` instead.
+        var isOpenGeneric = classSymbol.IsGenericType && classSymbol.TypeParameters.Length > 0;
+
         // Iterates through all implemented interfaces.
         foreach (var @interface in classSymbol.AllInterfaces)
         {
@@ -149,31 +155,66 @@ public class SynaptrixGenerator : IIncrementalGenerator
                 // Checks if the interface is a Synaptrix handler interface.
                 if (genericDefinitionFullName == "global::Synaptrix.IRequestHandler<TRequest, TResponse>")
                 {
-                    var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    var responseType = @interface.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"global::Synaptrix.IRequestHandler<{requestType}, {responseType}>");
+                    if (isOpenGeneric)
+                    {
+                        implementedInterfaces.Add("global::Synaptrix.IRequestHandler<,>");
+                    }
+                    else
+                    {
+                        var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        var responseType = @interface.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        implementedInterfaces.Add($"global::Synaptrix.IRequestHandler<{requestType}, {responseType}>");
+                    }
                 }
                 else if (genericDefinitionFullName == "global::Synaptrix.IRequestHandler<TRequest>")
                 {
-                    var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"global::Synaptrix.IRequestHandler<{requestType}>");
+                    if (isOpenGeneric)
+                    {
+                        implementedInterfaces.Add("global::Synaptrix.IRequestHandler<>");
+                    }
+                    else
+                    {
+                        var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        implementedInterfaces.Add($"global::Synaptrix.IRequestHandler<{requestType}>");
+                    }
                 }
                 else if (genericDefinitionFullName == "global::Synaptrix.INotificationHandler<TNotification>")
                 {
-                    var notificationType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"global::Synaptrix.INotificationHandler<{notificationType}>");
+                    if (isOpenGeneric)
+                    {
+                        implementedInterfaces.Add("global::Synaptrix.INotificationHandler<>");
+                    }
+                    else
+                    {
+                        var notificationType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        implementedInterfaces.Add($"global::Synaptrix.INotificationHandler<{notificationType}>");
+                    }
                 }
                 else if (genericDefinitionFullName == "global::Synaptrix.IPipelineBehavior<TRequest, TResponse>")
                 {
-                    var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    var responseType = @interface.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"global::Synaptrix.IPipelineBehavior<{requestType}, {responseType}>");
+                    if (isOpenGeneric)
+                    {
+                        implementedInterfaces.Add("global::Synaptrix.IPipelineBehavior<,>");
+                    }
+                    else
+                    {
+                        var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        var responseType = @interface.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        implementedInterfaces.Add($"global::Synaptrix.IPipelineBehavior<{requestType}, {responseType}>");
+                    }
                 }
                 else if (genericDefinitionFullName == "global::Synaptrix.IStreamRequestHandler<TRequest, TResponse>")
                 {
-                    var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    var responseType = @interface.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    implementedInterfaces.Add($"global::Synaptrix.IStreamRequestHandler<{requestType}, {responseType}>");
+                    if (isOpenGeneric)
+                    {
+                        implementedInterfaces.Add("global::Synaptrix.IStreamRequestHandler<,>");
+                    }
+                    else
+                    {
+                        var requestType = @interface.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        var responseType = @interface.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        implementedInterfaces.Add($"global::Synaptrix.IStreamRequestHandler<{requestType}, {responseType}>");
+                    }
                 }
             }
         }
@@ -181,8 +222,19 @@ public class SynaptrixGenerator : IIncrementalGenerator
         // Creates a HandlerInfo if any supported interfaces are implemented.
         if (implementedInterfaces.Any())
         {
-            var implementationTypeName = classSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            return new HandlerInfo(implementationTypeName, implementedInterfaces);
+            string implementationTypeName;
+            if (isOpenGeneric)
+            {
+                // Unbound generic form, e.g. "global::MyNs.Behavior<,>".
+                implementationTypeName = classSymbol.ConstructUnboundGenericType()
+                    .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            }
+            else
+            {
+                implementationTypeName = classSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            }
+
+            return new HandlerInfo(implementationTypeName, implementedInterfaces, isOpenGeneric);
         }
 
         return null;
@@ -227,7 +279,15 @@ public class SynaptrixGenerator : IIncrementalGenerator
         {
             foreach (var implementedInterface in handler.ImplementedInterfaceTypeNames)
             {
-                sb.AppendLine($"            services.AddTransient<{implementedInterface}, {handler.ImplementationTypeName}>();");
+                if (handler.IsOpenGeneric)
+                {
+                    // Open-generic registration: AddTransient(typeof(IFoo<,>), typeof(MyFoo<,>))
+                    sb.AppendLine($"            services.AddTransient(typeof({implementedInterface}), typeof({handler.ImplementationTypeName}));");
+                }
+                else
+                {
+                    sb.AppendLine($"            services.AddTransient<{implementedInterface}, {handler.ImplementationTypeName}>();");
+                }
             }
         }
 
@@ -346,6 +406,10 @@ public class SynaptrixGenerator : IIncrementalGenerator
 
         foreach (var h in handlers)
         {
+            // Open-generic implementations (e.g. pipeline behaviors) have no concrete
+            // dispatch entry — they participate at runtime through DI resolution.
+            if (h.IsOpenGeneric) continue;
+
             foreach (var iface in h.ImplementedInterfaceTypeNames)
             {
                 if (iface.StartsWith("global::Synaptrix.IRequestHandler<"))
@@ -401,6 +465,30 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine("        }");
         sb.AppendLine();
 
+        // ── Pipeline helpers ───────────────────────────────────────────────────
+        // Run an IRequest<TResponse> handler with the registered pipeline behaviors
+        // composed around it (matches Synaptrix.Core runtime Mediator semantics).
+        sb.AppendLine("        private async global::System.Threading.Tasks.ValueTask<TR> __DispatchResponseAsync<TQ, TR, TH>(TQ request, global::System.Threading.CancellationToken cancellationToken)");
+        sb.AppendLine("            where TQ : global::Synaptrix.IRequest<TR>");
+        sb.AppendLine("            where TH : global::Synaptrix.IRequestHandler<TQ, TR>");
+        sb.AppendLine("        {");
+        sb.AppendLine("            var handler = global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<TH>(_sp);");
+        sb.AppendLine("            var behaviors = global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetServices<global::Synaptrix.IPipelineBehavior<TQ, TR>>(_sp);");
+        sb.AppendLine("            if (behaviors is global::Synaptrix.IPipelineBehavior<TQ, TR>[] arr && arr.Length == 0)");
+        sb.AppendLine("                return await handler.Handle(request, cancellationToken).ConfigureAwait(false);");
+        sb.AppendLine("            global::Synaptrix.RequestHandlerDelegate<TR> pipeline = ct => handler.Handle(request, ct);");
+        sb.AppendLine("            var list = behaviors as global::System.Collections.Generic.IList<global::Synaptrix.IPipelineBehavior<TQ, TR>>");
+        sb.AppendLine("                       ?? new global::System.Collections.Generic.List<global::Synaptrix.IPipelineBehavior<TQ, TR>>(behaviors);");
+        sb.AppendLine("            for (int i = list.Count - 1; i >= 0; i--)");
+        sb.AppendLine("            {");
+        sb.AppendLine("                var b = list[i];");
+        sb.AppendLine("                var prev = pipeline;");
+        sb.AppendLine("                pipeline = ct => b.Handle(request, prev, ct);");
+        sb.AppendLine("            }");
+        sb.AppendLine("            return await pipeline(cancellationToken).ConfigureAwait(false);");
+        sb.AppendLine("        }");
+        sb.AppendLine();
+
         // ── Send<TResponse>(IRequest<TResponse>) ──────────────────────────────
         sb.AppendLine("        public async global::System.Threading.Tasks.ValueTask<TResponse> Send<TResponse>(global::Synaptrix.IRequest<TResponse> request, global::System.Threading.CancellationToken cancellationToken = default)");
         sb.AppendLine("        {");
@@ -408,7 +496,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
         {
             var (reqType, respType, implType) = responseHandlers[i];
             sb.AppendLine($"            if (request is {reqType} r{i})");
-            sb.AppendLine($"                return (TResponse)(object)await global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{implType}>(_sp).Handle(r{i}, cancellationToken).ConfigureAwait(false);");
+            sb.AppendLine($"                return (TResponse)(object)await __DispatchResponseAsync<{reqType}, {respType}, {implType}>(r{i}, cancellationToken).ConfigureAwait(false);");
         }
         sb.AppendLine("            throw new global::System.InvalidOperationException($\"No handler registered for {request.GetType().FullName}\");");
         sb.AppendLine("        }");
