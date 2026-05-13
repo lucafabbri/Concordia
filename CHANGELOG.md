@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="3.0.3"></a>
+## [3.0.3](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.0.3) (2026-05-13)
+
+### Bug Fixes
+
+* Exclude open-generic handlers from concrete handler registrations ([fc2eb54](https://www.github.com/mrdevrobot/Concordia/commit/fc2eb54))
+
 <a name="3.0.2"></a>
 ## [3.0.2](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.0.2) (2026-05-13)
 
