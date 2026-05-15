@@ -275,6 +275,9 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
 
         // Registers each handler with its implemented interfaces.
+        // Guards prevent duplicate registrations when this method is called multiple times
+        // through the recursive assembly chain (each assembly in the dependency graph that
+        // references this one will call AddSynaptrixHandlers, which in turn calls this method).
         foreach (var handler in handlers)
         {
             foreach (var implementedInterface in handler.ImplementedInterfaceTypeNames)
@@ -282,11 +285,15 @@ public class SynaptrixGenerator : IIncrementalGenerator
                 if (handler.IsOpenGeneric)
                 {
                     // Open-generic registration: AddTransient(typeof(IFoo<,>), typeof(MyFoo<,>))
-                    sb.AppendLine($"            services.AddTransient(typeof({implementedInterface}), typeof({handler.ImplementationTypeName}));");
+                    // Guard: prevents duplicate behavior registrations (e.g. IPipelineBehavior<,>)
+                    // which would cause the behavior to execute N times per request.
+                    sb.AppendLine($"            if (!services.Any(d => d.ServiceType == typeof({implementedInterface}) && d.ImplementationType == typeof({handler.ImplementationTypeName})))");
+                    sb.AppendLine($"                services.AddTransient(typeof({implementedInterface}), typeof({handler.ImplementationTypeName}));");
                 }
                 else
                 {
-                    sb.AppendLine($"            services.AddTransient<{implementedInterface}, {handler.ImplementationTypeName}>();");
+                    sb.AppendLine($"            if (!services.Any(d => d.ServiceType == typeof({implementedInterface}) && d.ImplementationType == typeof({handler.ImplementationTypeName})))");
+                    sb.AppendLine($"                services.AddTransient<{implementedInterface}, {handler.ImplementationTypeName}>();");
                 }
             }
         }
@@ -358,10 +365,12 @@ public class SynaptrixGenerator : IIncrementalGenerator
         // Register each concrete handler type as Transient.
         // Handlers are resolved lazily by GeneratedMediator via IServiceProvider,
         // breaking circular dependencies (e.g. Handler → Datasource → IMediator → Handler).
+        // Guard: prevents duplicate concrete registrations across the assembly chain.
         sb.AppendLine("            // Transient registrations for handler types.");
         foreach (var handlerType in uniqueHandlers)
         {
-            sb.AppendLine($"            services.AddTransient<{handlerType}>();");
+            sb.AppendLine($"            if (!services.Any(d => d.ServiceType == typeof({handlerType}) && d.ImplementationType == typeof({handlerType})))");
+            sb.AppendLine($"                services.AddTransient<{handlerType}>();");
         }
 
         sb.AppendLine();
