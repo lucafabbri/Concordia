@@ -349,7 +349,7 @@ Install the packages. If using the individual packages instead of the meta-packa
 
 #### Register in `Program.cs`
 
-Calling `AddSynaptrixHandlers()` (or your custom name) does everything in one step: it registers handlers as Singletons and wires up the `GeneratedMediator` as both `IMediator` and `ISender`.
+Calling `AddSynaptrixHandlers()` (or your custom name) does everything in one step: it registers all handlers and wires up `GeneratedMediator` as both `IMediator` and `ISender`.
 
 ```csharp
 using Synaptrix;
@@ -357,6 +357,8 @@ using Synaptrix;
 var builder = WebApplication.CreateBuilder(args);
 
 // Single call registers all handlers + wires GeneratedMediator as IMediator/ISender.
+// Default lifetime is Scoped — correct for ASP.NET Core (per-request) and safe for
+// desktop apps with a single root scope (behaves like Singleton there).
 builder.Services.AddSynaptrixHandlers();
 
 // If you also need a notification publisher for the reflection-based Mediator (non-generated path):
@@ -371,6 +373,30 @@ app.MapControllers();
 app.Run();
 ```
 
+##### Mediator lifetime
+
+`AddSynaptrixHandlers` accepts an optional `ServiceLifetime` parameter to control the lifetime of `IMediator` / `ISender` / `GeneratedMediator`:
+
+| Lifetime | When to use |
+|---|---|
+| `Scoped` *(default)* | ASP.NET Core apps (one mediator per HTTP request). Also safe for desktop apps with a single root scope — behaves like Singleton in that context. |
+| `Singleton` | Desktop or console apps where no child scopes are created, or when all handler dependencies are themselves Singleton/Transient. |
+| `Transient` | Maximum isolation: a fresh mediator instance per resolution. Negligible overhead; avoids any scope-capture concern. |
+
+```csharp
+// ASP.NET Core — Scoped is the default, no need to specify it explicitly:
+builder.Services.AddSynaptrixHandlers();
+builder.Services.AddSynaptrixHandlers(ServiceLifetime.Scoped); // same as above
+
+// Desktop / console — Singleton is efficient when handler deps are not Scoped:
+services.AddSynaptrixHandlers(ServiceLifetime.Singleton);
+
+// Maximum safety — a new mediator per dispatch:
+builder.Services.AddSynaptrixHandlers(ServiceLifetime.Transient);
+```
+
+> **Note for ASP.NET Core Development mode**: with `ValidateScopes = true` (the default), using `Singleton` will throw at startup if any handler depends on a Scoped service (e.g. an EF Core `DbContext`). Use `Scoped` (the default) to avoid this.
+
 #### What the generator produces (for reference)
 
 Look inside **Dependencies → Analyzers → Synaptrix.Generator** in Solution Explorer to inspect the generated files:
@@ -379,18 +405,35 @@ Look inside **Dependencies → Analyzers → Synaptrix.Generator** in Solution E
 
 ```csharp
 // Auto-generated — do not edit
-public static IServiceCollection AddSynaptrixHandlers(this IServiceCollection services)
+public static IServiceCollection AddSynaptrixHandlers(
+    this IServiceCollection services,
+    ServiceLifetime mediatorLifetime = ServiceLifetime.Scoped)
 {
-    // Singleton registrations for GeneratedMediator constructor injection
-    services.AddSingleton<IRequestHandler<GetProductByIdQuery, ProductDto>, GetProductByIdQueryHandler>();
-    services.AddSingleton<IRequestHandler<CreateProductCommand>, CreateProductCommandHandler>();
-    services.AddSingleton<INotificationHandler<ProductCreatedNotification>, SendEmailOnProductCreated>();
-    services.AddSingleton<INotificationHandler<ProductCreatedNotification>, LogProductCreation>();
+    // Transient registrations for handler types
+    services.AddTransient<IRequestHandler<GetProductByIdQuery, ProductDto>, GetProductByIdQueryHandler>();
+    services.AddTransient<IRequestHandler<CreateProductCommand>, CreateProductCommandHandler>();
+    services.AddTransient<INotificationHandler<ProductCreatedNotification>, SendEmailOnProductCreated>();
+    services.AddTransient<INotificationHandler<ProductCreatedNotification>, LogProductCreation>();
 
-    // Wire up GeneratedMediator as the IMediator and ISender implementations
-    services.AddSingleton<GeneratedMediator>();
-    services.AddSingleton<IMediator>(sp => sp.GetRequiredService<GeneratedMediator>());
-    services.AddSingleton<ISender>(sp => sp.GetRequiredService<GeneratedMediator>());
+    // Wire up GeneratedMediator with the requested lifetime
+    switch (mediatorLifetime)
+    {
+        case ServiceLifetime.Singleton:
+            services.AddSingleton<GeneratedMediator>();
+            services.AddSingleton<IMediator>(sp => sp.GetRequiredService<GeneratedMediator>());
+            services.AddSingleton<ISender>(sp => sp.GetRequiredService<GeneratedMediator>());
+            break;
+        case ServiceLifetime.Transient:
+            services.AddTransient<GeneratedMediator>();
+            services.AddTransient<IMediator>(sp => sp.GetRequiredService<GeneratedMediator>());
+            services.AddTransient<ISender>(sp => sp.GetRequiredService<GeneratedMediator>());
+            break;
+        default: // Scoped
+            services.AddScoped<GeneratedMediator>();
+            services.AddScoped<IMediator>(sp => sp.GetRequiredService<GeneratedMediator>());
+            services.AddScoped<ISender>(sp => sp.GetRequiredService<GeneratedMediator>());
+            break;
+    }
     return services;
 }
 ```

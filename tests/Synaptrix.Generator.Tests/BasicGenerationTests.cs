@@ -30,7 +30,7 @@ namespace MyTestApp.Handlers
 
         Assert.Empty(diagnostics);
         Assert.NotEmpty(generatedSource);
-        Assert.Contains("public static IServiceCollection AddSynaptrixHandlers(this IServiceCollection services)", generatedSource);
+        Assert.Contains("public static IServiceCollection AddSynaptrixHandlers(this IServiceCollection services, ServiceLifetime mediatorLifetime = ServiceLifetime.Scoped)", generatedSource);
         Assert.Contains("services.AddTransient<global::Synaptrix.IRequestHandler<global::MyTestApp.Handlers.MyRequest, string>, global::MyTestApp.Handlers.MyHandler>();", generatedSource);
     }
 

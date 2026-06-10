@@ -270,8 +270,16 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine("        /// This method is generated at compile time by the Source Generator.");
         sb.AppendLine("        /// </summary>");
         sb.AppendLine("        /// <param name=\"services\">The service collection to add to.</param>");
+        sb.AppendLine("        /// <param name=\"mediatorLifetime\">");
+        sb.AppendLine("        /// Lifetime for IMediator / ISender / GeneratedMediator.");
+        sb.AppendLine("        /// <list type=\"bullet\">");
+        sb.AppendLine("        /// <item><term>Scoped (default)</term><description>Per-scope instance. Correct for ASP.NET Core (per-request) and safe for desktop apps with a single root scope.</description></item>");
+        sb.AppendLine("        /// <item><term>Singleton</term><description>One instance per container. Use only when the app never creates child scopes that contain scoped services.</description></item>");
+        sb.AppendLine("        /// <item><term>Transient</term><description>New instance on every resolution. Avoids any scope-capture issue at the cost of a small allocation per dispatch.</description></item>");
+        sb.AppendLine("        /// </list>");
+        sb.AppendLine("        /// </param>");
         sb.AppendLine("        /// <returns>The modified service collection.</returns>");
-        sb.AppendLine($"        public static IServiceCollection {methodName}(this IServiceCollection services)");
+        sb.AppendLine($"        public static IServiceCollection {methodName}(this IServiceCollection services, ServiceLifetime mediatorLifetime = ServiceLifetime.Scoped)");
         sb.AppendLine("        {");
 
         // Registers each handler with its implemented interfaces.
@@ -327,23 +335,42 @@ public class SynaptrixGenerator : IIncrementalGenerator
                 {
                      // Fix: Dynamic discovery of the registration method
                      // We look for a public static method that returns IServiceCollection and takes IServiceCollection as parameter
-                     var registrationMethod = candidateType.GetMembers()
+                     // Prefer the 2-param overload (new signature with mediatorLifetime).
+                     // Fall back to the 1-param overload for assemblies compiled with an older
+                     // version of the generator (backward compatibility).
+                     var registrationMethod2 = candidateType.GetMembers()
                         .OfType<IMethodSymbol>()
-                        .FirstOrDefault(m => 
-                            m.IsStatic && 
+                        .FirstOrDefault(m =>
+                            m.IsStatic &&
                             m.DeclaredAccessibility == Accessibility.Public &&
                             m.ReturnType.Name == "IServiceCollection" &&
-                            m.Parameters.Length == 1 &&
-                            m.Parameters[0].Type.Name == "IServiceCollection");
+                            m.Parameters.Length == 2 &&
+                            m.Parameters[0].Type.Name == "IServiceCollection" &&
+                            m.Parameters[1].Type.Name == "ServiceLifetime");
 
-                     if (registrationMethod != null)
+                     var registrationMethod1 = registrationMethod2 == null
+                         ? candidateType.GetMembers()
+                               .OfType<IMethodSymbol>()
+                               .FirstOrDefault(m =>
+                                   m.IsStatic &&
+                                   m.DeclaredAccessibility == Accessibility.Public &&
+                                   m.ReturnType.Name == "IServiceCollection" &&
+                                   m.Parameters.Length == 1 &&
+                                   m.Parameters[0].Type.Name == "IServiceCollection")
+                         : null;
+
+                     if (registrationMethod2 != null)
                      {
-                         sb.AppendLine($"            {candidateType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{registrationMethod.Name}(services);");
+                         sb.AppendLine($"            {candidateType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{registrationMethod2.Name}(services, mediatorLifetime);");
+                     }
+                     else if (registrationMethod1 != null)
+                     {
+                         sb.AppendLine($"            {candidateType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{registrationMethod1.Name}(services);");
                      }
                      else
                      {
-                         // Fallback to default if signature lookup fails (though it shouldn't for generated code)
-                         sb.AppendLine($"            {candidateType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.AddSynaptrixHandlers(services);");
+                         // Fallback: assume new signature (safest default for unknown assemblies)
+                         sb.AppendLine($"            {candidateType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.AddSynaptrixHandlers(services, mediatorLifetime);");
                      }
                 }
             }
@@ -394,12 +421,30 @@ public class SynaptrixGenerator : IIncrementalGenerator
         }
         else
         {
-            // Register GeneratedMediator as Singleton. It takes only IServiceProvider
-            // and resolves handlers lazily to break circular dependency chains.
-            sb.AppendLine("            // Register the source-generated mediator as Singleton (lazy handler resolution).");
-            sb.AppendLine($"            services.AddSingleton<global::{generatedNamespace}.Generated.GeneratedMediator>();");
-            sb.AppendLine($"            services.AddSingleton<global::Synaptrix.IMediator>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
-            sb.AppendLine($"            services.AddSingleton<global::Synaptrix.ISender>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
+            // Register GeneratedMediator with the lifetime chosen by the caller.
+            // Default is Scoped: correct for ASP.NET Core (per-request) and behaves like
+            // Singleton in desktop apps that use a single root scope (e.g. Avalonia + Lifter).
+            // Singleton is still available for apps that never create child scopes with
+            // scoped services. Transient avoids any scope-capture issue at a negligible cost.
+            sb.AppendLine("            // Register the source-generated mediator with the requested lifetime.");
+            sb.AppendLine($"            switch (mediatorLifetime)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                case global::Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton:");
+            sb.AppendLine($"                    services.AddSingleton<global::{generatedNamespace}.Generated.GeneratedMediator>();");
+            sb.AppendLine($"                    services.AddSingleton<global::Synaptrix.IMediator>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
+            sb.AppendLine($"                    services.AddSingleton<global::Synaptrix.ISender>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
+            sb.AppendLine("                    break;");
+            sb.AppendLine("                case global::Microsoft.Extensions.DependencyInjection.ServiceLifetime.Transient:");
+            sb.AppendLine($"                    services.AddTransient<global::{generatedNamespace}.Generated.GeneratedMediator>();");
+            sb.AppendLine($"                    services.AddTransient<global::Synaptrix.IMediator>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
+            sb.AppendLine($"                    services.AddTransient<global::Synaptrix.ISender>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
+            sb.AppendLine("                    break;");
+            sb.AppendLine("                default: // Scoped");
+            sb.AppendLine($"                    services.AddScoped<global::{generatedNamespace}.Generated.GeneratedMediator>();");
+            sb.AppendLine($"                    services.AddScoped<global::Synaptrix.IMediator>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
+            sb.AppendLine($"                    services.AddScoped<global::Synaptrix.ISender>(static sp => sp.GetRequiredService<global::{generatedNamespace}.Generated.GeneratedMediator>());");
+            sb.AppendLine("                    break;");
+            sb.AppendLine("            }");
         }
 
         sb.AppendLine();

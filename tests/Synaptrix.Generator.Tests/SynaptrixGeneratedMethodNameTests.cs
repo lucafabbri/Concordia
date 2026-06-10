@@ -38,7 +38,7 @@ namespace MyTestApp.Handlers
         Assert.NotEmpty(generatedSource);
         
         // Use Assert.Contains with a substring to avoid whitespace issues, but make it specific enough
-        Assert.Contains("public static IServiceCollection AddMyCustomHandlers(this IServiceCollection services)", generatedSource);
+        Assert.Contains("public static IServiceCollection AddMyCustomHandlers(this IServiceCollection services, ServiceLifetime mediatorLifetime = ServiceLifetime.Scoped)", generatedSource);
         Assert.DoesNotContain("AddSynaptrixHandlers", generatedSource);
     }
 }
