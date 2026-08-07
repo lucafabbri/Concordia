@@ -580,6 +580,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
 
         // ── Field ──────────────────────────────────────────────────────────────
         sb.AppendLine("        private readonly global::System.IServiceProvider _sp;");
+        sb.AppendLine("        private global::Synaptrix.Mediator? _fallback;");
         sb.AppendLine();
 
         // ── Constructor ────────────────────────────────────────────────────────
@@ -587,6 +588,17 @@ public class SynaptrixGenerator : IIncrementalGenerator
         sb.AppendLine("        {");
         sb.AppendLine("            _sp = sp;");
         sb.AppendLine("        }");
+        sb.AppendLine();
+
+        // ── Fallback ───────────────────────────────────────────────────────────
+        // A request/notification type not in this project's own switch below is not
+        // necessarily unregistered - it may be handled by a handler discovered from a
+        // different referenced assembly (composed additively into the same IServiceCollection),
+        // or by an open-generic handler that can only be resolved by its closed type at
+        // runtime. Either way it's still reachable through the DI container, just not through
+        // this assembly's own compile-time-known switch, so fall back to the reflection-based
+        // mediator instead of failing outright.
+        sb.AppendLine("        private global::Synaptrix.Mediator __Fallback => _fallback ??= new global::Synaptrix.Mediator(_sp);");
         sb.AppendLine();
 
         // ── Pipeline helpers ───────────────────────────────────────────────────
@@ -622,7 +634,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
             sb.AppendLine($"            if (request is {reqType} r{i})");
             sb.AppendLine($"                return (TResponse)(object)await __DispatchResponseAsync<{reqType}, {respType}, {implType}>(r{i}, cancellationToken).ConfigureAwait(false);");
         }
-        sb.AppendLine("            throw new global::System.InvalidOperationException($\"No handler registered for {request.GetType().FullName}\");");
+        sb.AppendLine("            return await __Fallback.Send(request, cancellationToken).ConfigureAwait(false);");
         sb.AppendLine("        }");
         sb.AppendLine();
 
@@ -639,7 +651,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
             var (reqType, respType, implType) = responseHandlers[i];
             sb.AppendLine($"            if (request is {reqType} rv{i}) {{ await global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{implType}>(_sp).Handle(rv{i}, cancellationToken).ConfigureAwait(false); return; }}");
         }
-        sb.AppendLine("            throw new global::System.InvalidOperationException($\"No handler registered for {request.GetType().FullName}\");");
+        sb.AppendLine("            await __Fallback.Send(request, cancellationToken).ConfigureAwait(false);");
         sb.AppendLine("        }");
         sb.AppendLine();
 
@@ -657,7 +669,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
             var (reqType, implType) = voidHandlers[i];
             sb.AppendLine($"            if (request is {reqType} ov{i}) {{ await global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{implType}>(_sp).Handle(ov{i}, cancellationToken).ConfigureAwait(false); return null; }}");
         }
-        sb.AppendLine("            throw new global::System.InvalidOperationException($\"No handler registered for {request.GetType().FullName}\");");
+        sb.AppendLine("            return await __Fallback.Send(request, cancellationToken).ConfigureAwait(false);");
         sb.AppendLine("        }");
         sb.AppendLine();
 
@@ -687,7 +699,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
                 sb.AppendLine("                return default;");
             sb.AppendLine("            }");
         }
-        sb.AppendLine("            throw new global::System.InvalidOperationException($\"No handler registered for {notification.GetType().FullName}\");");
+        sb.AppendLine("            return __Fallback.Publish(notification, cancellationToken);");
         sb.AppendLine("        }");
         sb.AppendLine();
 
@@ -717,7 +729,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
             sb.AppendLine($"            if (request is {reqType} s{i})");
             sb.AppendLine($"                return (global::System.Collections.Generic.IAsyncEnumerable<TResponse>)global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<{implType}>(_sp).Handle(s{i}, cancellationToken);");
         }
-        sb.AppendLine("            throw new global::System.InvalidOperationException($\"No stream handler registered for {request.GetType().FullName}\");");
+        sb.AppendLine("            return __Fallback.CreateStream(request, cancellationToken);");
         sb.AppendLine("        }");
         sb.AppendLine();
 

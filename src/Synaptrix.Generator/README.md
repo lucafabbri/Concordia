@@ -7,6 +7,7 @@
 # Table of Contents
 - [Why Synaptrix?](#why-synaptrix)
 - [Key Features](#key-features)
+- [GeneratedMediator Fallback for Unregistered Request Shapes](#generatedmediator-fallback-for-unregistered-request-shapes)
 - [Performance](#performance)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -58,7 +59,7 @@ does not equal arity of open generic implementation type 'FetchTabularCommandHan
 
 ...and since this happens inside `BuildServiceProvider()`, it fails the **entire DI container**, not just this one handler.
 
-**Current behavior**: the generator detects the arity mismatch and **skips** emitting the registration for that handler/interface pair, leaving a `// Skipped: ... (arity mismatch)` comment in the generated source instead of code that would crash at startup. Handlers with this shape are **not auto-registered** — register them yourself (typically per closed `TTabular`, e.g. `services.AddTransient<IStreamRequestHandler<FetchTabularCommand<Product>, Product>, FetchTabularCommandHandler<Product>>()` for each concrete type you use) until a future version adds closed-type scanning for this case.
+**Current behavior**: the generator detects the arity mismatch and **skips** emitting the registration for that handler/interface pair, leaving a `// Skipped: ... (arity mismatch)` comment in the generated source instead of code that would crash at startup. Handlers with this shape are **not auto-registered** — register them yourself (typically per closed `TTabular`, e.g. `services.AddTransient<IStreamRequestHandler<FetchTabularCommand<Product>, Product>, FetchTabularCommandHandler<Product>>()` for each concrete type you use) until a future version adds closed-type scanning for this case. Once registered, dispatching through `IMediator`/`ISender` works normally — see [GeneratedMediator Fallback](#generatedmediator-fallback-for-unregistered-request-shapes) below.
 
 ## Known Limitation: Wrapped-Slot Open Generics (matching arity, still unmappable)
 
@@ -76,7 +77,18 @@ public class FindEntitiesCommandHandler<TId, TEntity> : IStreamRequestHandler<Fi
 
 `services.AddTransient(typeof(IStreamRequestHandler<,>), typeof(FindEntitiesCommandHandler<,>))` binds type-parameter lists **positionally**: resolving `IStreamRequestHandler<FindEntitiesCommand<string, Product>, Product>` makes .NET construct `FindEntitiesCommandHandler<FindEntitiesCommand<string, Product>, Product>` — substituting `TId` with `FindEntitiesCommand<string, Product>`, which fails `TId`'s own `IEquatable<TId>` constraint. Unlike the arity case, this doesn't throw at startup (`BuildServiceProvider()` doesn't inspect constraint satisfiability that deeply) — it just silently fails to resolve the handler the first time something actually dispatches through it, surfacing as `InvalidOperationException: No stream handler registered for ...` (or the request/notification equivalent) at that call site.
 
-**Current behavior**: the generator checks, position-for-position, that each interface slot is *directly* one of the handler's own type parameters (not wrapped, not reordered) before registering. If not, it skips the same way as the arity case, with a `// Skipped: ...'s type parameters don't map directly, position-for-position, onto ...'s slots` comment, and — like the arity case — such handlers need registering per closed type until a future version adds closed-type scanning.
+**Current behavior**: the generator checks, position-for-position, that each interface slot is *directly* one of the handler's own type parameters (not wrapped, not reordered) before registering. If not, it skips the same way as the arity case, with a `// Skipped: ...'s type parameters don't map directly, position-for-position, onto ...'s slots` comment, and — like the arity case — such handlers need registering per closed type until a future version adds closed-type scanning. Once registered, dispatching through `IMediator`/`ISender` works normally — see the next section.
+
+## GeneratedMediator Fallback for Unregistered Request Shapes
+
+`GeneratedMediator`'s dispatch methods (`Send`, `CreateStream`, `Publish`) are built from a compile-time-known switch over the request/notification types this project's own generator run discovered. Two situations put a request outside that switch even though a handler for it genuinely exists in the DI container:
+
+* A handler shape the generator can't safely auto-register as a fast-path case (the two limitations above) but that you've registered by hand.
+* A handler discovered and registered by a **different** referenced assembly's own `Synaptrix.Generator` run — cross-assembly discovery (see Key Features above) composes handler registrations from every discoverable referenced assembly into the same `IServiceCollection`, but each assembly's own `GeneratedMediator` only has switch cases for the handlers *it* saw at its own compile time.
+
+For either case, falling straight to an exception the moment a type isn't recognized would mean whichever assembly's `GeneratedMediator` ends up bound as the app's `IMediator` becomes the sole determinant of what's dispatchable — silently stranding every handler known only to other assemblies in the reference graph.
+
+**Current behavior**: when no switch case matches, `GeneratedMediator` falls back to a lazily-created `Synaptrix.Mediator` (the reflection/DI-based implementation) scoped to the same `IServiceProvider`, instead of throwing immediately. The fast, allocation-free switch still handles everything it knows about; anything else is resolved the same way `Synaptrix.Mediator` would resolve it on its own — succeeding if a handler is registered anywhere in the container, and producing the same "no handler found" exception as `Synaptrix.Mediator` only if it truly isn't.
 
 ## Performance
 
