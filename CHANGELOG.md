@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="3.1.1"></a>
+## [3.1.1](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.1.1) (2026-08-07)
+
+### Bug Fixes
+
+* skip open-generic registration for asymmetric-arity handlers ([4e1f034](https://www.github.com/mrdevrobot/Concordia/commit/4e1f034d47c48210ba2188dab0138f28436d218b))
+
 <a name="3.0.3"></a>
 ## [3.0.3](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.0.3) (2026-05-13)
 
