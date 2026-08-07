@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Synaptrix.Core\Synaptrix.Core.csproj" />
+    <ProjectReference Include="..\..\src\Synaptrix.Generator\Synaptrix.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <!--
+      Catalog references Shipping directly (not the other way around, and not both referenced
+      independently by Host) so the cross-assembly discovery chain has something real to walk:
+      Synaptrix.Generator's chain-registration only follows assemblies actually visible to a
+      project's own compilation, which for a ProjectReference includes transitively-referenced
+      assemblies too. Host below references only Catalog - Shipping reaches it (and reaches
+      Synaptrix.Generator's discovery chain) purely through this reference.
+    -->
+    <ProjectReference Include="..\Synaptrix.Examples.MultiAssembly.Shipping\Synaptrix.Examples.MultiAssembly.Shipping.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\..\src\Synaptrix.Generator\build\Synaptrix.Generator.targets" />
+
+</Project>

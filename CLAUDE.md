@@ -33,5 +33,13 @@ project you're a contributor to, not as a private tool for any one consumer.
 - Tests live in `tests/Synaptrix.Generator.Tests`; run
   `dotnet test tests/Synaptrix.Generator.Tests/Synaptrix.Generator.Tests.csproj`
   before committing a generator change.
+- `examples/Synaptrix.Examples.MultiAssembly.*` covers cross-assembly handler composition with
+  real, separately-compiled projects (Catalog referenced by nothing, Shipping referenced by
+  Catalog, Host referencing only Catalog) - a class of regression the in-memory generator tests
+  can't catch, since those run the generator against one fake compilation rather than real
+  assemblies discovering each other. Run
+  `dotnet test examples/Synaptrix.Examples.MultiAssembly.Host/Synaptrix.Examples.MultiAssembly.Host.csproj`
+  before committing any change to handler discovery, chain-registration, or `GeneratedMediator`
+  dispatch/fallback behavior.
 - Do not push or publish to NuGet from here — tagging locally is fine, pushing the
   tag/branch and running the publish pipeline is the repo owner's call.

@@ -7,6 +7,9 @@
   <Folder Name="/examples/">
     <Project Path="examples/Synaptrix.Examples.Shared/Synaptrix.Examples.Shared.csproj" />
     <Project Path="examples/Synaptrix.Examples.Web/Synaptrix.Examples.Web.csproj" />
+    <Project Path="examples/Synaptrix.Examples.MultiAssembly.Catalog/Synaptrix.Examples.MultiAssembly.Catalog.csproj" />
+    <Project Path="examples/Synaptrix.Examples.MultiAssembly.Shipping/Synaptrix.Examples.MultiAssembly.Shipping.csproj" />
+    <Project Path="examples/Synaptrix.Examples.MultiAssembly.Host/Synaptrix.Examples.MultiAssembly.Host.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Synaptrix.Core.Tests/Synaptrix.Core.Tests.csproj" />
