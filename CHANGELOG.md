@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="3.1.3"></a>
+## [3.1.3](https://www.github.com/mrdevrobot/Synaptrix/releases/tag/v3.1.3) (2026-08-07)
+
+### Bug Fixes
+
+* GeneratedMediator falls back to reflection-based Mediator instead of throwing ([d53acf8](https://www.github.com/mrdevrobot/Synaptrix/commit/d53acf84ec336fc13080395f2a841e5478b8d489))
+
 <a name="3.1.2"></a>
 ## [3.1.2](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.1.2) (2026-08-07)
 
