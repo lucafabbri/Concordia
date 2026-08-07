@@ -60,6 +60,24 @@ does not equal arity of open generic implementation type 'FetchTabularCommandHan
 
 **Current behavior**: the generator detects the arity mismatch and **skips** emitting the registration for that handler/interface pair, leaving a `// Skipped: ... (arity mismatch)` comment in the generated source instead of code that would crash at startup. Handlers with this shape are **not auto-registered** — register them yourself (typically per closed `TTabular`, e.g. `services.AddTransient<IStreamRequestHandler<FetchTabularCommand<Product>, Product>, FetchTabularCommandHandler<Product>>()` for each concrete type you use) until a future version adds closed-type scanning for this case.
 
+## Known Limitation: Wrapped-Slot Open Generics (matching arity, still unmappable)
+
+A subtler variant of the same problem: the handler's type-parameter *count* matches the interface's arity, but one of the interface's slots isn't a *direct* reference to the handler's own type parameter — it's another constructed generic type wrapping it:
+
+```csharp
+public class FindEntitiesCommandHandler<TId, TEntity> : IStreamRequestHandler<FindEntitiesCommand<TId, TEntity>, TEntity>
+    where TId : IEquatable<TId>
+    where TEntity : class, IEntity<TId, TEntity>
+{
+    // Both sides have 2 slots (TId, TEntity), so the arity check alone lets this through.
+    // But slot 0 is FindEntitiesCommand<TId, TEntity> - not TId itself.
+}
+```
+
+`services.AddTransient(typeof(IStreamRequestHandler<,>), typeof(FindEntitiesCommandHandler<,>))` binds type-parameter lists **positionally**: resolving `IStreamRequestHandler<FindEntitiesCommand<string, Product>, Product>` makes .NET construct `FindEntitiesCommandHandler<FindEntitiesCommand<string, Product>, Product>` — substituting `TId` with `FindEntitiesCommand<string, Product>`, which fails `TId`'s own `IEquatable<TId>` constraint. Unlike the arity case, this doesn't throw at startup (`BuildServiceProvider()` doesn't inspect constraint satisfiability that deeply) — it just silently fails to resolve the handler the first time something actually dispatches through it, surfacing as `InvalidOperationException: No stream handler registered for ...` (or the request/notification equivalent) at that call site.
+
+**Current behavior**: the generator checks, position-for-position, that each interface slot is *directly* one of the handler's own type parameters (not wrapped, not reordered) before registering. If not, it skips the same way as the arity case, with a `// Skipped: ...'s type parameters don't map directly, position-for-position, onto ...'s slots` comment, and — like the arity case — such handlers need registering per closed type until a future version adds closed-type scanning.
+
 ## Performance
 
 Benchmarks measured with BenchmarkDotNet on .NET 10, Intel Core i7-13800H. Ratio = relative to MediatR (1.00).

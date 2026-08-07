@@ -5,7 +5,7 @@ using Xunit;
 namespace Synaptrix.Generator.Tests;
 
 /// <summary>
-/// Regression tests for a handler shape observed in a real consumer (Modulon):
+/// Regression tests for a handler shape that's valid conceptually but not auto-registrable:
 /// an open-generic handler whose single type parameter fills two slots on the
 /// interface it implements, e.g. <c>Handler&lt;T&gt; : IStreamRequestHandler&lt;Command&lt;T&gt;, T&gt;</c>.
 /// The handler class has arity 1; the interface has arity 2. .NET's open-generic DI

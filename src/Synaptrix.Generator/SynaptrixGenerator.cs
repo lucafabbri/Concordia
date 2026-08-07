@@ -137,12 +137,52 @@ public class SynaptrixGenerator : IIncrementalGenerator
         }
 
         var implementedInterfaces = new List<string>();
+        var skippedNotes = new List<string>();
 
         // An open-generic class such as `Foo<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>`
         // cannot be registered with the generic `AddTransient<TInterface, TImpl>()` overload because
         // TRequest/TResponse are not in scope at the call site. We emit the unbound form
-        // `typeof(Foo<,>)` and `typeof(IPipelineBehavior<,>)` instead.
+        // `typeof(Foo<,>)` and `typeof(IPipelineBehavior<,>)` instead - but only when that mapping is
+        // actually valid; see RegisterOrSkipOpenGeneric below.
         var isOpenGeneric = classSymbol.IsGenericType && classSymbol.TypeParameters.Length > 0;
+
+        // For an open-generic handler, checks whether `unboundInterfaceName` can be safely registered
+        // via `services.AddTransient(typeof(IFoo<,>), typeof(Impl<,>))` and routes it to
+        // implementedInterfaces (if so) or skippedNotes with a reason (if not). .NET's open-generic DI
+        // resolution binds the two type-parameter lists purely positionally: closing IFoo<A,B> and
+        // asking for it constructs Impl<A,B>, substituting Impl's own type parameters in declaration
+        // order. That's only correct when each interface slot IS, directly and in the matching
+        // position, one of Impl's own type parameters - not a constructed type wrapping it (e.g.
+        // `IFoo<Command<T>, T>` on `Impl<T>`) and not a swapped order. Reject anything else instead of
+        // emitting a registration that either throws ArgumentException at BuildServiceProvider() time
+        // (arity mismatch) or silently fails to resolve at the call site (wrapped/swapped slots).
+        void RegisterOrSkipOpenGeneric(string unboundInterfaceName, ImmutableArray<ITypeSymbol> interfaceTypeArguments)
+        {
+            var classTypeParameters = classSymbol.TypeParameters;
+
+            if (interfaceTypeArguments.Length != classTypeParameters.Length)
+            {
+                skippedNotes.Add(
+                    $"Skipped: {DescribeUnboundImplementation(classSymbol)} has {classTypeParameters.Length} type parameter(s) but " +
+                    $"{unboundInterfaceName} needs {interfaceTypeArguments.Length} (arity mismatch) - .NET can't open-generic-map this shape.");
+                return;
+            }
+
+            for (int i = 0; i < interfaceTypeArguments.Length; i++)
+            {
+                if (interfaceTypeArguments[i] is not ITypeParameterSymbol slotTypeParameter ||
+                    !SymbolEqualityComparer.Default.Equals(slotTypeParameter, classTypeParameters[i]))
+                {
+                    skippedNotes.Add(
+                        $"Skipped: {DescribeUnboundImplementation(classSymbol)}'s type parameters don't map directly, " +
+                        $"position-for-position, onto {unboundInterfaceName}'s slots (slot {i} is wrapped in another " +
+                        "constructed type, or the order differs) - .NET's open-generic DI mapping only supports the direct case.");
+                    return;
+                }
+            }
+
+            implementedInterfaces.Add(unboundInterfaceName);
+        }
 
         // Iterates through all implemented interfaces.
         foreach (var @interface in classSymbol.AllInterfaces)
@@ -157,7 +197,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
                 {
                     if (isOpenGeneric)
                     {
-                        implementedInterfaces.Add("global::Synaptrix.IRequestHandler<,>");
+                        RegisterOrSkipOpenGeneric("global::Synaptrix.IRequestHandler<,>", @interface.TypeArguments);
                     }
                     else
                     {
@@ -170,7 +210,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
                 {
                     if (isOpenGeneric)
                     {
-                        implementedInterfaces.Add("global::Synaptrix.IRequestHandler<>");
+                        RegisterOrSkipOpenGeneric("global::Synaptrix.IRequestHandler<>", @interface.TypeArguments);
                     }
                     else
                     {
@@ -182,7 +222,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
                 {
                     if (isOpenGeneric)
                     {
-                        implementedInterfaces.Add("global::Synaptrix.INotificationHandler<>");
+                        RegisterOrSkipOpenGeneric("global::Synaptrix.INotificationHandler<>", @interface.TypeArguments);
                     }
                     else
                     {
@@ -194,7 +234,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
                 {
                     if (isOpenGeneric)
                     {
-                        implementedInterfaces.Add("global::Synaptrix.IPipelineBehavior<,>");
+                        RegisterOrSkipOpenGeneric("global::Synaptrix.IPipelineBehavior<,>", @interface.TypeArguments);
                     }
                     else
                     {
@@ -207,7 +247,7 @@ public class SynaptrixGenerator : IIncrementalGenerator
                 {
                     if (isOpenGeneric)
                     {
-                        implementedInterfaces.Add("global::Synaptrix.IStreamRequestHandler<,>");
+                        RegisterOrSkipOpenGeneric("global::Synaptrix.IStreamRequestHandler<,>", @interface.TypeArguments);
                     }
                     else
                     {
@@ -219,8 +259,9 @@ public class SynaptrixGenerator : IIncrementalGenerator
             }
         }
 
-        // Creates a HandlerInfo if any supported interfaces are implemented.
-        if (implementedInterfaces.Any())
+        // Creates a HandlerInfo if any supported interfaces are implemented, or if any were skipped
+        // (so the skip reason still gets emitted as a diagnostic comment in the generated file).
+        if (implementedInterfaces.Any() || skippedNotes.Any())
         {
             string implementationTypeName;
             if (isOpenGeneric)
@@ -234,11 +275,18 @@ public class SynaptrixGenerator : IIncrementalGenerator
                 implementationTypeName = classSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             }
 
-            return new HandlerInfo(implementationTypeName, implementedInterfaces, isOpenGeneric);
+            return new HandlerInfo(implementationTypeName, implementedInterfaces, isOpenGeneric, skippedNotes.Any() ? skippedNotes : null);
         }
 
         return null;
     }
+
+    /// <summary>
+    /// Unbound generic display form of <paramref name="classSymbol"/>, e.g. "global::MyNs.Behavior&lt;,&gt;",
+    /// for use in diagnostic skip-reason messages.
+    /// </summary>
+    private static string DescribeUnboundImplementation(INamedTypeSymbol classSymbol) =>
+        classSymbol.ConstructUnboundGenericType().ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
     // Generates the handlers registration code.
     /// <summary>
@@ -288,36 +336,34 @@ public class SynaptrixGenerator : IIncrementalGenerator
         // references this one will call AddSynaptrixHandlers, which in turn calls this method).
         foreach (var handler in handlers)
         {
+            // By the time a handler reaches this point, GetHandlerInfo has already rejected any
+            // open-generic interface mapping .NET's DI can't actually construct (arity mismatch, or
+            // a slot that isn't a direct positional type-parameter reference) - see
+            // RegisterOrSkipOpenGeneric. Every entry left in ImplementedInterfaceTypeNames is safe
+            // to register as-is; SkippedRegistrationNotes carries the diagnostic for anything that
+            // was rejected, printed below instead of a registration.
             foreach (var implementedInterface in handler.ImplementedInterfaceTypeNames)
             {
                 if (handler.IsOpenGeneric)
                 {
                     // Open-generic registration: AddTransient(typeof(IFoo<,>), typeof(MyFoo<,>)).
-                    // .NET's open-generic DI mapping only works when TService and TImplementation
-                    // have the SAME arity, since it binds their type parameter lists positionally.
-                    // A handler like `Foo<T> : IBar<Something<T>, T>` is a valid, well-defined open
-                    // generic conceptually, but its single type parameter fills two slots on the
-                    // interface (arity 1 vs arity 2) - .NET can't express that via typeof(...) alone,
-                    // and registering it anyway throws ArgumentException ("Arity of open generic
-                    // service type does not equal arity...") which fails BuildServiceProvider() for
-                    // the whole container, not just this handler. Skip it here; such handlers need
-                    // registering per closed TResponse (a future enhancement, not attempted here).
-                    if (GetUnboundArity(implementedInterface) == GetUnboundArity(handler.ImplementationTypeName))
-                    {
-                        // Guard: prevents duplicate behavior registrations (e.g. IPipelineBehavior<,>)
-                        // which would cause the behavior to execute N times per request.
-                        sb.AppendLine($"            if (!services.Any(d => d.ServiceType == typeof({implementedInterface}) && d.ImplementationType == typeof({handler.ImplementationTypeName})))");
-                        sb.AppendLine($"                services.AddTransient(typeof({implementedInterface}), typeof({handler.ImplementationTypeName}));");
-                    }
-                    else
-                    {
-                        sb.AppendLine($"            // Skipped: {handler.ImplementationTypeName} has fewer type parameters than {implementedInterface} needs (arity mismatch) - .NET can't open-generic-map this shape.");
-                    }
+                    // Guard: prevents duplicate behavior registrations (e.g. IPipelineBehavior<,>)
+                    // which would cause the behavior to execute N times per request.
+                    sb.AppendLine($"            if (!services.Any(d => d.ServiceType == typeof({implementedInterface}) && d.ImplementationType == typeof({handler.ImplementationTypeName})))");
+                    sb.AppendLine($"                services.AddTransient(typeof({implementedInterface}), typeof({handler.ImplementationTypeName}));");
                 }
                 else
                 {
                     sb.AppendLine($"            if (!services.Any(d => d.ServiceType == typeof({implementedInterface}) && d.ImplementationType == typeof({handler.ImplementationTypeName})))");
                     sb.AppendLine($"                services.AddTransient<{implementedInterface}, {handler.ImplementationTypeName}>();");
+                }
+            }
+
+            if (handler.SkippedRegistrationNotes is { Count: > 0 })
+            {
+                foreach (var note in handler.SkippedRegistrationNotes)
+                {
+                    sb.AppendLine($"            // {note}");
                 }
             }
         }
@@ -708,27 +754,6 @@ public class SynaptrixGenerator : IIncrementalGenerator
             else if (s[i] == ',' && depth == 0) return i;
         }
         return -1;
-    }
-
-    /// <summary>
-    /// Returns the number of type parameters of an unbound generic type's display string,
-    /// e.g. "global::Ns.IFoo&lt;,&gt;" -> 2, "global::Ns.Bar&lt;&gt;" -> 1. Unbound generic forms
-    /// never nest further angle brackets, so counting top-level commas between the last
-    /// '&lt;' and '&gt;' is sufficient. Returns 0 if the type isn't generic at all.
-    /// </summary>
-    private static int GetUnboundArity(string unboundTypeName)
-    {
-        int open = unboundTypeName.LastIndexOf('<');
-        int close = unboundTypeName.LastIndexOf('>');
-        if (open < 0 || close < 0 || close <= open) return 0;
-
-        var inner = unboundTypeName.Substring(open + 1, close - open - 1);
-        int commas = 0;
-        foreach (var c in inner)
-        {
-            if (c == ',') commas++;
-        }
-        return commas + 1;
     }
 
     /// <summary>
