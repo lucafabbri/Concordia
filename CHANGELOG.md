@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="3.1.2"></a>
+## [3.1.2](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.1.2) (2026-08-07)
+
+### Bug Fixes
+
+* reject open-generic handlers whose interface slots aren't direct type-parameter references ([b0b484a](https://www.github.com/mrdevrobot/Concordia/commit/b0b484a7b029a320415e5b2fac3f549cae935a34))
+
 <a name="3.1.1"></a>
 ## [3.1.1](https://www.github.com/mrdevrobot/Concordia/releases/tag/v3.1.1) (2026-08-07)
 
