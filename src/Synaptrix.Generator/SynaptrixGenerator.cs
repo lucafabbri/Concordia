@@ -292,11 +292,27 @@ public class SynaptrixGenerator : IIncrementalGenerator
             {
                 if (handler.IsOpenGeneric)
                 {
-                    // Open-generic registration: AddTransient(typeof(IFoo<,>), typeof(MyFoo<,>))
-                    // Guard: prevents duplicate behavior registrations (e.g. IPipelineBehavior<,>)
-                    // which would cause the behavior to execute N times per request.
-                    sb.AppendLine($"            if (!services.Any(d => d.ServiceType == typeof({implementedInterface}) && d.ImplementationType == typeof({handler.ImplementationTypeName})))");
-                    sb.AppendLine($"                services.AddTransient(typeof({implementedInterface}), typeof({handler.ImplementationTypeName}));");
+                    // Open-generic registration: AddTransient(typeof(IFoo<,>), typeof(MyFoo<,>)).
+                    // .NET's open-generic DI mapping only works when TService and TImplementation
+                    // have the SAME arity, since it binds their type parameter lists positionally.
+                    // A handler like `Foo<T> : IBar<Something<T>, T>` is a valid, well-defined open
+                    // generic conceptually, but its single type parameter fills two slots on the
+                    // interface (arity 1 vs arity 2) - .NET can't express that via typeof(...) alone,
+                    // and registering it anyway throws ArgumentException ("Arity of open generic
+                    // service type does not equal arity...") which fails BuildServiceProvider() for
+                    // the whole container, not just this handler. Skip it here; such handlers need
+                    // registering per closed TResponse (a future enhancement, not attempted here).
+                    if (GetUnboundArity(implementedInterface) == GetUnboundArity(handler.ImplementationTypeName))
+                    {
+                        // Guard: prevents duplicate behavior registrations (e.g. IPipelineBehavior<,>)
+                        // which would cause the behavior to execute N times per request.
+                        sb.AppendLine($"            if (!services.Any(d => d.ServiceType == typeof({implementedInterface}) && d.ImplementationType == typeof({handler.ImplementationTypeName})))");
+                        sb.AppendLine($"                services.AddTransient(typeof({implementedInterface}), typeof({handler.ImplementationTypeName}));");
+                    }
+                    else
+                    {
+                        sb.AppendLine($"            // Skipped: {handler.ImplementationTypeName} has fewer type parameters than {implementedInterface} needs (arity mismatch) - .NET can't open-generic-map this shape.");
+                    }
                 }
                 else
                 {
@@ -692,6 +708,27 @@ public class SynaptrixGenerator : IIncrementalGenerator
             else if (s[i] == ',' && depth == 0) return i;
         }
         return -1;
+    }
+
+    /// <summary>
+    /// Returns the number of type parameters of an unbound generic type's display string,
+    /// e.g. "global::Ns.IFoo&lt;,&gt;" -> 2, "global::Ns.Bar&lt;&gt;" -> 1. Unbound generic forms
+    /// never nest further angle brackets, so counting top-level commas between the last
+    /// '&lt;' and '&gt;' is sufficient. Returns 0 if the type isn't generic at all.
+    /// </summary>
+    private static int GetUnboundArity(string unboundTypeName)
+    {
+        int open = unboundTypeName.LastIndexOf('<');
+        int close = unboundTypeName.LastIndexOf('>');
+        if (open < 0 || close < 0 || close <= open) return 0;
+
+        var inner = unboundTypeName.Substring(open + 1, close - open - 1);
+        int commas = 0;
+        foreach (var c in inner)
+        {
+            if (c == ',') commas++;
+        }
+        return commas + 1;
     }
 
     /// <summary>

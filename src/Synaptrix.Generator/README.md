@@ -34,6 +34,32 @@
 * **Cross-Assembly Discovery**: Handlers defined in referenced assemblies that also use `Synaptrix.Generator` are discovered and included automatically.
 * **Configurable Method Name**: Rename the generated extension method via `<SynaptrixGeneratedMethodName>` in your `.csproj`.
 
+## Known Limitation: Asymmetric-Arity Open Generics
+
+An open-generic handler is normally registered with `services.AddTransient(typeof(IFoo<,>), typeof(Impl<,>))`, which binds the two type-parameter lists positionally — this requires the handler class and the interface it implements to have the **same arity** (number of type parameters).
+
+Some handler shapes don't: a single type parameter can fill more than one slot on the interface, e.g.
+
+```csharp
+public class FetchTabularCommandHandler<TTabular> : IStreamRequestHandler<FetchTabularCommand<TTabular>, TTabular>
+    where TTabular : class, ITabular
+{
+    // TTabular is used twice on the interface (inside FetchTabularCommand<TTabular> AND as TResponse),
+    // but the handler class itself only has one type parameter: arity 1 vs arity 2.
+}
+```
+
+This is a well-defined mapping conceptually (`T → (FetchTabularCommand<T>, T)`), but .NET's `typeof(...)`-based open-generic registration can't express it — registering it anyway throws at runtime:
+
+```
+System.ArgumentException: Arity of open generic service type 'IStreamRequestHandler`2[TRequest,TResponse]'
+does not equal arity of open generic implementation type 'FetchTabularCommandHandler`1[TTabular]'.
+```
+
+...and since this happens inside `BuildServiceProvider()`, it fails the **entire DI container**, not just this one handler.
+
+**Current behavior**: the generator detects the arity mismatch and **skips** emitting the registration for that handler/interface pair, leaving a `// Skipped: ... (arity mismatch)` comment in the generated source instead of code that would crash at startup. Handlers with this shape are **not auto-registered** — register them yourself (typically per closed `TTabular`, e.g. `services.AddTransient<IStreamRequestHandler<FetchTabularCommand<Product>, Product>, FetchTabularCommandHandler<Product>>()` for each concrete type you use) until a future version adds closed-type scanning for this case.
+
 ## Performance
 
 Benchmarks measured with BenchmarkDotNet on .NET 10, Intel Core i7-13800H. Ratio = relative to MediatR (1.00).
